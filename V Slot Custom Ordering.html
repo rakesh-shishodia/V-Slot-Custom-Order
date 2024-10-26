@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedded Product Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        #notification {
+            display: none;
+            background-color: #dff0d8;
+            color: #3c763d;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        #ordering-tool {
+            max-width: 800px;
+            margin: auto;
+        }
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #000;
+        }
+        th, td {
+            padding: 15px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .input-field {
+            box-sizing: border-box;
+            text-align: center;
+            border: none;
+            outline: none;
+            background-color: #f9f9f9;
+            font-size: 16px;
+        }
+        .input-length {
+            width: 150px;
+        }
+        .input-pcs {
+            width: 80px;
+        }
+        .cost-field {
+            width: 200px;
+        }
+        #addRowButton, #addAllToCart {
+            margin: 10px 5px;
+            padding: 15px;
+            font-size: 16px;
+            background-color: #e0e0e0;
+            border: none;
+            cursor: pointer;
+        }
+        #addAllToCart {
+            background-color: #000;
+            color: #fff;
+        }
+        #grandTotals {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Product Page with Custom Length Ordering</h1>
+        <div id="my-store-109477254"></div>
+        <div>
+            <script data-cfasync="false" type="text/javascript" src="https://app.ecwid.com/script.js?109477254&data_platform=code&data_date=2024-10-26" charset="utf-8"></script>
+            <script type="text/javascript"> 
+                window.ec=window.ec||{}; 
+                window.ec.storefront=window.ec.storefront||{}; 
+                window.ec.storefront.enable_navigation=true;
+                window.ec.storefront.product_details_layout="TWO_COLUMNS_SIDEBAR_ON_THE_RIGHT";
+                window.ec.storefront.product_details_gallery_layout="SINGLE_IMAGE";
+                window.ec.storefront.product_details_two_columns_with_right_sidebar_show_product_description_on_sidebar=true;
+                window.ec.storefront.product_details_two_columns_with_left_sidebar_show_product_description_on_sidebar=false;
+                window.ec.storefront.product_details_show_product_name=true;
+                window.ec.storefront.product_details_show_breadcrumbs=true;
+                window.ec.storefront.product_details_show_product_sku=false;
+                window.ec.storefront.product_details_show_product_price=true;
+                window.ec.storefront.product_details_show_in_stock_label=true;
+                window.ec.storefront.product_details_show_number_of_items_in_stock=false;
+                window.ec.storefront.product_details_show_qty=false;
+                window.ec.storefront.product_details_show_wholesale_prices=false;
+                window.ec.storefront.product_details_show_product_options=true;
+                window.ec.storefront.product_details_show_product_description=true;
+                window.ec.storefront.product_details_show_delivery_time=undefined;
+                window.ec.storefront.product_details_show_share_buttons=false;
+                window.ec.storefront.product_details_position_product_name=100;
+                window.ec.storefront.product_details_position_breadcrumbs=200;
+                window.ec.storefront.product_details_position_product_sku=300;
+                window.ec.storefront.product_details_position_product_price=400;
+                window.ec.storefront.product_details_position_product_options=undefined;
+                window.ec.storefront.product_details_position_buy_button=600;
+                window.ec.storefront.product_details_position_wholesale_prices=700;
+                window.ec.storefront.product_details_position_product_description=800;
+                window.ec.storefront.product_details_position_delivery_time=undefined;
+                window.ec.storefront.product_details_position_share_buttons=900;
+                window.ec.storefront.product_details_position_subtitle=500;
+                window.ec.storefront.product_details_show_subtitle=true;
+                xProductBrowser("categoriesPerRow=3","views=grid(20,3) list(60) table(60)","categoryView=grid","searchView=list","defaultProductId=704928053","defaultSlug=v-slot-2020","id=my-store-109477254");
+            </script>
+        </div>
+        <div id="ordering-tool">
+            <div id="notification"></div>
+            <h1>Custom Length Ordering Tool</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Length</th>
+                        <th>No of Pcs</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody id="rowsContainer">
+                </tbody>
+            </table>
+            <button id="addRowButton">Click for More Rows If Needed</button>
+            <div id="grandTotals">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Total Length</th>
+                            <th>Total Pcs</th>
+                            <th>Total Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="grandTotalLength">0 mm</td>
+                            <td id="grandTotalPcs">0</td>
+                            <td id="grandTotalCost">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button id="addAllToCart">Add All to Cart</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let rowsContainer = document.getElementById('rowsContainer');
+            let addRowButton = document.getElementById('addRowButton');
+            let addAllButton = document.getElementById('addAllToCart');
+            let grandTotalLengthElem = document.getElementById('grandTotalLength');
+            let grandTotalPcsElem = document.getElementById('grandTotalPcs');
+            let grandTotalCostElem = document.getElementById('grandTotalCost');
+            let costPerMm = 0; // Placeholder value for price per mm
+
+            // Function to fetch the product price dynamically after the product loads
+            function fetchProductPrice() {
+                const priceElement = document.querySelector('.details-product-price__value.ec-price-item.notranslate');
+                if (priceElement) {
+                    let productPriceText = priceElement.textContent || "";
+                    let productPrice = parseFloat(productPriceText.replace(/[^\d\.]/g, ""));
+                    if (!isNaN(productPrice) && productPrice > 0) {
+                        costPerMm = productPrice / 1000;
+                    }
+                }
+            }
+
+            // Wait for the product to load and then fetch the price
+            setTimeout(fetchProductPrice, 2000);
+
+            // Add initial rows
+            for (let i = 0; i < 5; i++) {
+                addRow();
+            }
+
+            function addRow() {
+                let row = document.createElement('tr');
+
+                let lengthInput = document.createElement('input');
+                lengthInput.type = 'text';
+                lengthInput.className = 'input-field input-length';
+                lengthInput.placeholder = 'Enter length in mm';
+
+                let quantityInput = document.createElement('input');
+                quantityInput.type = 'text';
+                quantityInput.className = 'input-field input-pcs';
+                quantityInput.placeholder = 'Enter pcs';
+
+                let costElem = document.createElement('td');
+                costElem.className = 'cost cost-field';
+                costElem.innerText = '0';
+
+                lengthInput.addEventListener('input', updateRow);
+                quantityInput.addEventListener('input', updateRow);
+
+                function updateRow() {
+                    let length = parseInt(lengthInput.value) || 0;
+                    let quantity = parseInt(quantityInput.value) || 0;
+                    let cost = length * quantity * costPerMm;
+
+                    costElem.innerText = `${cost.toFixed(2)}`;
+
+                    updateGrandTotals();
+                }
+
+                let lengthTd = document.createElement('td');
+                lengthTd.appendChild(lengthInput);
+                let quantityTd = document.createElement('td');
+                quantityTd.appendChild(quantityInput);
+
+                row.appendChild(lengthTd);
+                row.appendChild(quantityTd);
+                row.appendChild(costElem);
+
+                rowsContainer.appendChild(row);
+            }
+
+            function updateGrandTotals() {
+                let rows = rowsContainer.querySelectorAll('tr');
+                let grandTotalLength = 0;
+                let grandTotalPcs = 0;
+                let grandTotalCost = 0;
+
+                rows.forEach(function(row) {
+                    let lengthInput = row.querySelector('input');
+                    let quantityInput = row.querySelectorAll('input')[1];
+                    let length = parseInt(lengthInput.value) || 0;
+                    let quantity = parseInt(quantityInput.value) || 0;
+                    let cost = length * quantity * costPerMm;
+
+                    grandTotalLength += length * quantity;
+                    grandTotalPcs += quantity;
+                    grandTotalCost += cost;
+                });
+
+                grandTotalLengthElem.innerText = `${grandTotalLength} mm`;
+                grandTotalPcsElem.innerText = `${grandTotalPcs}`;
+                grandTotalCostElem.innerText = `${grandTotalCost.toFixed(2)}`;
+            }
+
+            addRowButton.addEventListener('click', addRow);
+
+            addAllButton.addEventListener('click', function() {
+                let totalLengthInMeters = Math.round(parseInt(grandTotalLengthElem.innerText) / 1000) || 0;
+                let totalCost = parseFloat(grandTotalCostElem.innerText) || 0;
+
+                if (totalLengthInMeters > 0 && totalCost > 0) {
+                    // Add product to Ecwid cart with custom quantity and price
+                    Ecwid.Cart.addProduct(
+                        {
+                            id: 704928053, // Product ID
+                            quantity: totalLengthInMeters,
+                            price: totalCost,
+                            options: []
+                        },
+                        function(success) {
+                            if (success) {
+                                showNotification(`${grandTotalPcsElem.innerText} pcs of V Slot 2020 with a total length of ${grandTotalLengthElem.innerText} added to cart.`);
+                            } else {
+                                showNotification("Failed to add items to cart.");
+                            }
+                        }
+                    );
+                } else {
+                    showNotification("Please enter valid length and quantity values to add to cart.");
+                }
+            });
+        });
+
+        function showNotification(message) {
+            let notificationElem = document.getElementById('notification');
+            notificationElem.innerText = message;
+            notificationElem.style.display = 'block';
+            setTimeout(() => {
+                notificationElem.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
