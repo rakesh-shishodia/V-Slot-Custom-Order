@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Add to Cart with Embedded Shopping Bag</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    /* Force the Ecwid minicart (shopping bag) to be pinned at the top right */
+    .ec-cart-widget,
+    .ec-minicart, 
+    .ec-minicart--inline, 
+    .ec-minicart--responsive {
+      position: fixed !important;
+      top: 10px !important;
+      right: 10px !important;
+      z-index: 10000 !important;
+      width: 300px !important;
+    }
+  </style>
+  
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Include Ecwid script for Cart API (store id: 2442119) -->
+  <script src="https://app.ecwid.com/script.js?2442119&data_platform=code&data_date=2025-03-02" charset="utf-8"></script>
+</head>
+<body>
+
+<h1>Test Add to Cart with Embedded Shopping Bag</h1>
+<button id="addToCartBtn">Test Add to Cart</button>
+
+<!-- Embedded Ecwid Cart Widget -->
+<div class="ec-cart-widget"></div>
+
+<!-- Embed the Ecwid shopping bag scripts -->
+<div>
+  <link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/ecwid-addons/apps/ecwid-cart-app/cartapp.css">
+  <script data-cfasync="false" type="text/javascript" src="https://app.ecwid.com/script.js?2442119&data_platform=code&data_date=2025-03-02" charset="utf-8"></script>
+  <script type="text/javascript">
+    Ecwid.init();
+  </script>
+</div>
+
+<script>
+  $(document).ready(function(){
+    $('#addToCartBtn').on('click', function(){
+      // Dummy product ID for testing (must match the product in your Ecwid store)
+      var productId = 729803262; 
+
+      // Define the product options as an object.
+      // The option names must exactly match the configuration in your Ecwid store.
+      var productOptions = {
+        "Length": "1500",            // Only the numeric value as a string.
+        "M5 Tap Holes": "3",
+        "Counter Bore Holes": "2",
+        "Details": "Test Test Test"
+      };
+
+      // Use Ecwid.Cart.addProduct() to add the dummy product to the cart.
+      Ecwid.Cart.addProduct({
+        id: productId,
+        quantity: 1,
+        options: productOptions
+      }, function(success, product, cart) {
+        if (success) {
+          alert("Product added to cart successfully!");
+          console.log("Cart contents:", cart);
+        } else {
+          alert("Failed to add product to cart.");
+          console.error("Add to cart failed.");
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

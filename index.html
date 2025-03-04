@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Custom Extrusion Ordering Tool</title>
+  <style>
+    /* Basic styling for layout */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .extrusion-selector {
+      margin-bottom: 10px;
+    }
+    .extrusion-box {
+      display: inline-block;
+      padding: 10px 15px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .extrusion-box.selected {
+      background-color: #4caf50;
+      color: white;
+      border-color: #4caf50;
+    }
+    /* Styling for the ordering message */
+    #selectedMessage {
+      text-align: center;
+      background-color: #e0f7fa;
+      border: 1px solid #00838f;
+      color: black;
+      padding: 10px;
+      margin: 10px auto;
+      width: fit-content;
+      font-weight: bold;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    /* Column widths for order table */
+    th:nth-child(1) { width: 100px; }  /* Cut Length */
+    th:nth-child(2) { width: 80px; }   /* # of M5 Holes */
+    th:nth-child(3) { width: 80px; }   /* # of CB Holes */
+    th:nth-child(4) { width: 80px; }   /* # of Pcs */
+    th:nth-child(5) { width: 120px; }  /* Row Total Length */
+    th:nth-child(6) { width: 80px; }   /* Reset Row */
+    input[type=number] {
+      width: 80%;
+      padding: 4px;
+      box-sizing: border-box;
+      -moz-appearance: textfield;
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    .totals-table th, .totals-table td {
+      padding: 6px 10px;
+    }
+    /* Embedded shopping bag (minicart) pinned to top right */
+    .ec-cart-widget {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 10000;
+      width: 300px;
+    }
+  </style>
+  
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Include Ecwid script for Cart API (store id: 2442119) -->
+  <script src="https://app.ecwid.com/script.js?2442119&data_platform=code&data_date=2025-03-02" charset="utf-8"></script>
+</head>
+<body>
+
+<h1>Custom Extrusion Ordering Tool</h1>
+
+<!-- Extrusion Selector -->
+<div class="extrusion-selector" id="extrusionSelector">
+  <!-- Dynamically populated extrusion boxes -->
+</div>
+<div id="selectedMessage">Please select an extrusion type</div>
+
+<!-- Custom Ordering Table -->
+<form id="extrusionForm">
+  <table id="orderTable">
+    <thead>
+      <tr>
+        <th>Cut Length (mm)</th>
+        <th># of M5 Holes</th>
+        <th># of CB Holes</th>
+        <th># of Pcs</th>
+        <th>Row Total Length</th>
+        <th>Reset Row</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <!-- 6 rows will be dynamically inserted -->
+    </tbody>
+  </table>
+  
+  <button type="button" id="addRowBtn">Add More Rows</button>
+  <button type="button" id="resetAllBtn">Reset All</button>
+  
+  <!-- Aggregate Totals Table -->
+  <table class="totals-table">
+    <thead>
+      <tr>
+        <th>Total Length Ordered</th>
+        <th>Rounded Off Length (Nearest 500mm)</th>
+        <th>Cost of Rounded Off Length</th>
+        <th>Discount</th>
+        <th>Total # of M5 Holes</th>
+        <th>Total Cost M5 Tapping</th>
+        <th>Total # of CB Holes</th>
+        <th>Total Cost CB Holes</th>
+        <th>Final Cost Payable</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="totalOrdered">0</td>
+        <td id="roundedLength">0</td>
+        <td id="costExtrusions">0</td>
+        <td id="discount">0</td>
+        <td id="totalM5Count">0</td>
+        <td id="totalM5Cost">0</td>
+        <td id="totalCBCount">0</td>
+        <td id="totalCBCost">0</td>
+        <td id="finalCost">0</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <button type="button" id="addToCartBtn">Add to Cart</button>
+</form>
+
+<!-- Embedded Shopping Bag -->
+<div class="ec-cart-widget"></div>
+<link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/ecwid-addons/apps/ecwid-cart-app/cartapp.css">
+<script src="https://s3.amazonaws.com/ecwid-addons/apps/ecwid-cart-app/cart.js"></script>
+<script type="text/javascript">
+  Ecwid.init();
+</script>
+
+<script>
+  // Global variables
+  let extrusionData = []; // Will be loaded from extrusions.json
+  let selectedExtrusion = null; // Currently selected extrusion object
+  const additionalCosts = { m5Tapping: 30, counterBore: 70 };
+
+  // Mapping configuration: maps extrusion IDs to dummy product IDs, valid length options, and for display, the price mapping.
+  // For our testing, we have VS22S and VS22B.
+  const extrusionMapping = {
+    "VS22S": {
+      dummyProductId: "729803262",
+      lengthOptions: [500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000,
+                       5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000,
+                       10500, 11000, 11500, 12000, 12500, 13000, 13500, 14000, 14500, 15000,
+                       15500, 16000, 16500, 17000, 17500, 18000, 18500, 19000, 19500, 20000,
+                       20500, 21000, 21500, 22000, 22500, 23000, 23500, 24000, 24500, 25000,
+                       25500, 26000, 26500, 27000, 27500, 28000, 28500, 29000, 29500, 30000,
+                       30500, 31000, 31500, 32000, 32500, 33000, 33500, 34000, 34500, 35000,
+                       35500, 36000, 36500, 37000, 37500, 38000, 38500, 39000, 39500, 40000,
+                       40500, 41000, 41500, 42000, 42500, 43000, 43500, 44000, 44500, 45000,
+                       45500, 46000, 46500, 47000, 47500, 48000, 48500, 49000, 49500, 50000],
+      lengthPrices: {
+        "500": 100,
+        "1000": 200,
+        "1500": 300,
+        "2000": 400,
+        "2500": 500,
+        "3000": 600,
+        "3500": 700,
+        "4000": 800,
+        "4500": 900,
+        "5000": 1000,
+        "5500": 1100,
+        "6000": 1200,
+        "6500": 1300,
+        "7000": 1400,
+        "7500": 1500,
+        "8000": 1600,
+        "8500": 1700,
+        "9000": 1800,
+        "9500": 1900,
+        "10000": 2000,
+        "10500": 2100,
+        "11000": 2200,
+        "11500": 2300,
+        "12000": 2400,
+        "12500": 2500,
+        "13000": 2600,
+        "13500": 2700,
+        "14000": 2800,
+        "14500": 2900,
+        "15000": 3000,
+        "15500": 3100,
+        "16000": 3200,
+        "16500": 3300,
+        "17000": 3400,
+        "17500": 3500,
+        "18000": 3600,
+        "18500": 3700,
+        "19000": 3800,
+        "19500": 3900,
+        "20000": 4000,
+        "20500": 4100,
+        "21000": 4200,
+        "21500": 4300,
+        "22000": 4400,
+        "22500": 4500,
+        "23000": 4600,
+        "23500": 4700,
+        "24000": 4800,
+        "24500": 4900,
+        "25000": 5000,
+        "25500": 5100,
+        "26000": 5200,
+        "26500": 5300,
+        "27000": 5400,
+        "27500": 5500,
+        "28000": 5600,
+        "28500": 5700,
+        "29000": 5800,
+        "29500": 5900,
+        "30000": 6000,
+        "30500": 6100,
+        "31000": 6200,
+        "31500": 6300,
+        "32000": 6400,
+        "32500": 6500,
+        "33000": 6600,
+        "33500": 6700,
+        "34000": 6800,
+        "34500": 6900,
+        "35000": 7000,
+        "35500": 7100,
+        "36000": 7200,
+        "36500": 7300,
+        "37000": 7400,
+        "37500": 7500,
+        "38000": 7600,
+        "38500": 7700,
+        "39000": 7800,
+        "39500": 7900,
+        "40000": 8000,
+        "40500": 8100,
+        "41000": 8200,
+        "41500": 8300,
+        "42000": 8400,
+        "42500": 8500,
+        "43000": 8600,
+        "43500": 8700,
+        "44000": 8800,
+        "44500": 8900,
+        "45000": 9000,
+        "45500": 9100,
+        "46000": 9200,
+        "46500": 9300,
+        "47000": 9400,
+        "47500": 9500,
+        "48000": 9600,
+        "48500": 9700,
+        "49000": 9800,
+        "49500": 9900,
+        "50000": 10000
+      }
+    },
+    "VS22B": {
+      dummyProductId: "731089093",
+      lengthOptions: [500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000,
+                       5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000,
+                       10500, 11000, 11500, 12000, 12500, 13000, 13500, 14000, 14500, 15000,
+                       15500, 16000, 16500, 17000, 17500, 18000, 18500, 19000, 19500, 20000,
+                       20500, 21000, 21500, 22000, 22500, 23000, 23500, 24000, 24500, 25000,
+                       25500, 26000, 26500, 27000, 27500, 28000, 28500, 29000, 29500, 30000,
+                       30500, 31000, 31500, 32000, 32500, 33000, 33500, 34000, 34500, 35000,
+                       35500, 36000, 36500, 37000, 37500, 38000, 38500, 39000, 39500, 40000,
+                       40500, 41000, 41500, 42000, 42500, 43000, 43500, 44000, 44500, 45000,
+                       45500, 46000, 46500, 47000, 47500, 48000, 48500, 49000, 49500, 50000],
+      lengthPrices: {
+        "500": 200,
+        "1000": 400,
+        "1500": 600,
+        "2000": 800,
+        "2500": 1000,
+        "3000": 1200,
+        "3500": 1400,
+        "4000": 1600,
+        "4500": 1800,
+        "5000": 2000,
+        "5500": 2200,
+        "6000": 2400,
+        "6500": 2600,
+        "7000": 2800,
+        "7500": 3000,
+        "8000": 3200,
+        "8500": 3400,
+        "9000": 3600,
+        "9500": 3800,
+        "10000": 4000,
+        "10500": 4200,
+        "11000": 4400,
+        "11500": 4600,
+        "12000": 4800,
+        "12500": 5000,
+        "13000": 5200,
+        "13500": 5400,
+        "14000": 5600,
+        "14500": 5800,
+        "15000": 6000,
+        "15500": 6200,
+        "16000": 6400,
+        "16500": 6600,
+        "17000": 6800,
+        "17500": 7000,
+        "18000": 7200,
+        "18500": 7400,
+        "19000": 7600,
+        "19500": 7800,
+        "20000": 8000,
+        "20500": 8200,
+        "21000": 8400,
+        "21500": 8600,
+        "22000": 8800,
+        "22500": 9000,
+        "23000": 9200,
+        "23500": 9400,
+        "24000": 9600,
+        "24500": 9800,
+        "25000": 10000,
+        "25500": 10200,
+        "26000": 10400,
+        "26500": 10600,
+        "27000": 10800,
+        "27500": 11000,
+        "28000": 11200,
+        "28500": 11400,
+        "29000": 11600,
+        "29500": 11800,
+        "30000": 12000,
+        "30500": 12200,
+        "31000": 12400,
+        "31500": 12600,
+        "32000": 12800,
+        "32500": 13000,
+        "33000": 13200,
+        "33500": 13400,
+        "34000": 13600,
+        "34500": 13800,
+        "35000": 14000,
+        "35500": 14200,
+        "36000": 14400,
+        "36500": 14600,
+        "37000": 14800,
+        "37500": 15000,
+        "38000": 15200,
+        "38500": 15400,
+        "39000": 15600,
+        "39500": 15800,
+        "40000": 16000,
+        "40500": 16200,
+        "41000": 16400,
+        "41500": 16600,
+        "42000": 16800,
+        "42500": 17000,
+        "43000": 17200,
+        "43500": 17400,
+        "44000": 17600,
+        "44500": 17800,
+        "45000": 18000,
+        "45500": 18200,
+        "46000": 18400,
+        "46500": 18600,
+        "47000": 18800,
+        "47500": 19000,
+        "48000": 19200,
+        "48500": 19400,
+        "49000": 19600,
+        "49500": 19800,
+        "50000": 20000
+      }
+    }
+  };
+
+  // Load extrusions from extrusions.json
+  $.getJSON('extrusions.json', function(data) {
+    if (data && data.extrusions) {
+      extrusionData = data.extrusions;
+      populateExtrusionBoxes();
+    }
+  }).fail(function(jqxhr, textStatus, error) {
+    console.error("Error loading extrusions.json: " + textStatus + ", " + error);
+  });
+
+  // Populate the extrusion selector dynamically
+  function populateExtrusionBoxes() {
+    const container = $('#extrusionSelector');
+    container.empty();
+    extrusionData.forEach(function(item) {
+      const box = $(`<div class="extrusion-box" data-id="${item.id}" data-cost="${item.costPerMm}">${item.name}</div>`);
+      box.on('click', function() {
+        $('.extrusion-box').removeClass('selected');
+        $(this).addClass('selected');
+        const id = $(this).data('id');
+        selectedExtrusion = extrusionData.find(e => e.id === id);
+        $('#selectedMessage').text(`Ordering ${selectedExtrusion.name}`);
+        updateAllRows();
+      });
+      container.append(box);
+    });
+  }
+
+  // Create a new row for the order table
+  function createRow() {
+    return `
+      <tr>
+        <td><input type="number" class="cut-length" placeholder="Cut Length" min="100" max="3000" required /></td>
+        <td><input type="number" class="m5-holes" placeholder="M5 Holes" min="0" max="12" required /></td>
+        <td><input type="number" class="cb-holes" placeholder="CB Holes" min="0" max="20" required /></td>
+        <td><input type="number" class="num-pcs" placeholder="Pcs" min="1" required /></td>
+        <td class="row-total-length">0</td>
+        <td><button type="button" class="reset-row-btn">Reset Row</button></td>
+      </tr>
+    `;
+  }
+
+  // Append initial 6 rows to the order table
+  const tableBody = document.getElementById('tableBody');
+  for (let i = 0; i < 6; i++) {
+    tableBody.innerHTML += createRow();
+  }
+
+  // Attach event listeners to each row for real-time updates
+  function attachRowListeners(row) {
+    $(row).find('input').on('input change', function() {
+      updateRow($(row));
+      updateTotals();
+    });
+    $(row).find('.reset-row-btn').on('click', function() {
+      $(row).find('input').val('');
+      updateRow($(row));
+      updateTotals();
+    });
+  }
+
+  // Attach listeners to existing rows
+  $('#tableBody tr').each(function() {
+    attachRowListeners(this);
+  });
+
+  // Add a new row when "Add More Rows" is clicked
+  $('#addRowBtn').on('click', function() {
+    $('#tableBody').append(createRow());
+    attachRowListeners($('#tableBody tr:last')[0]);
+  });
+
+  // Reset all rows when "Reset All" is clicked
+  $('#resetAllBtn').on('click', function() {
+    $('#tableBody').empty();
+    for (let i = 0; i < 6; i++) {
+      $('#tableBody').append(createRow());
+    }
+    $('#tableBody tr').each(function() {
+      attachRowListeners(this);
+    });
+    updateTotals();
+  });
+
+  // Update a single row's total (Cut Length × Pcs)
+  function updateRow($row) {
+    const cutLength = parseFloat($row.find('.cut-length').val()) || 0;
+    const numPcs = parseFloat($row.find('.num-pcs').val()) || 0;
+    const rowTotal = cutLength * numPcs;
+    $row.find('.row-total-length').text(rowTotal.toFixed(0));
+  }
+
+  // Update aggregate totals based on all rows
+  function updateTotals() {
+    let totalOrdered = 0;
+    let totalM5Count = 0;
+    let totalCBCount = 0;
+    $('#tableBody tr').each(function() {
+      const rowTotal = parseFloat($(this).find('.row-total-length').text()) || 0;
+      totalOrdered += rowTotal;
+      totalM5Count += (parseFloat($(this).find('.m5-holes').val()) || 0);
+      totalCBCount += (parseFloat($(this).find('.cb-holes').val()) || 0);
+    });
+    $('#totalOrdered').text(totalOrdered.toFixed(0));
+
+    // Determine rounded length using mapping from the selected extrusion
+    let roundedLength = 0;
+    if (totalOrdered > 0 && selectedExtrusion) {
+      const mapObj = extrusionMapping[selectedExtrusion.id];
+      if (mapObj) {
+        for (let i = 0; i < mapObj.lengthOptions.length; i++) {
+          if (mapObj.lengthOptions[i] >= totalOrdered) {
+            roundedLength = mapObj.lengthOptions[i];
+            break;
+          }
+        }
+        if (roundedLength === 0) {
+          roundedLength = mapObj.lengthOptions[mapObj.lengthOptions.length - 1];
+        }
+      } else {
+        roundedLength = Math.ceil(totalOrdered / 500) * 500;
+      }
+    }
+    $('#roundedLength').text(roundedLength.toFixed(0));
+
+    // Display cost using mapping (for display only)
+    let costExtrusions = 0;
+    if (selectedExtrusion) {
+      const mapObj = extrusionMapping[selectedExtrusion.id];
+      if (mapObj && mapObj.lengthPrices && mapObj.lengthPrices[roundedLength]) {
+        costExtrusions = mapObj.lengthPrices[roundedLength];
+      } else if (selectedExtrusion.costPerMm) {
+        costExtrusions = roundedLength * parseFloat(selectedExtrusion.costPerMm);
+      }
+    }
+    $('#costExtrusions').text(costExtrusions.toFixed(2));
+
+    $('#totalM5Count').text(totalM5Count.toFixed(0));
+    $('#totalCBCount').text(totalCBCount.toFixed(0));
+
+    const totalM5Cost = totalM5Count * additionalCosts.m5Tapping;
+    const totalCBCost = totalCBCount * additionalCosts.counterBore;
+    $('#totalM5Cost').text(totalM5Cost.toFixed(2));
+    $('#totalCBCost').text(totalCBCost.toFixed(2));
+
+    const finalCost = costExtrusions + totalM5Cost + totalCBCost;
+    $('#finalCost').text(finalCost.toFixed(2));
+  }
+
+  // Update totals on any input change
+  $('#orderTable').on('input change', 'input', function() {
+    updateTotals();
+  });
+
+  // "Add to Cart" button event handler using Ecwid.Cart.addProduct
+  $('#addToCartBtn').on('click', function() {
+    if (!selectedExtrusion) {
+      alert("Please select an extrusion type.");
+      return;
+    }
+
+    // Use mapping to get dummy product ID for selected extrusion
+    const mapObj = extrusionMapping[selectedExtrusion.id];
+    if (!mapObj) {
+      alert("Mapping not found for selected extrusion.");
+      return;
+    }
+    const dummyProductId = mapObj.dummyProductId;
+
+    // Gather order details from table rows (format: "cutLength-numPcspc-M5Tap{m5}-CBHole{cb}")
+    let orderDetails = [];
+    $('#tableBody tr').each(function() {
+      const cutLength = $(this).find('.cut-length').val();
+      const numPcs = $(this).find('.num-pcs').val();
+      const m5 = $(this).find('.m5-holes').val();
+      const cb = $(this).find('.cb-holes').val();
+      if (cutLength && numPcs) {
+        orderDetails.push(`${cutLength}-${numPcs}pc-M5Tap${m5 || 0}-CBHole${cb || 0}`);
+      }
+    });
+    const detailsString = orderDetails.join('; ');
+    
+    // Retrieve aggregated totals
+    const totalM5Count = parseInt($('#totalM5Count').text(), 10) || 0;
+    const totalCBCount = parseInt($('#totalCBCount').text(), 10) || 0;
+    const roundedLengthValue = parseInt($('#roundedLength').text(), 10) || 0;
+
+    // Build product options as an object (as per Ecwid.Cart.addProduct docs)
+    var productOptions = {
+      "Length": roundedLengthValue.toString(),
+      "M5 Tap Holes": totalM5Count.toString(),
+      "Counter Bore Holes": totalCBCount.toString(),
+      "Cut Details": detailsString
+    };
+
+    // Add the dummy product to the cart with quantity 1
+    Ecwid.Cart.addProduct({
+      id: dummyProductId,
+      quantity: 1,
+      options: productOptions
+    }, function(success, product, cart) {
+      if (success) {
+        alert("Product added to cart successfully!");
+      } else {
+        alert("Failed to add product to cart.");
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
