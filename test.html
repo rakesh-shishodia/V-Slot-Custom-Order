@@ -2,84 +2,328 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Test Add to Cart with Embedded Shopping Bag</title>
+  <title>Test Layout with Integrated Product Images</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
     }
-    button {
+    /* Top Section: Dummy Extrusion Selection */
+    .extrusion-selection {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .extrusion-selection button {
       padding: 8px 16px;
-      font-size: 16px;
+      margin: 0 5px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    .header {
+      text-align: center;
+      font-size: 1.4em;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    /* Container for two columns */
+    .container {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 10px;
+    }
+    .left, .right {
+      box-sizing: border-box;
+      padding: 10px;
+    }
+    /* Left Column (40% width) */
+    .left {
+      flex: 0 0 40%;
+      border: 1px solid #ccc;
+    }
+    /* Right Column (60% width) */
+    .right {
+      flex: 0 0 60%;
+      border: 1px solid #ccc;
+    }
+    /* Left Column: Image Grid */
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 10px;
+      margin-bottom: 10px;
+    }
+    .image-box {
+      width: 100%;
+      padding-top: 100%; /* For square ratio */
+      position: relative;
+      background: #eee;
+      border: 1px solid #ccc;
+      overflow: hidden;
+    }
+    .image-box img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    /* Left Column: Text Placeholders */
+    .extrusion-name,
+    .review-placeholder,
+    .description {
+      margin-bottom: 10px;
+      padding: 5px;
+      border: 1px solid #ddd;
+      background: #f9f9f9;
+      text-align: center;
+      font-size: 0.9em;
+    }
+    /* Right Column: Ordering Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      word-wrap: break-word;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 4px 2px;
+      text-align: center;
+      font-size: 0.85em;
+    }
+    th {
+      background-color: #f2f2f2;
+      line-height: 1.2em;
+    }
+    /* Compact column widths */
+    th:nth-child(1) { width: 110px; }
+    th:nth-child(2) { width: 90px; }
+    th:nth-child(3) { width: 110px; }
+    th:nth-child(4) { width: 70px; }
+    th:nth-child(5) { width: 90px; }
+    th:nth-child(6) { width: 70px; }
+    /* Seamless input styling in table cells */
+    td input[type="number"] {
+      width: 100%;
+      border: none;
+      text-align: center;
+      font-size: 0.85em;
+      padding: 4px 0;
+      background: transparent;
+      outline: none;
+    }
+    /* Remove spinner controls from number inputs */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+    .dummy-buttons {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .dummy-buttons button {
+      padding: 8px 16px;
+      font-size: 1em;
       margin: 5px;
       cursor: pointer;
     }
-    /* Force the Ecwid minicart (shopping bag) to be pinned at the top right */
-    .ec-cart-widget,
-    .ec-minicart, 
-    .ec-minicart--inline, 
-    .ec-minicart--responsive {
-      position: fixed !important;
-      top: 10px !important;
-      right: 10px !important;
-      z-index: 10000 !important;
-      width: 300px !important;
+
+    .hc-widget {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   </style>
-  
-  <!-- Include jQuery -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <!-- Include Ecwid script for Cart API (store id: 2442119) -->
-  <script src="https://app.ecwid.com/script.js?2442119&data_platform=code&data_date=2025-03-02" charset="utf-8"></script>
+  <script defer src="https://app.helpfulcrowd.com/f/koS4zR/widgets/product_summary.js"></script>
 </head>
 <body>
 
-<h1>Test Add to Cart with Embedded Shopping Bag</h1>
-<button id="addToCartBtn">Test Add to Cart</button>
+<!-- Top Section: Dummy Extrusion Selection -->
+<div class="extrusion-selection">
+  <button type="button" onclick="selectExtrusion('VS22S')">VS22S</button>
+  <button type="button" onclick="selectExtrusion('VS22B')">VS22B</button>
+</div>
+<div class="header" id="headerText">Ordering (Extrusion Name)</div>
 
-<!-- Embedded Ecwid Cart Widget -->
-<div class="ec-cart-widget"></div>
-
-<!-- Embed the Ecwid shopping bag scripts -->
-<div>
-  <link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/ecwid-addons/apps/ecwid-cart-app/cartapp.css">
-  <script data-cfasync="false" type="text/javascript" src="https://app.ecwid.com/script.js?2442119&data_platform=code&data_date=2025-03-02" charset="utf-8"></script>
-  <script type="text/javascript">
-    Ecwid.init();
-  </script>
+<div class="container">
+  <!-- Left Column -->
+  <div class="left">
+    <!-- Image grid for product images -->
+    <div class="image-grid">
+      <div class="image-box">
+        <img src="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/943733002.jpg" 
+             srcset="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/943733002.jpg 1x, https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/943733002.jpg 2x" 
+             alt="V Slot Aluminium Extrusion 2020 (Silver)" 
+             title="V Slot Aluminium Extrusion 2020 (Silver)" 
+             width="800" height="798" 
+             loading="eager" 
+             class="details-gallery__picture details-gallery__photoswipe-index-0" 
+             itemprop="image" 
+             style="width: 100%;">
+      </div>
+      <div class="image-box">
+        <iframe width="100%" height="100%" 
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
+                src="https://www.youtube.com/embed/zlIKXdU9cf4" 
+                frameborder="0" 
+                allowfullscreen>
+        </iframe>
+      </div>
+      <div class="image-box">
+        <img src="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/943723998.jpg" 
+             alt="Extrusion Image">
+      </div>
+      <div class="image-box">
+        <img src="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/1887521108.jpg" alt="Extrusion Image">
+      </div>
+    </div>
+    <!-- Extrusion name placeholder -->
+    <div class="extrusion-name" id="extrusionName">Extrusion Name: VS22S</div>
+    <!-- Product rating widget -->
+    <div class="hc-widget">
+      <div data-hc="product-summary" data-hc-id="720289517"></div>
+    </div>
+    <!-- Product description area -->
+    <div class="description">
+      Product description goes here. Brief details about the extrusion.
+    </div>
+  </div>
+  
+  <!-- Right Column: Ordering Table and Aggregate Table -->
+  <div class="right">
+    <!-- Ordering Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>Enter Cut Length in mm<br>(min 100mm, max 3000mm)</th>
+          <th>No. of M5 Tapping<br>(Enter 0 for Nil)</th>
+          <th>No. of Counter Bore Holes<br>(Enter 0 for Nil)</th>
+          <th>No. of Pcs</th>
+          <th>Row Total Length</th>
+          <th>Reset Row</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Six static rows for layout testing -->
+        <tr>
+          <td><input type="number" placeholder="Precise Cutting"></td>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" placeholder="No. of Pcs"></td>
+          <td>0</td>
+          <td><button type="button">Reset</button></td>
+        </tr>
+        <tr>
+          <td><input type="number" placeholder="Precise Cutting"></td>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" placeholder="No. of Pcs"></td>
+          <td>0</td>
+          <td><button type="button">Reset</button></td>
+        </tr>
+        <tr>
+          <td><input type="number" placeholder="Precise Cutting"></td>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" placeholder="No. of Pcs"></td>
+          <td>0</td>
+          <td><button type="button">Reset</button></td>
+        </tr>
+        <tr>
+          <td><input type="number" placeholder="Precise Cutting"></td>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" placeholder="No. of Pcs"></td>
+          <td>0</td>
+          <td><button type="button">Reset</button></td>
+        </tr>
+        <tr>
+          <td><input type="number" placeholder="Precise Cutting"></td>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" placeholder="No. of Pcs"></td>
+          <td>0</td>
+          <td><button type="button">Reset</button></td>
+        </tr>
+        <tr>
+          <td><input type="number" placeholder="Precise Cutting"></td>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" placeholder="No. of Pcs"></td>
+          <td>0</td>
+          <td><button type="button">Reset</button></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <!-- Aggregate Totals Table -->
+    <table class="totals-table">
+      <thead>
+        <tr>
+          <th>Total Length Ordered</th>
+          <th>Rounded Off Length<br>(Nearest 500mm)</th>
+          <th>Cost of Rounded Off Length</th>
+          <th>Discount</th>
+          <th>Total No. of M5 Tapping</th>
+          <th>Total Cost M5 Tapping</th>
+          <th>Total No. of CB Holes</th>
+          <th>Total Cost CB Holes</th>
+          <th>Final Cost Payable</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="dummy-buttons">
+      <button type="button">Reset All</button>
+      <button type="button">Add to Cart</button>
+    </div>
+  </div>
 </div>
 
 <script>
-  $(document).ready(function(){
-    $('#addToCartBtn').on('click', function(){
-      // Dummy product ID for testing (must match the product in your Ecwid store)
-      var productId = 729803262; 
+  // Dummy function to simulate extrusion selection.
+  function selectExtrusion(type) {
+    console.log("Extrusion selected:", type);  // Debugging log
 
-      // Define the product options as an object.
-      // The option names must exactly match the configuration in your Ecwid store.
-      var productOptions = {
-        "Length": "1500",            // Only the numeric value as a string.
-        "M5 Tap Holes": "3",
-        "Counter Bore Holes": "2",
-        "Details": "Test Test Test"
+    document.getElementById('headerText').textContent = "Ordering (" + type + ")";
+    document.getElementById('extrusionName').textContent = "Extrusion Name: " + type;
+
+    // More explicit selection of the first image
+    const firstImage = document.querySelector('.image-grid .image-box:nth-child(1) img');
+    
+    if (firstImage) {
+      const newImg = new Image();
+      if (type === 'VS22B') {
+        console.log("Changing image to VS22B");
+        newImg.src = "https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/1390339340.jpg?t=" + new Date().getTime();
+      } else {
+        console.log("Reverting to default image");
+        newImg.src = "https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/943733002.jpg?t=" + new Date().getTime();
+      }
+      
+      newImg.onload = function() {
+        firstImage.src = newImg.src;
       };
-
-      // Use Ecwid.Cart.addProduct() to add the dummy product to the cart.
-      Ecwid.Cart.addProduct({
-        id: productId,
-        quantity: 1,
-        options: productOptions
-      }, function(success, product, cart) {
-        if (success) {
-          alert("Product added to cart successfully!");
-          console.log("Cart contents:", cart);
-        } else {
-          alert("Failed to add product to cart.");
-          console.error("Add to cart failed.");
-        }
-      });
-    });
-  });
+    }
+  }
 </script>
 
 </body>

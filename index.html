@@ -40,6 +40,7 @@
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 10px;
+      word-wrap: break-word;
     }
     th, td {
       border: 1px solid #ccc;
@@ -49,23 +50,24 @@
     th {
       background-color: #f2f2f2;
     }
-    /* Column widths for order table */
-    th:nth-child(1) { width: 100px; }  /* Cut Length */
-    th:nth-child(2) { width: 80px; }   /* # of M5 Holes */
-    th:nth-child(3) { width: 80px; }   /* # of CB Holes */
-    th:nth-child(4) { width: 80px; }   /* # of Pcs */
+    /* Column headings with wrapped text */
+    th:nth-child(1) { width: 150px; }  /* Enter Cut Length in mm (min 100mm, max 3000mm) */
+    th:nth-child(2) { width: 120px; }  /* No. of M5 Tapping (Enter 0 for Nil) */
+    th:nth-child(3) { width: 150px; }  /* No. of Counter Bore Holes (Enter 0 for Nil) */
+    th:nth-child(4) { width: 100px; }  /* No. of Pcs */
     th:nth-child(5) { width: 120px; }  /* Row Total Length */
-    th:nth-child(6) { width: 80px; }   /* Reset Row */
-    input[type=number] {
-      width: 80%;
-      padding: 4px;
-      box-sizing: border-box;
-      -moz-appearance: textfield;
-    }
+    th:nth-child(6) { width: 100px; }  /* Reset Row */
+    /* Remove spinner controls from input fields */
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
       -webkit-appearance: none;
       margin: 0;
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+      width: 90%;
+      padding: 4px;
+      box-sizing: border-box;
     }
     button {
       padding: 8px 16px;
@@ -97,7 +99,7 @@
 
 <!-- Extrusion Selector -->
 <div class="extrusion-selector" id="extrusionSelector">
-  <!-- Dynamically populated extrusion boxes -->
+  <!-- Extrusion boxes will be dynamically populated from extrusions.json -->
 </div>
 <div id="selectedMessage">Please select an extrusion type</div>
 
@@ -106,16 +108,16 @@
   <table id="orderTable">
     <thead>
       <tr>
-        <th>Cut Length (mm)</th>
-        <th># of M5 Holes</th>
-        <th># of CB Holes</th>
-        <th># of Pcs</th>
+        <th>Enter Cut Length in mm<br>(min 100mm, max 3000mm)</th>
+        <th>No. of M5 Tapping<br>(Enter 0 for Nil)</th>
+        <th>No. of Counter Bore Holes<br>(Enter 0 for Nil)</th>
+        <th>No. of Pcs</th>
         <th>Row Total Length</th>
         <th>Reset Row</th>
       </tr>
     </thead>
     <tbody id="tableBody">
-      <!-- 6 rows will be dynamically inserted -->
+      <!-- 6 rows will be inserted dynamically -->
     </tbody>
   </table>
   
@@ -127,12 +129,12 @@
     <thead>
       <tr>
         <th>Total Length Ordered</th>
-        <th>Rounded Off Length (Nearest 500mm)</th>
+        <th>Rounded Off Length (to nearest 500mm)</th>
         <th>Cost of Rounded Off Length</th>
-        <th>Discount</th>
-        <th>Total # of M5 Holes</th>
+        <th>Discount (5% on 2000mm, 10% on 4000mm)</th>
+        <th>Total No. of M5 Tapping</th>
         <th>Total Cost M5 Tapping</th>
-        <th>Total # of CB Holes</th>
+        <th>Total No. of CB Holes</th>
         <th>Total Cost CB Holes</th>
         <th>Final Cost Payable</th>
       </tr>
@@ -165,12 +167,12 @@
 
 <script>
   // Global variables
-  let extrusionData = []; // Will be loaded from extrusions.json
-  let selectedExtrusion = null; // Currently selected extrusion object
+  let extrusionData = [];  // Loaded from extrusions.json
+  let selectedExtrusion = null;  // Currently selected extrusion object
   const additionalCosts = { m5Tapping: 30, counterBore: 70 };
 
-  // Mapping configuration: maps extrusion IDs to dummy product IDs, valid length options, and for display, the price mapping.
-  // For our testing, we have VS22S and VS22B.
+  // Mapping configuration for dummy products, valid length options, and price mapping.
+  // For testing, we have VS22S and VS22B.
   const extrusionMapping = {
     "VS22S": {
       dummyProductId: "729803262",
@@ -401,10 +403,40 @@
         "49500": 19800,
         "50000": 20000
       }
+    },
+    "VS24S": {
+      id: "VS24S",
+      name: "V Slot Aluminium Extrusion 2040 (Silver)",
+      costPerMm: 0.90
+    },
+    "VS24B": {
+      id: "VS24B",
+      name: "V Slot Aluminium Extrusion 2040 (Black)",
+      costPerMm: 1.0
+    },
+    "VS26S": {
+      id: "VS26S",
+      name: "V Slot Aluminium Extrusion 2060 (Silver)",
+      costPerMm: 1.2
+    },
+    "VS26B": {
+      id: "VS26B",
+      name: "V Slot Aluminium Extrusion 2060 (Black)",
+      costPerMm: 1.318
+    },
+    "CB-S": {
+      id: "CB-S",
+      name: "C Beam Linear Rail Aluminium Extrusion Profile (SILVER)",
+      costPerMm: 2
+    },
+    "CB-B": {
+      id: "CB-B",
+      name: "C Beam Linear Rail Aluminium Extrusion Profile (BLACK)",
+      costPerMm: 2.8
     }
   };
-
-  // Load extrusions from extrusions.json
+  
+  // Load extrusions from extrusions.json (must be in the same folder)
   $.getJSON('extrusions.json', function(data) {
     if (data && data.extrusions) {
       extrusionData = data.extrusions;
@@ -413,7 +445,7 @@
   }).fail(function(jqxhr, textStatus, error) {
     console.error("Error loading extrusions.json: " + textStatus + ", " + error);
   });
-
+  
   // Populate the extrusion selector dynamically
   function populateExtrusionBoxes() {
     const container = $('#extrusionSelector');
@@ -426,32 +458,50 @@
         const id = $(this).data('id');
         selectedExtrusion = extrusionData.find(e => e.id === id);
         $('#selectedMessage').text(`Ordering ${selectedExtrusion.name}`);
-        updateAllRows();
+        // Recalculate aggregate totals when extrusion selection changes.
+        updateTotals();
       });
       container.append(box);
     });
   }
-
+  
   // Create a new row for the order table
   function createRow() {
     return `
       <tr>
-        <td><input type="number" class="cut-length" placeholder="Cut Length" min="100" max="3000" required /></td>
-        <td><input type="number" class="m5-holes" placeholder="M5 Holes" min="0" max="12" required /></td>
-        <td><input type="number" class="cb-holes" placeholder="CB Holes" min="0" max="20" required /></td>
-        <td><input type="number" class="num-pcs" placeholder="Pcs" min="1" required /></td>
+        <td>
+          <input type="number" class="cut-length" placeholder="Precise Cutting" min="100" max="3000" 
+            onblur="if(this.value < 100 || this.value > 3000){this.setCustomValidity('Due to specific cutting and shipping requirements min cut length allowed is 100mm and max is 3000mm');} else {this.setCustomValidity('');} this.reportValidity();"
+            oninput="if(!/^\d*\.?\d*$/.test(this.value)){this.setCustomValidity('Please enter numbers only');} else {this.setCustomValidity('');}" required />
+        </td>
+        <td>
+          <input type="number" class="m5-holes" value="0" min="0" max="2" 
+            onblur="if(this.value > 2){this.setCustomValidity('Enter 0,1 or 2 only');} else {if(this.value===''){this.value='0';} this.setCustomValidity('');} this.reportValidity();"
+            oninput="if(!/^\d*\.?\d*$/.test(this.value)){this.setCustomValidity('Please enter numbers only');} else {this.setCustomValidity('');}" required />
+        </td>
+        <td>
+          <input type="number" class="cb-holes" value="0" min="0" max="20" 
+            onblur="if(this.value < 0 || this.value > 20){this.setCustomValidity('Enter value between 0 to 20');} else {if(this.value===''){this.value='0';} this.setCustomValidity('');} this.reportValidity();"
+            oninput="if(!/^\d*\.?\d*$/.test(this.value)){this.setCustomValidity('Please enter numbers only');} else {this.setCustomValidity('');}" required />
+        </td>
+        <td>
+          <input type="number" class="num-pcs" placeholder="No. of Pcs" min="1" 
+            oninput="if(!/^\d*\.?\d*$/.test(this.value)){this.setCustomValidity('Please enter numbers only');} else {this.setCustomValidity('');}" required />
+        </td>
         <td class="row-total-length">0</td>
-        <td><button type="button" class="reset-row-btn">Reset Row</button></td>
+        <td>
+          <button type="button" class="reset-row-btn">Reset Row</button>
+        </td>
       </tr>
     `;
   }
-
+  
   // Append initial 6 rows to the order table
   const tableBody = document.getElementById('tableBody');
   for (let i = 0; i < 6; i++) {
     tableBody.innerHTML += createRow();
   }
-
+  
   // Attach event listeners to each row for real-time updates
   function attachRowListeners(row) {
     $(row).find('input').on('input change', function() {
@@ -460,23 +510,26 @@
     });
     $(row).find('.reset-row-btn').on('click', function() {
       $(row).find('input').val('');
+      // For M5 and CB holes, reset value to 0 after clearing
+      $(row).find('.m5-holes').val("0");
+      $(row).find('.cb-holes').val("0");
       updateRow($(row));
       updateTotals();
     });
   }
-
+  
   // Attach listeners to existing rows
   $('#tableBody tr').each(function() {
     attachRowListeners(this);
   });
-
-  // Add a new row when "Add More Rows" is clicked
+  
+  // When "Add More Rows" is clicked, append a new row
   $('#addRowBtn').on('click', function() {
     $('#tableBody').append(createRow());
     attachRowListeners($('#tableBody tr:last')[0]);
   });
-
-  // Reset all rows when "Reset All" is clicked
+  
+  // "Reset All" clears the table and resets totals
   $('#resetAllBtn').on('click', function() {
     $('#tableBody').empty();
     for (let i = 0; i < 6; i++) {
@@ -487,16 +540,17 @@
     });
     updateTotals();
   });
-
-  // Update a single row's total (Cut Length × Pcs)
+  
+  // Update a single row's total: (Cut Length × No. of Pcs)
   function updateRow($row) {
     const cutLength = parseFloat($row.find('.cut-length').val()) || 0;
     const numPcs = parseFloat($row.find('.num-pcs').val()) || 0;
     const rowTotal = cutLength * numPcs;
     $row.find('.row-total-length').text(rowTotal.toFixed(0));
   }
-
-  // Update aggregate totals based on all rows
+  
+  // Update aggregate totals:
+  // Sum total ordered length, and for M5 and CB holes, multiply each row's value by its number of pcs.
   function updateTotals() {
     let totalOrdered = 0;
     let totalM5Count = 0;
@@ -504,12 +558,17 @@
     $('#tableBody tr').each(function() {
       const rowTotal = parseFloat($(this).find('.row-total-length').text()) || 0;
       totalOrdered += rowTotal;
-      totalM5Count += (parseFloat($(this).find('.m5-holes').val()) || 0);
-      totalCBCount += (parseFloat($(this).find('.cb-holes').val()) || 0);
+  
+      const m5Value = parseFloat($(this).find('.m5-holes').val()) || 0;
+      const pcsValue = parseFloat($(this).find('.num-pcs').val()) || 0;
+      totalM5Count += m5Value * pcsValue;
+  
+      const cbValue = parseFloat($(this).find('.cb-holes').val()) || 0;
+      totalCBCount += cbValue * pcsValue;
     });
     $('#totalOrdered').text(totalOrdered.toFixed(0));
-
-    // Determine rounded length using mapping from the selected extrusion
+  
+    // Determine the rounded length using the mapping for the selected extrusion.
     let roundedLength = 0;
     if (totalOrdered > 0 && selectedExtrusion) {
       const mapObj = extrusionMapping[selectedExtrusion.id];
@@ -528,8 +587,8 @@
       }
     }
     $('#roundedLength').text(roundedLength.toFixed(0));
-
-    // Display cost using mapping (for display only)
+  
+    // For display, look up cost using mapping (for display only)
     let costExtrusions = 0;
     if (selectedExtrusion) {
       const mapObj = extrusionMapping[selectedExtrusion.id];
@@ -540,40 +599,46 @@
       }
     }
     $('#costExtrusions').text(costExtrusions.toFixed(2));
-
+  
     $('#totalM5Count').text(totalM5Count.toFixed(0));
     $('#totalCBCount').text(totalCBCount.toFixed(0));
-
+  
     const totalM5Cost = totalM5Count * additionalCosts.m5Tapping;
     const totalCBCost = totalCBCount * additionalCosts.counterBore;
     $('#totalM5Cost').text(totalM5Cost.toFixed(2));
     $('#totalCBCost').text(totalCBCost.toFixed(2));
-
+  
     const finalCost = costExtrusions + totalM5Cost + totalCBCost;
     $('#finalCost').text(finalCost.toFixed(2));
+  
+    // Disable Add to Cart if aggregate rounded length is 0.
+    if (roundedLength === 0) {
+      $('#addToCartBtn').prop('disabled', true);
+    } else {
+      $('#addToCartBtn').prop('disabled', false);
+    }
   }
-
-  // Update totals on any input change
+  
+  // Update totals on any input change in the order table
   $('#orderTable').on('input change', 'input', function() {
     updateTotals();
   });
-
-  // "Add to Cart" button event handler using Ecwid.Cart.addProduct
+  
+  // "Add to Cart" button event handler using Ecwid.Cart.addProduct.
   $('#addToCartBtn').on('click', function() {
     if (!selectedExtrusion) {
       alert("Please select an extrusion type.");
       return;
     }
-
-    // Use mapping to get dummy product ID for selected extrusion
+  
     const mapObj = extrusionMapping[selectedExtrusion.id];
     if (!mapObj) {
       alert("Mapping not found for selected extrusion.");
       return;
     }
     const dummyProductId = mapObj.dummyProductId;
-
-    // Gather order details from table rows (format: "cutLength-numPcspc-M5Tap{m5}-CBHole{cb}")
+  
+    // Build detailed order string from table rows in the format "cutLength-numPcs pc-M5Tap{m5}-CBHole{cb}"
     let orderDetails = [];
     $('#tableBody tr').each(function() {
       const cutLength = $(this).find('.cut-length').val();
@@ -585,21 +650,21 @@
       }
     });
     const detailsString = orderDetails.join('; ');
-    
-    // Retrieve aggregated totals
+  
+    // Retrieve aggregated totals from the totals table.
     const totalM5Count = parseInt($('#totalM5Count').text(), 10) || 0;
     const totalCBCount = parseInt($('#totalCBCount').text(), 10) || 0;
     const roundedLengthValue = parseInt($('#roundedLength').text(), 10) || 0;
-
-    // Build product options as an object (as per Ecwid.Cart.addProduct docs)
+  
+    // Build product options as an object.
     var productOptions = {
       "Length": roundedLengthValue.toString(),
       "M5 Tap Holes": totalM5Count.toString(),
       "Counter Bore Holes": totalCBCount.toString(),
       "Cut Details": detailsString
     };
-
-    // Add the dummy product to the cart with quantity 1
+  
+    // Use Ecwid.Cart.addProduct to add the dummy product with quantity 1.
     Ecwid.Cart.addProduct({
       id: dummyProductId,
       quantity: 1,
