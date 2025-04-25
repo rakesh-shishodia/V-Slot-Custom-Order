@@ -602,57 +602,12 @@ $('#readMoreLink').on('click', function(e) {
   // Load configuration (extrusions, standardLengths, additionalCosts) from JSON
   $.getJSON('extrusions.json', function(data) {
     config = data;
+    // Initialize filter module
+    VSlot.filters.init(config.extrusions);
     // Set default thumbnail to fixed image on page load
     $('.detail-thumb').attr('src', 'https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/3963393856.png');
     // Load default description (V‑Slot family) on initial page load
     $('.description-container').load('partials/vs-slot-description.html');
-    // ===== Filter Logic Setup =====
-    const selectedFilters = { type: new Set(), series: new Set(), color: new Set() };
-
-    function renderFilterPills() {
-      function renderGroup(field, selector, label) {
-        const container = $(selector).empty().append(`<strong>${label}</strong>`);
-        const values = [...new Set(config.extrusions.map(e => e[field]))];
-        values.forEach(val => {
-          const count = config.extrusions.filter(e => e[field] === val).length;
-          const pill = $(`<span class="filter-pill" data-field="${field}" data-value="${val}">${val} (${count})</span>`);
-          pill.on('click', () => toggleFilter(field, val, pill));
-          container.append(pill);
-        });
-      }
-      renderGroup('type',   '#typeFilters',   'Type:');
-      renderGroup('series', '#seriesFilters', 'Series:');
-      renderGroup('color',  '#colorFilters',  'Colour:');
-    }
-
-    function toggleFilter(field, value, pillEl) {
-      if (selectedFilters[field].has(value)) {
-        selectedFilters[field].delete(value);
-        pillEl.removeClass('selected');
-      } else {
-        selectedFilters[field].add(value);
-        pillEl.addClass('selected');
-      }
-      applyFilters();
-    }
-
-    function applyFilters() {
-      const filtered = config.extrusions.filter(e =>
-        (selectedFilters.type.size === 0   || selectedFilters.type.has(e.type))   &&
-        (selectedFilters.series.size === 0 || selectedFilters.series.has(e.series)) &&
-        (selectedFilters.color.size === 0  || selectedFilters.color.has(e.color))
-      );
-      populateExtrusionBoxes(filtered);
-    }
-
-    $('#clearFiltersBtn').on('click', () => {
-      Object.values(selectedFilters).forEach(set => set.clear());
-      $('.filter-pill').removeClass('selected');
-      populateExtrusionBoxes(config.extrusions);
-    });
-
-    renderFilterPills();
-    // ===== End Filter Logic Setup =====
     populateExtrusionBoxes(config.extrusions);
     updateTotals();
   }).fail(function(jqxhr, textStatus, error) {
@@ -1130,4 +1085,58 @@ return;
   });
 </script>
 </body>
+<script>
+(function(VSlot, $) {
+  // Filter module for extrusion selector
+  VSlot.filters = {
+    items: [],
+    selectedFilters: { type: new Set(), series: new Set(), color: new Set() },
+    init: function(items) {
+      this.items = items;
+      this.renderFilterPills();
+      $('#clearFiltersBtn').on('click', () => {
+        Object.values(this.selectedFilters).forEach(set => set.clear());
+        $('.filter-pill').removeClass('selected');
+        this.applyFilters();
+      });
+    },
+    renderFilterPills: function() {
+      const groups = [
+        { field: 'type',   selector: '#typeFilters',   label: 'Type:'   },
+        { field: 'series', selector: '#seriesFilters', label: 'Series:' },
+        { field: 'color',  selector: '#colorFilters',  label: 'Colour:' }
+      ];
+      groups.forEach(g => {
+        const container = $(g.selector).empty().append(`<strong>${g.label}</strong>`);
+        const values = [...new Set(this.items.map(e => e[g.field]))];
+        values.forEach(val => {
+          const count = this.items.filter(e => e[g.field] === val).length;
+          const pill = $(`<span class="filter-pill" data-field="${g.field}" data-value="${val}">${val} (${count})</span>`);
+          pill.on('click', () => this.toggleFilter(g.field, val, pill));
+          container.append(pill);
+        });
+      });
+    },
+    toggleFilter: function(field, value, pillEl) {
+      const set = this.selectedFilters[field];
+      if (set.has(value)) {
+        set.delete(value);
+        pillEl.removeClass('selected');
+      } else {
+        set.add(value);
+        pillEl.addClass('selected');
+      }
+      this.applyFilters();
+    },
+    applyFilters: function() {
+      const filtered = this.items.filter(e =>
+        (this.selectedFilters.type.size === 0   || this.selectedFilters.type.has(e.type))   &&
+        (this.selectedFilters.series.size === 0 || this.selectedFilters.series.has(e.series)) &&
+        (this.selectedFilters.color.size === 0  || this.selectedFilters.color.has(e.color))
+      );
+      populateExtrusionBoxes(filtered);
+    }
+  };
+})(window.VSlot = window.VSlot || {}, jQuery);
+</script>
 </html>
