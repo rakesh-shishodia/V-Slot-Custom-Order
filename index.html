@@ -1095,38 +1095,37 @@ return;
   $('#previewClose').on('click', () => { $('#orderPreviewModal').hide(); });
   $('#amendOrderBtn').on('click', () => { $('#orderPreviewModal').hide(); });
   $('#proceedOrderBtn').on('click', () => {
+    console.log('Proceed clicked')
     $('#orderPreviewModal').hide();
     Ecwid.Cart.addProduct({
       id: selectedExtrusion.productId || selectedExtrusion.ProductId,
       quantity: 1,
       options: pendingProductOptions
-    },
-    function(order) {
-      console.log('✅ Success callback fired for Proceed to Add to Cart');
-      // Success callback
-      // Reset table to 4 rows
-      $('#tableBody').empty();
-      for (let i = 0; i < 4; i++) {
-        $('#tableBody').append(createRow());
+    }, function(success) {
+      console.log('🛒 addProduct callback, success:', success);
+      if (success) {
+        // Reset table to 4 rows
+        $('#tableBody').empty();
+        for (let i = 0; i < 4; i++) {
+          $('#tableBody').append(createRow());
+        }
+        $('#tableBody tr').each(function() {
+          attachRowListeners(this);
+        });
+        updateTotals();
+        // Show cut details in the success modal
+        const detailsText = pendingProductOptions && pendingProductOptions["Cut Details"]
+                          ? pendingProductOptions["Cut Details"]
+                          : 'Added to cart successfully.';
+        $('#modalDetails').text(detailsText);
+        pendingProductOptions = null;
+        $('#successModal').show();
+      } else {
+        console.error('Add to cart failed.');
+        $('#selectedMessage')
+          .text("Failed to add product to cart. Please try again.")
+          .css('color', 'red');
       }
-      $('#tableBody tr').each(function() {
-        attachRowListeners(this);
-      });
-      updateTotals();
-      // Show cut details in the success modal
-      const detailsText = pendingProductOptions && pendingProductOptions["Cut Details"]
-                        ? pendingProductOptions["Cut Details"]
-                        : 'Added to cart successfully.';
-      $('#modalDetails').text(detailsText);
-      pendingProductOptions = null;
-      $('#successModal').show();
-    },
-    function(error) {
-      // Error callback
-      console.error('Add to Cart error callback:', error);
-      $('#selectedMessage')
-        .text("Failed to add product to cart. Please try again.")
-        .css('color', 'red');
     });
   });
 </script>
