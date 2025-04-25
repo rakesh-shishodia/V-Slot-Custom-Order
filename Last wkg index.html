@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Custom Cut and Machined Aluminium Extrusion Ordering Tool</title>
+  <!-- Static instruction for extrusion selection -->
+  <style>
+    /* Basic styling for layout */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .extrusion-selector {
+      margin-bottom: 10px;
+    }
+    .extrusion-box {
+      display: inline-block;
+      width: 220px;
+      padding: 10px;
+      margin: 5px;
+      background-color: #F9F9F9;
+      border: 1px solid #CCCCCC;
+      cursor: pointer;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .extrusion-box:hover {
+      border-color: #006064;
+      box-shadow: 0 4px 8px rgba(0,96,100,0.1);
+    }
+    .extrusion-box.selected {
+      background-color: #E0F7FA;
+      color: #006064;
+      border-color: #006064;
+    }
+    /* Styling for the ordering message */
+    #selectedMessage {
+      text-align: center;
+      background-color: #FFF3E0;
+      border: 1px solid #FF9800;
+      color: #333;
+      padding: 5px;
+      margin: 2px auto;
+      width: fit-content;
+      font-weight: bold;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      word-wrap: break-word;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    /* Column headings with wrapped text */
+    th:nth-child(1) { width: 180px; }  /* Enter Cut Length in mm (min 100mm, max 3000mm) */
+    th:nth-child(2) { width: 120px; }  /* M5 Tapping */
+    th:nth-child(3) { width: 100px; }  /* No. of Counter Bore Holes */
+    th:nth-child(4) { width: 60px; }  /* No. of Pcs */
+    th:nth-child(5) { width: 80px; }  /* Row Total Length */
+    th:nth-child(6) { width: 100px; }  /* Reset Row */
+    /* Remove spinner controls and normalize appearance on number inputs */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number] {
+      -webkit-appearance: none;
+      -moz-appearance: textfield;
+    }
+    input[type=number] {
+      width: 90%;
+      padding: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      margin: 5px;
+      cursor: pointer;
+      background-color: #f2f2f2;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #e0e0e0;
+    }
+    .totals-table th, .totals-table td {
+      padding: 6px 10px;
+    }
+    /* Embedded shopping bag (minicart) pinned to top right */
+    /* .ec-cart-widget {
+      position: fixed;
+      top: 15px;
+      right: -120px;
+      z-index: 10000;
+      width: 300px;
+    } */
+    /* Tool header bar */
+    .tool-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #ff8a00;
+      padding: 12px 24px;
+      box-sizing: border-box;
+    }
+    .header-left {
+      color: #fff;
+      font-size: 24px;
+      font-weight: bold;
+      font-family: Arial, sans-serif;
+    }
+    .header-title {
+      margin: 0;
+      color: #000;
+      font-size: 18px;
+      white-space: nowrap;
+      font-family: Arial, sans-serif;
+    }
+    /* Position the cart icon inside header */
+    .header-right .ec-cart-widget {
+      width: auto !important;
+    }
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+    }
+    /* Error highlighting for cut-length inputs */
+    .error {
+     border: 2px solid red !important;
+    }
+    .error-banner {
+    color: red;
+    font-weight: bold;
+    margin-bottom: 10px;
+    }
+    /* Split-screen layout */
+.flex-container {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.details-panel {
+  flex: 1;
+  max-width: 40%;
+  margin-top: 35px;
+}
+.order-panel {
+  flex: 2;
+  min-width: 300px;
+}
+@media (max-width: 768px) {
+  .flex-container {
+    flex-direction: column;
+  }
+  .details-panel,
+  .order-panel {
+    max-width: none;
+    min-width: auto;
+  }
+    }
+  /* Keep reset/delete buttons on one line and slim their padding */
+  td:nth-child(6) {
+    white-space: nowrap;
+  }
+  .reset-row-btn,
+  .delete-row-btn {
+    padding: 4px 8px;
+    margin: 0 2px;
+    font-size: 14px;
+  }
+    /* Suffix for Counter Bore holes input */
+    .cb-holes-cell {
+      text-align: center;
+    }
+  .cb-holes-cell .cb-holes {
+    width: 50px; /* adjust as needed */
+  }
+  .cb-holes-suffix {
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+  /* Make table inputs and selects blend into the cell grid */
+  #orderTable input,
+  #orderTable select {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    font-size: 16px !important;     /* larger, matching page text */
+    padding: 6px 4px !important;     /* more comfortable click/tap area */
+  }
+  /* Re-enable red border for invalid inputs */
+  #orderTable input.error {
+    border: 2px solid red !important;
+    background: #ffecec !important; /* optional: light red bg for clarity */
+  }
+  /* Aggregate totals table column widths */
+  .totals-table th:nth-child(1) { width: 200px; }  /* Total Length Ordered */
+  .totals-table th:nth-child(2) { width: 200px; }  /* Rounded Off Length */
+  .totals-table th:nth-child(3) { width: 160px; }  /* Cost of Rounded Off Length */
+  .totals-table th:nth-child(4) { width: 200px; }  /* Discount */
+  .totals-table th:nth-child(5) { width: 80px; }  /* Total No. of M5 Tapping */
+  .totals-table th:nth-child(6) { width: 100px; }  /* Total Cost M5 Tapping */
+  .totals-table th:nth-child(7) { width: 80px; }  /* Total No. of CB Holes */
+  .totals-table th:nth-child(8) { width: 100px; }  /* Total Cost CB Holes */
+  .totals-table th:nth-child(9) { width: 140px; }  /* Final Cost Payable */
+  /* Price per meter under each extrusion box */
+    .extrusion-box .price-per-meter {
+      font-size: 14px;
+      color: #555;
+      margin-top: 4px;
+    }
+    /* Align price and review widget inline and unify their font */
+    .price-widget-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .price-per-meter,
+    .hc-widget {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #555;
+    }
+  /* Inline header for extrusion name and price */
+  .product-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .extrusion-name {
+    font-size: 16px;
+    color: #000; /* same as heading */
+    display: block;
+  }
+  .price-per-meter {
+    display: inline-block;
+    font-size: 16px;
+    color: #006064;             /* accent text color */
+    background-color: #e0f7fa;  /* soft background */
+    padding: 4px 8px;           /* vertical & horizontal spacing */
+    border-radius: 12px;        /* pill shape */
+    margin: 4px 0 0 0;          /* top margin only, no left margin */
+  }
+  /* Highlight price pill on selected box */
+    .extrusion-box.selected .price-per-meter {
+      background-color: #FFFFFF;        /* white background */
+      border: 1px solid #006064;       /* accent-colored border */
+      color: #006064;                  /* accent text color */
+    }
+    /* 2×2 image grid */
+    .image-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 10px;                   /* symmetric spacing */
+    }
+    .image-cell {
+      border: 1px solid #ccc;
+      overflow: hidden;
+    }
+    .image-cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* Description area below images */
+    .description-container {
+      border: 1px solid #ccc;      /* match image-cell border */
+      padding: 8px;
+      margin-top: 10px;
+      box-sizing: border-box;
+      width: 100%;                 /* full width of details-panel */
+    }
+    /* Zoom icon overlay on image hover */
+    .image-cell {
+      position: relative;
+    }
+    .image-cell .zoom-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      color: rgba(255, 255, 255, 0.8);
+      display: none;
+      pointer-events: none;
+    }
+    .image-cell:hover img {
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+    .image-cell:hover .zoom-icon {
+      display: block;
+    }
+    /* Filter pills */
+    #filterControls { margin-bottom: 15px; }
+    .filter-group { margin-bottom: 8px; }
+    .filter-group strong { margin-right: 8px; color: #333; }
+    .filter-pill {
+      display: inline-block;
+      padding: 6px 12px;
+      margin: 4px;
+      border: 1px solid #006064;
+      border-radius: 12px;
+      background-color: #F9F9F9;
+      color: #006064;
+      cursor: pointer;
+      user-select: none;
+      font-size: 14px;
+    }
+    .filter-pill.selected {
+      background-color: #006064;
+      color: #F3F3F3;
+    }
+    #clearFiltersBtn {
+      padding: 6px 12px;
+      font-size: 14px;
+      margin-left: 12px;
+      cursor: pointer;
+      background-color: #DFE7E9;
+      border: 1px solid #006064;
+      color: #006064;
+      border-radius: 4px;
+    }
+    /* Layout: filter controls alongside product boxes */
+    .filter-product-container {
+      display: flex;
+      align-items: stretch;
+      gap: 10px;
+      margin-bottom: 0px;
+    }
+    /* Shared panel styling */
+.panel {
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-sizing: border-box;
+}
+    #filterControls {
+      flex: 1;
+      max-width: 280px;
+      border: 1px solid #CCCCCC;
+      padding: 10px;
+      box-sizing: border-box;
+      align-self: stretch;
+    }
+    .extrusion-selector {
+      flex: 3;
+      display: flex;
+      flex-wrap: wrap;
+      border: 1px solid #CCCCCC;
+      padding: 10px;
+      box-sizing: border-box;
+      align-self: stretch;
+    }
+    /* Titles for filter and selector panels */
+    .filter-title,
+    .selector-title {
+      flex: 0 0 100%;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 18px;
+      color: #333;
+      font-weight: bold;
+    }
+    /* Ensure lightbox overlay and close button are on top and clickable */
+    .sl-overlay {
+      z-index: 99999 !important;
+      pointer-events: auto !important;
+    }
+    .sl-wrapper {
+      z-index: 100000 !important;
+    }
+    .sl-close {
+      z-index: 100001 !important;
+      pointer-events: auto !important;
+    }
+    </style>
+  
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Include Ecwid script for Cart API (store id: 2442119) -->
+  <script src="https://app.ecwid.com/script.js?2442119&data_platform=code&data_date=2025-03-02" charset="utf-8"></script>
+  <!-- Include review script to show product review summary-->
+  <script defer src="https://app.helpfulcrowd.com/f/koS4zR/widgets/product_summary.js"></script>
+  <!-- SimpleLightbox CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplelightbox@2.14.1/dist/simple-lightbox.min.css" />
+  <!-- SimpleLightbox JS -->
+  <script src="https://cdn.jsdelivr.net/npm/simplelightbox@2.14.1/dist/simple-lightbox.jquery.min.js"></script>
+  
+</head>
+<body>
+
+<!-- Tool Header -->
+<header class="tool-header">
+  <div class="header-left">3DPrintronics</div>
+  <h1 class="header-title">
+    Custom Cut and Machined Aluminium Extrusion Ordering Tool
+  </h1>
+  <div class="header-right">
+    <div class="ec-cart-widget"></div>
+  </div>
+</header>
+
+<!-- Filter Controls and Product Boxes Side-by-Side -->
+<div class="filter-product-container">
+  <!-- Filter Controls -->
+  <div id="filterControls">
+    <div class="filter-title">Filter</div>
+    <div class="filter-group" id="typeFilters"><strong>Type:</strong></div>
+    <div class="filter-group" id="seriesFilters"><strong>Series:</strong></div>
+    <div class="filter-group" id="colorFilters"><strong>Colour:</strong></div>
+    <button type="button" id="clearFiltersBtn">Clear Filters</button>
+  </div>
+  <!-- Extrusion Selector -->
+  <div class="extrusion-selector" id="extrusionSelector">
+    <div class="selector-title">Select Extrusion</div>
+    <!-- Extrusion boxes will be dynamically populated from extrusions.json -->
+  </div>
+</div> <!-- /.filter-product-container -->
+<div class="flex-container">
+  <div class="details-panel panel">
+    <div class="image-grid">
+      <div class="image-cell">
+        <a href="" class="detail-thumb-link">
+          <img src="" alt="Thumbnail" class="detail-thumb" />
+        </a>
+        <span class="zoom-icon">🔍</span>
+      </div>
+      <div class="image-cell">
+        <!-- Top-right image placeholder; will be dynamically set -->
+        <a href="">
+          <img src="" alt="Secondary image" />
+        </a>
+        <span class="zoom-icon">🔍</span>
+      </div>
+      <div class="image-cell">
+        <a href="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/1887521108.jpg">
+          <img src="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/1887521108.jpg"
+               alt="Common image 1" />
+        </a>
+        <span class="zoom-icon">🔍</span>
+      </div>
+      <div class="image-cell">
+        <a href="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/943723998.jpg">
+          <img src="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/943723998.jpg"
+               alt="Common image 2" />
+        </a>
+        <span class="zoom-icon">🔍</span>
+      </div>
+    </div>
+    <div class="description-container">
+      <!-- Product description (supports HTML formatting) -->
+    </div>
+  </div>
+  <div class="order-panel">
+    <div id="selectedMessage">Order in Table Below</div>
+
+<!-- Custom Ordering Table -->
+<div id="formError" class="error-banner" style="display:none;"></div>
+<form id="extrusionForm">
+  <table id="orderTable">
+    <thead>
+      <tr>
+        <th>
+          Enter Cut Length in mm<br>
+          (min 100mm, max 3000mm)
+        </th>
+        <th>M5 Tap</th>
+        <th>
+          Counter Bore</th>
+        <th>No. of Pcs</th>
+        <th>Row Total <br>
+          Length</th>
+        <th>Reset or <br>
+          Delete Row</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <!-- 6 rows will be inserted dynamically -->
+    </tbody>
+  </table>
+  
+  <button type="button" id="addRowBtn">Add More Rows</button>
+  <button type="button" id="resetAllBtn">Reset All</button>
+  
+  <!-- Aggregate Totals Table -->
+  <table class="totals-table">
+    <thead>
+      <tr>
+        <th>Total Length <br> Ordered</th>
+        <th>Rounded Off Length <br> (to nearest 500mm)</th>
+        <th>Cost of Rounded Off Length</th>
+        <th>Discount (5% on 2000mm, 10% on 4000mm)</th>
+        <th>Total M5 Taps</th>
+        <th>Cost M5 Taps <br>(₹30/hole)</th>
+        <th>Total CB Holes</th>
+        <th>Cost CB Holes<br>(₹70/hole)</th>
+        <th>Final Cost Payable</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="totalOrdered">0</td>
+        <td id="roundedLength">0</td>
+        <td id="costExtrusions">0</td>
+        <td id="discount">0</td>
+        <td id="totalM5Count">0</td>
+        <td id="totalM5Cost">0</td>
+        <td id="totalCBCount">0</td>
+        <td id="totalCBCost">0</td>
+        <td id="finalCost">0</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <button type="button" id="addToCartBtn">Add to Cart</button>
+</form>
+
+    <!-- Material & Waste Policy Notice -->
+    <div class="waste-policy" style="margin: 15px 0; font-size: 14px; color: #333;">
+      <p>
+        <strong>Billing is rounded up to the nearest 500 mm; any off-cut over 100 mm is shipped to you.</strong><br>
+        <strong>Example</strong> – You order <strong>2 pcs of 1000 mm</strong> and <strong>1 pc of 1200 mm</strong> (total 3200 mm), so we bill for <strong>3500 mm</strong>. You’ll receive your <strong>2 pcs of 1000 mm</strong>, <strong>1 pc of 1200 mm</strong> plus a <strong>300 mm off-cut</strong>.<br>
+        <a href="#" id="readMoreLink" style="text-decoration: underline; cursor: pointer;">[Read More]</a>
+      </p>
+      <div id="wasteDetails" style="display:none; margin-top:10px; padding-left:10px; border-left: 3px solid #ff9800;">
+        <strong>Material &amp; Waste Policy</strong><br><br>
+        We cut orders in 500 mm increments to reduce material wastage, keep our prices low and our operations efficient, and <strong>those savings go straight into your final per-metre rate</strong>.<br><br>
+        <strong>How it works:</strong><br>
+        1. Rounding: Every order is rounded up to the next 500 mm increment and accordingly billed for.<br>
+        2. Clean-offs: Rather than discard leftovers, we ship you any piece longer than 100 mm.<br><br>
+        <strong>Real-world example:</strong><br>
+        • You specify: 2 pcs of 1000 mm and 1 pc of 1200 mm (total 3200 mm).<br>
+        • We round up and bill 3500 mm at your per-metre rate.<br>
+        • You receive 2 pcs of 1000 mm and 1 pc of 1200 mm plus a 300 mm off-cut which you can use for jigs, fixtures, or future tweaks.<br><br>
+        This policy keeps our material costs predictable and our prices competitive—while ensuring you never pay for wasted material.
+      </div>
+    </div>
+  </div> <!-- .order-panel -->
+</div> <!-- .flex-container -->
+<!-- Embedded Shopping Bag -->
+<div class="ec-cart-widget"></div>
+<link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/ecwid-addons/apps/ecwid-cart-app/cartapp.css">
+<script src="https://s3.amazonaws.com/ecwid-addons/apps/ecwid-cart-app/cart.js"></script>
+<script type="text/javascript">
+  Ecwid.init();
+// Toggle the waste policy details on Read More click
+$('#readMoreLink').on('click', function(e) {
+  e.preventDefault();
+  $('#wasteDetails').slideToggle(200);
+});
+</script>
+
+<script>
+
+  // Configuration object loaded from extrusions.json
+  let config = {};
+  let pendingProductOptions = null;
+  // Global variables
+  let extrusionData = [];  // Loaded from extrusions.json
+  let selectedExtrusion = null;  // Currently selected extrusion object
+  const additionalCosts = { m5Tapping: 30, counterBore: 70 };
+
+  // Load configuration (extrusions, standardLengths, additionalCosts) from JSON
+  $.getJSON('extrusions.json', function(data) {
+    config = data;
+    // Set default thumbnail to fixed image on page load
+    $('.detail-thumb').attr('src', 'https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/3963393856.png');
+    // Load default description (V‑Slot family) on initial page load
+    $('.description-container').load('partials/vs-slot-description.html');
+    // ===== Filter Logic Setup =====
+    const selectedFilters = { type: new Set(), series: new Set(), color: new Set() };
+
+    function renderFilterPills() {
+      function renderGroup(field, selector, label) {
+        const container = $(selector).empty().append(`<strong>${label}</strong>`);
+        const values = [...new Set(config.extrusions.map(e => e[field]))];
+        values.forEach(val => {
+          const count = config.extrusions.filter(e => e[field] === val).length;
+          const pill = $(`<span class="filter-pill" data-field="${field}" data-value="${val}">${val} (${count})</span>`);
+          pill.on('click', () => toggleFilter(field, val, pill));
+          container.append(pill);
+        });
+      }
+      renderGroup('type',   '#typeFilters',   'Type:');
+      renderGroup('series', '#seriesFilters', 'Series:');
+      renderGroup('color',  '#colorFilters',  'Colour:');
+    }
+
+    function toggleFilter(field, value, pillEl) {
+      if (selectedFilters[field].has(value)) {
+        selectedFilters[field].delete(value);
+        pillEl.removeClass('selected');
+      } else {
+        selectedFilters[field].add(value);
+        pillEl.addClass('selected');
+      }
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const filtered = config.extrusions.filter(e =>
+        (selectedFilters.type.size === 0   || selectedFilters.type.has(e.type))   &&
+        (selectedFilters.series.size === 0 || selectedFilters.series.has(e.series)) &&
+        (selectedFilters.color.size === 0  || selectedFilters.color.has(e.color))
+      );
+      populateExtrusionBoxes(filtered);
+    }
+
+    $('#clearFiltersBtn').on('click', () => {
+      Object.values(selectedFilters).forEach(set => set.clear());
+      $('.filter-pill').removeClass('selected');
+      populateExtrusionBoxes(config.extrusions);
+    });
+
+    renderFilterPills();
+    // ===== End Filter Logic Setup =====
+    populateExtrusionBoxes(config.extrusions);
+    updateTotals();
+  }).fail(function(jqxhr, textStatus, error) {
+    console.error("Error loading extrusions.json: " + textStatus + ", " + error);
+  });
+  
+  // Dynamically build the extrusion selector buttons
+  function populateExtrusionBoxes(items) {
+    const list = items || config.extrusions;
+    const container = $('#extrusionSelector');
+    // Clear existing selector boxes
+    container.empty();
+    // Re-add selector title
+    container.append('<div class="selector-title">Select Extrusion</div>');
+    list.forEach(function(item) {
+      const pricePerMeter = (item.baseCostPerMm * 1000).toFixed(0);
+      const box = $(`
+        <div class="extrusion-box" data-id="${item.id}">
+          <div class="extrusion-name">${item.name}</div>
+          <div class="price-per-meter">₹${pricePerMeter}/m</div>
+        </div>
+      `);
+      box.on('click', function() {
+        $('.extrusion-box').removeClass('selected');
+        $(this).addClass('selected');
+        selectedExtrusion = item;
+        // Update details-panel thumbnail
+        if (item.thumbnailUrl) {
+          $('.detail-thumb').attr('src', item.thumbnailUrl);
+          $('.detail-thumb-link').attr('href', item.thumbnailUrl);
+        } else {
+          // fallback to default image
+          const defaultUrl = 'https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/3963393856.png';
+          $('.detail-thumb').attr('src', defaultUrl);
+          $('.detail-thumb-link').attr('href', defaultUrl);
+        }
+        // Update top-right detail image from JSON
+        const secondImageUrl = item.secondaryImageUrl || '';
+        const $secondCell = $('.details-panel .image-grid .image-cell').eq(1);
+        const $secondLink = $secondCell.find('a');
+        const $secondImg  = $secondLink.find('img');
+        if (secondImageUrl) {
+          $secondLink.attr('href', secondImageUrl);
+          $secondImg.attr('src', secondImageUrl);
+        } else {
+          $secondLink.removeAttr('href');
+          $secondImg.attr('src', '');
+        }
+        // Reinitialize SimpleLightbox to include updated anchors
+        if (detailLightbox && typeof detailLightbox.destroy === 'function') {
+          detailLightbox.destroy();
+        }
+        detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
+          captions: false,
+          nav: true,
+          close: true,
+          docClose: true,
+          enableKeyboard: true,
+          showCounter: false
+        });
+        // Load appropriate description partial based on selected extrusion family
+        const family = item.id.startsWith('CB-') ? 'c-beam' : 'vs-slot';
+        $('.description-container').load(`partials/${family}-description.html`);
+        $('#selectedMessage').text(`You are ordering ${selectedExtrusion.name} - Enter Details in Table Below`);
+        // Recalculate aggregate totals when extrusion selection changes.
+        updateTotals();
+      });
+      container.append(box);
+    });
+  }
+  
+  // Generate a single table row of inputs for cut length, holes, and pieces
+  function createRow() {
+    return `
+      <tr>
+        <td>
+          <input type="number" class="cut-length" placeholder="Precisely Cut" min="100" max="3000" 
+            oninput="this.value = this.value.replace(/\D/g, '');" required />
+        </td>
+        <td>
+          <select class="tap-side" required>
+            <option value="none">No Tapping</option>
+            <option value="one">One Side</option>
+            <option value="both">Both Sides</option>
+          </select>
+        </td>
+        <td class="cb-holes-cell">
+          <input type="number" class="cb-holes" value="0" min="0" max="20"
+            onblur="if(this.value < 0 || this.value > 20){this.setCustomValidity('Enter value between 0 to 20');} else {if(this.value===''){this.value='0';} this.setCustomValidity('');} this.reportValidity();"
+            oninput="if(!/^\d*\.?\d*$/.test(this.value)){this.setCustomValidity('Please enter numbers only');} else {this.setCustomValidity('');}" required />
+          <span class="cb-holes-suffix">holes</span>
+        </td>
+        <td>
+          <input type="number" class="num-pcs" placeholder="No. of Pcs" min="1" 
+            oninput="this.value = this.value.replace(/\D/g, '');" required />
+        </td>
+        <td class="row-total-length">0</td>
+        <td>
+          <button type="button" class="reset-row-btn">Reset</button>
+          <button type="button" class="delete-row-btn">Del</button>
+        </td>
+      </tr>
+    `;
+  }
+  
+  // Insert initial rows into the order table on page load
+  const tableBody = document.getElementById('tableBody');
+  for (let i = 0; i < 4; i++) {
+    tableBody.innerHTML += createRow();
+  }
+  
+  // Attach input and reset handlers to a row for live calculation
+  function attachRowListeners(row) {
+    $(row).find('input, select.tap-side').on('input change', function() {
+      // If this is a cut-length field, remove error styling when valid
+      if ($(this).hasClass('cut-length')) {
+        const raw = $(this).val().trim();
+        const v = parseFloat(raw);
+        if (!isNaN(v) && v >= 100 && v <= 3000) {
+          $(this).removeClass('error');
+        }
+        // Hide the form error banner if no more invalid fields
+        if ($('.cut-length.error').length === 0) {
+          $('#formError').hide();
+        }
+      }
+      updateRow($(row));
+      updateTotals();
+    });
+    $(row).find('.reset-row-btn').on('click', function() {
+      $(row).find('input').val('');
+      $(row).find('.tap-side').val("none");
+      $(row).find('.cb-holes').val("0");
+      updateRow($(row));
+      updateTotals();
+    });
+    $(row).find('.delete-row-btn').on('click', function() {
+      $(row).remove();
+      updateTotals();
+    });
+    // Dependent validation: pcs must be ≥1 if cut length is entered
+    $(row).find('.num-pcs').on('blur', function() {
+      const $pcs = $(this);
+      // remove any existing inline message
+      $pcs.next('.field-error').remove();
+      const pcsVal = parseInt($pcs.val(), 10) || 0;
+      const cutVal = parseFloat($pcs.closest('tr').find('.cut-length').val()) || 0;
+      // If a cut length exists and pcs < 1, show error
+      if (cutVal > 0 && pcsVal < 1) {
+        $pcs.addClass('error');
+        $('<div class="field-error">No. of pcs cannot be 0</div>')
+          .insertAfter($pcs)
+          .css({ color: 'red', 'font-size': '12px', 'margin-top': '2px' });
+      } else {
+        $pcs.removeClass('error');
+      }
+    });
+    // Clear error as soon as a valid pcs number is entered
+    $(row).find('.num-pcs').on('input', function() {
+      const $pcs = $(this);
+      if (parseInt($pcs.val(), 10) > 0) {
+        $pcs.removeClass('error');
+        $pcs.next('.field-error').remove();
+      }
+    });
+  }
+  
+  // Attach listeners to existing rows
+  $('#tableBody tr').each(function() {
+    attachRowListeners(this);
+  });
+  
+  // When "Add More Rows" is clicked, append a new row
+  $('#addRowBtn').on('click', function() {
+    $('#tableBody').append(createRow());
+    attachRowListeners($('#tableBody tr:last')[0]);
+  });
+  
+  // "Reset All" clears the table and resets totals
+  $('#resetAllBtn').on('click', function() {
+    $('#tableBody').empty();
+    for (let i = 0; i < 4; i++) {
+      $('#tableBody').append(createRow());
+    }
+    $('#tableBody tr').each(function() {
+      attachRowListeners(this);
+    });
+    updateTotals();
+  });
+  
+  // Calculate and display a single row’s total length
+  function updateRow($row) {
+    const cutLength = parseFloat($row.find('.cut-length').val()) || 0;
+    const numPcs = parseFloat($row.find('.num-pcs').val()) || 0;
+    const rowTotal = cutLength * numPcs;
+    $row.find('.row-total-length').text(rowTotal.toFixed(0));
+  }
+  
+  // Aggregate all rows, perform rounding and cost calculations, and update the totals table
+  function updateTotals() {
+    let totalOrdered = 0;
+    let totalM5Count = 0;
+    let totalCBCount = 0;
+    $('#tableBody tr').each(function() {
+      const rowTotal = parseFloat($(this).find('.row-total-length').text()) || 0;
+      totalOrdered += rowTotal;
+  
+      const tapChoice = $(this).find('.tap-side').val();
+      const pcsValue = parseFloat($(this).find('.num-pcs').val()) || 0;
+      let sides = 0;
+      if (tapChoice === 'one') sides = 1;
+      else if (tapChoice === 'both') sides = 2;
+      const holesPerSide = selectedExtrusion.holesPerSide || 0;
+      totalM5Count += sides * holesPerSide * pcsValue;
+  
+      const cbValue = parseFloat($(this).find('.cb-holes').val()) || 0;
+      totalCBCount += cbValue * pcsValue;
+    });
+    $('#totalOrdered').text(totalOrdered.toFixed(0));
+  
+    let roundedLength = 0;
+    if (totalOrdered > 0 && selectedExtrusion) {
+      roundedLength = config.standardLengths.find(len => len >= totalOrdered)
+                      || config.standardLengths[config.standardLengths.length - 1];
+    }
+    console.log("Total Ordered Length:", totalOrdered);
+    console.log("Rounded Length Before Selection:", roundedLength);
+    console.log("Available Standard Lengths:", config.standardLengths);
+    $('#roundedLength').text(roundedLength.toFixed(0));
+  
+    let costExtrusions = 0;
+    if (selectedExtrusion && selectedExtrusion.baseCostPerMm) {
+      costExtrusions = roundedLength * selectedExtrusion.baseCostPerMm;
+      console.log("Base Cost Per mm:", selectedExtrusion.baseCostPerMm);
+      console.log("Calculated Cost:", costExtrusions);
+    } else {
+      console.log("Error: selectedExtrusion not set or baseCostPerMm missing");
+    }
+    $('#costExtrusions').text(costExtrusions.toFixed(2));
+  
+    $('#totalM5Count').text(totalM5Count.toFixed(0));
+    $('#totalCBCount').text(totalCBCount.toFixed(0));
+  
+    const totalM5Cost = totalM5Count * additionalCosts.m5Tapping;
+    const totalCBCost = totalCBCount * additionalCosts.counterBore;
+    $('#totalM5Cost').text(totalM5Cost.toFixed(2));
+    $('#totalCBCost').text(totalCBCost.toFixed(2));
+  
+    const finalCost = costExtrusions + totalM5Cost + totalCBCost;
+    $('#finalCost').text(finalCost.toFixed(2));
+  
+    // Disable Add to Cart if aggregate rounded length is 0.
+    if (roundedLength === 0) {
+      $('#addToCartBtn').prop('disabled', true);
+    } else {
+      $('#addToCartBtn').prop('disabled', false);
+    }
+  }
+  
+  // (Removed: Event listener moved to end of script)
+  
+// Move order table input listener to the end of the script to ensure proper execution
+$('#orderTable').on('input change', 'input, select.tap-side', function() {
+  updateTotals();
+});
+  // Handle "Add to Cart" button clicks: build options and call Ecwid API
+  $('#addToCartBtn').on('click', function() {
+    console.log('Add to Cart clicked, selectedExtrusion:', selectedExtrusion);
+    // Clear previous errors
+    $('#formError').hide();
+    $('.cut-length').removeClass('error');
+    
+    // Validate cut-length inputs
+    let invalidCut = false;
+    $('.cut-length').each(function() {
+      const raw = $(this).val().trim();
+      if (raw === '') {
+        return; // skip empty fields
+      }
+      const v = parseFloat(raw);
+      if (isNaN(v) || v < 100 || v > 3000) {
+        invalidCut = true;
+        $(this).addClass('error');
+      }
+    });
+    if (invalidCut) {
+      $('#formError')
+        .text("Please correct the highlighted cut lengths (100–3000 mm).")
+        .show();
+      return;
+    }
+    if (!selectedExtrusion) {
+      alert("Please select an extrusion type.");
+      return;
+    }
+  
+    // Build detailed order string from table rows in the format "cutLength-numPcs pc-M5Tap{m5}-CBHole{cb}"
+    let orderDetails = [];
+    $('#tableBody tr').each(function() {
+      const cutLength = $(this).find('.cut-length').val();
+      const numPcs = $(this).find('.num-pcs').val();
+      const tapChoice = $(this).find('.tap-side').val();
+      const holesPerSide = selectedExtrusion.holesPerSide || 0;
+      const sides = tapChoice === 'both' ? 2 : (tapChoice === 'one' ? 1 : 0);
+      const m5 = sides * holesPerSide;
+      const cb = $(this).find('.cb-holes').val();
+      if (cutLength && numPcs) {
+        orderDetails.push(`${cutLength}-${numPcs}pc-M5Tap${m5 || 0}-CBHole${cb || 0}`);
+      }
+    });
+    const detailsString = orderDetails.join('; ');
+  
+    // Retrieve aggregated totals from the totals table.
+    const totalM5Count = parseInt($('#totalM5Count').text(), 10) || 0;
+    const totalCBCount = parseInt($('#totalCBCount').text(), 10) || 0;
+    const roundedLengthValue = parseInt($('#roundedLength').text(), 10) || 0;
+  
+    // Build the same semicolon-separated Cut Details for Ecwid
+    const previewLines = orderDetails.map(detail => {
+      const [length, pcsPart, tapPart, cbPart] = detail.split('-');
+      const count = parseInt(pcsPart, 10) || 0;
+      const pcsLabel = count === 1 ? '1 pc' : `${count} pcs`;
+      let tapsLabel = tapPart === 'M5Tap0'
+        ? 'No Tapping'
+        : (tapPart === 'M5Tap1'
+            ? 'One Side M5 Tapped'
+            : 'Both Sides M5 Tapped');
+      const cbCount = parseInt(cbPart.replace('CBHole', ''), 10) || 0;
+      const cbsLabel = cbCount === 0 ? 'No CB Holes' : `${cbCount} CB Holes`;
+      return `${pcsLabel} of ${length} mm – ${tapsLabel}, ${cbsLabel} in each`;
+    });
+    // Assign to pendingProductOptions for Ecwid
+    pendingProductOptions = {
+      "Length": roundedLengthValue.toString(),
+      "M5 Tap Holes": totalM5Count.toString(),
+      "Counter Bore Holes": totalCBCount.toString(),
+      "Cut Details": previewLines.join('; ')
+    };
+
+    // Build human-readable preview lines in desired format
+    $('#previewTitle').text(`Your Order for ${selectedExtrusion.name}`);
+    $('#previewList').empty();
+    let totalPcs = 0;
+    orderDetails.forEach(detail => {
+      const [length, pcsPart, tapPart, cbPart] = detail.split('-');
+      const count = parseInt(pcsPart, 10) || 0;
+      const pcsLabel = count === 1 ? '1 pc' : `${count} pcs`;
+      // Determine tap description
+      let tapsLabel;
+      if (tapPart === 'M5Tap0') tapsLabel = 'No Tapping';
+      else if (tapPart === 'M5Tap1') tapsLabel = 'One Side M5 Tapped';
+      else tapsLabel = 'Both Sides M5 Tapped';
+      // Determine CB description
+      const cbCount = parseInt(cbPart.replace('CBHole', ''), 10) || 0;
+      const cbsLabel = cbCount === 0
+        ? 'No CB Holes'
+        : `${cbCount} CB Holes`;
+      // Append as list item
+      $('#previewList').append(
+        `<li>${pcsLabel} of ${length} mm – ${tapsLabel}, ${cbsLabel} in each</li>`
+      );
+      totalPcs += count;
+    });
+    $('#previewTotal').text(`Total Pcs – ${totalPcs}`);
+// Show preview modal and halt actual add-to-cart
+$('#orderPreviewModal').show();
+return;
+  
+    // Optionally, log the product options before adding to cart.
+    console.log('Adding product with options:', productOptions);
+    
+    Ecwid.Cart.addProduct({
+      id: selectedExtrusion.productId || selectedExtrusion.ProductId,
+      quantity: 1,
+      options: pendingProductOptions
+    },
+    function(order) {
+      console.log('Add to Cart success callback, order:', order);
+      // Populate and show success modal with order details
+      document.getElementById('modalDetails').textContent = detailsString;
+      document.getElementById('successModal').style.display = 'block';
+    },
+    function(error) {
+      console.error('Add to Cart error callback, error:', error);
+      $('#selectedMessage')
+        .text("Failed to add product to cart.")
+        .css('color', 'red');
+    });
+  });
+  // Initialize SimpleLightbox and keep reference for refresh
+  var detailLightbox;
+  $(function() {
+    detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
+      captions: false,
+      nav: true,
+      close: true,
+      docClose: true,
+      enableKeyboard: true,
+      showCounter: false
+    });
+  });
+</script>
+
+<!-- Order Preview Modal -->
+<div id="orderPreviewModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="previewClose" aria-label="Close preview">&times;</span>
+    <h2 id="previewTitle">Your Order for </h2>
+    <ul id="previewList" style="text-align:left; margin:10px 0;"></ul>
+    <p id="previewTotal" style="font-weight:bold;"></p>
+    <button type="button" id="amendOrderBtn">Amend Order</button>
+    <button type="button" id="proceedOrderBtn">Proceed to Add to Cart</button>
+  </div>
+</div>
+<!-- Success Modal -->
+<div id="successModal" class="modal">
+  <div class="modal-content">
+    <span id="modalClose" class="close">&times;</span>
+    <h2>Successfully Added to Cart</h2>
+    <p id="modalDetails"></p>
+  </div>
+</div>
+
+<script>
+  // Modal behavior: close on click outside or on close button
+  // Modal control
+  const successModal = document.getElementById('successModal');
+  const previewModal = document.getElementById('orderPreviewModal');
+  const modalClose = document.getElementById('modalClose');
+  modalClose.onclick = () => { successModal.style.display = 'none'; };
+  window.onclick = (event) => {
+    if (event.target === successModal) {
+      successModal.style.display = 'none';
+    }
+    if (event.target === previewModal) {
+      previewModal.style.display = 'none';
+    }
+  };
+  // Preview modal controls
+  $('#previewClose').on('click', () => { $('#orderPreviewModal').hide(); });
+  $('#amendOrderBtn').on('click', () => { $('#orderPreviewModal').hide(); });
+  $('#proceedOrderBtn').on('click', () => {
+    console.log('Proceed clicked')
+    $('#orderPreviewModal').hide();
+    Ecwid.Cart.addProduct({
+      id: selectedExtrusion.productId || selectedExtrusion.ProductId,
+      quantity: 1,
+      options: pendingProductOptions
+    }, function(success) {
+      console.log('🛒 addProduct callback, success:', success);
+      if (success) {
+        // Reset table to 4 rows
+        $('#tableBody').empty();
+        for (let i = 0; i < 4; i++) {
+          $('#tableBody').append(createRow());
+        }
+        $('#tableBody tr').each(function() {
+          attachRowListeners(this);
+        });
+        updateTotals();
+        // Show cut details in the success modal
+        const detailsText = pendingProductOptions && pendingProductOptions["Cut Details"]
+                          ? pendingProductOptions["Cut Details"]
+                          : 'Added to cart successfully.';
+        $('#modalDetails').text(detailsText);
+        pendingProductOptions = null;
+        $('#successModal').show();
+      } else {
+        console.error('Add to cart failed.');
+        $('#selectedMessage')
+          .text("Failed to add product to cart. Please try again.")
+          .css('color', 'red');
+      }
+    });
+  });
+</script>
+</body>
+</html>
