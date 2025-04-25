@@ -1112,8 +1112,12 @@ return;
         attachRowListeners(this);
       });
       updateTotals();
+      // Show cut details in the success modal
+      const detailsText = pendingProductOptions && pendingProductOptions["Cut Details"]
+                        ? pendingProductOptions["Cut Details"]
+                        : 'Added to cart successfully.';
+      $('#modalDetails').text(detailsText);
       pendingProductOptions = null;
-      $('#modalDetails').text('');
       $('#successModal').show();
     },
     function(error) {
