@@ -1100,22 +1100,28 @@ return;
       id: selectedExtrusion.productId || selectedExtrusion.ProductId,
       quantity: 1,
       options: pendingProductOptions
-    }, function(success) {
-      if (success) {
-        // Reset table to 4 rows
-        $('#tableBody').empty();
-        for (let i = 0; i < 4; i++) {
-          $('#tableBody').append(createRow());
-        }
-        $('#tableBody tr').each(function() {
-          attachRowListeners(this);
-        });
-        updateTotals();
-        pendingProductOptions = null;
-        // Optionally clear modalDetails element
-        $('#modalDetails').text('');
-        $('#successModal').show();
+    },
+    function(order) {
+      // Success callback
+      // Reset table to 4 rows
+      $('#tableBody').empty();
+      for (let i = 0; i < 4; i++) {
+        $('#tableBody').append(createRow());
       }
+      $('#tableBody tr').each(function() {
+        attachRowListeners(this);
+      });
+      updateTotals();
+      pendingProductOptions = null;
+      $('#modalDetails').text('');
+      $('#successModal').show();
+    },
+    function(error) {
+      // Error callback
+      console.error('Add to Cart error callback:', error);
+      $('#selectedMessage')
+        .text("Failed to add product to cart. Please try again.")
+        .css('color', 'red');
     });
   });
 </script>
