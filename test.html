@@ -2,329 +2,64 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Test Layout with Integrated Product Images</title>
+  <title>3DPrintronics Tool Header</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    /* Top Section: Dummy Extrusion Selection */
-    .extrusion-selection {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .extrusion-selection button {
-      padding: 8px 16px;
-      margin: 0 5px;
-      font-size: 1em;
-      cursor: pointer;
-    }
-    .header {
-      text-align: center;
-      font-size: 1.4em;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-    /* Container for two columns */
-    .container {
-      display: flex;
-      flex-wrap: nowrap;
-      gap: 10px;
-    }
-    .left, .right {
-      box-sizing: border-box;
-      padding: 10px;
-    }
-    /* Left Column (40% width) */
-    .left {
-      flex: 0 0 40%;
-      border: 1px solid #ccc;
-    }
-    /* Right Column (60% width) */
-    .right {
-      flex: 0 0 60%;
-      border: 1px solid #ccc;
-    }
-    /* Left Column: Image Grid */
-    .image-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-gap: 10px;
-      margin-bottom: 10px;
-    }
-    .image-box {
-      width: 100%;
-      padding-top: 100%; /* For square ratio */
-      position: relative;
-      background: #eee;
-      border: 1px solid #ccc;
-      overflow: hidden;
-    }
-    .image-box img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    /* Left Column: Text Placeholders */
-    .extrusion-name,
-    .review-placeholder,
-    .description {
-      margin-bottom: 10px;
-      padding: 5px;
-      border: 1px solid #ddd;
-      background: #f9f9f9;
-      text-align: center;
-      font-size: 0.9em;
-    }
-    /* Right Column: Ordering Table */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 10px;
-      word-wrap: break-word;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 4px 2px;
-      text-align: center;
-      font-size: 0.85em;
-    }
-    th {
-      background-color: #f2f2f2;
-      line-height: 1.2em;
-    }
-    /* Compact column widths */
-    th:nth-child(1) { width: 110px; }
-    th:nth-child(2) { width: 90px; }
-    th:nth-child(3) { width: 110px; }
-    th:nth-child(4) { width: 70px; }
-    th:nth-child(5) { width: 90px; }
-    th:nth-child(6) { width: 70px; }
-    /* Seamless input styling in table cells */
-    td input[type="number"] {
-      width: 100%;
-      border: none;
-      text-align: center;
-      font-size: 0.85em;
-      padding: 4px 0;
-      background: transparent;
-      outline: none;
-    }
-    /* Remove spinner controls from number inputs */
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
       margin: 0;
+      font-family: Arial, sans-serif;
     }
-    input[type=number] {
-      -moz-appearance: textfield;
-    }
-    .dummy-buttons {
-      text-align: center;
-      margin-top: 10px;
-    }
-    .dummy-buttons button {
-      padding: 8px 16px;
-      font-size: 1em;
-      margin: 5px;
-      cursor: pointer;
-    }
-
-    .hc-widget {
+    /* Tool Header */
+    .tool-header {
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: space-between;
+      background-color: #ff8a00;
+      padding: 10px 20px;
+    }
+    .header-left .header-logo-text {
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .header-center {
+      flex: 1;
+      text-align: center;
+    }
+    .header-title {
+      margin: 0;
+      color: #000;
+      font-size: 1.2rem;
+      white-space: nowrap; /* force one line */
+    }
+    .header-right .ec-cart-widget {
+      /* placeholder styling */
+      font-size: 1.5rem;
+      color: #000;
     }
   </style>
-  <script defer src="https://app.helpfulcrowd.com/f/koS4zR/widgets/product_summary.js"></script>
 </head>
 <body>
 
-<!-- Top Section: Dummy Extrusion Selection -->
-<div class="extrusion-selection">
-  <button type="button" onclick="selectExtrusion('VS22S')">VS22S</button>
-  <button type="button" onclick="selectExtrusion('VS22B')">VS22B</button>
-</div>
-<div class="header" id="headerText">Ordering (Extrusion Name)</div>
-
-<div class="container">
-  <!-- Left Column -->
-  <div class="left">
-    <!-- Image grid for product images -->
-    <div class="image-grid">
-      <div class="image-box">
-        <img src="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/943733002.jpg" 
-             srcset="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/943733002.jpg 1x, https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/943733002.jpg 2x" 
-             alt="V Slot Aluminium Extrusion 2020 (Silver)" 
-             title="V Slot Aluminium Extrusion 2020 (Silver)" 
-             width="800" height="798" 
-             loading="eager" 
-             class="details-gallery__picture details-gallery__photoswipe-index-0" 
-             itemprop="image" 
-             style="width: 100%;">
-      </div>
-      <div class="image-box">
-        <iframe width="100%" height="100%" 
-                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
-                src="https://www.youtube.com/embed/zlIKXdU9cf4" 
-                frameborder="0" 
-                allowfullscreen>
-        </iframe>
-      </div>
-      <div class="image-box">
-        <img src="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/943723998.jpg" 
-             alt="Extrusion Image">
-      </div>
-      <div class="image-box">
-        <img src="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/1887521108.jpg" alt="Extrusion Image">
-      </div>
+  <!-- Tool Header -->
+  <header class="tool-header">
+    <div class="header-left">
+      <span class="header-logo-text">3DPrintronics</span>
     </div>
-    <!-- Extrusion name placeholder -->
-    <div class="extrusion-name" id="extrusionName">Extrusion Name: VS22S</div>
-    <!-- Product rating widget -->
-    <div class="hc-widget">
-      <div data-hc="product-summary" data-hc-id="720289517"></div>
+    <div class="header-center">
+      <h1 class="header-title">
+        Custom Cut and Machined Aluminium Extrusion Ordering Tool
+      </h1>
     </div>
-    <!-- Product description area -->
-    <div class="description">
-      Product description goes here. Brief details about the extrusion.
+    <div class="header-right">
+      <!-- Replace this with your Ecwid cart widget -->
+      <div class="ec-cart-widget">🛒</div>
     </div>
-  </div>
-  
-  <!-- Right Column: Ordering Table and Aggregate Table -->
-  <div class="right">
-    <!-- Ordering Table -->
-    <table>
-      <thead>
-        <tr>
-          <th>Enter Cut Length in mm<br>(min 100mm, max 3000mm)</th>
-          <th>No. of M5 Tapping<br>(Enter 0 for Nil)</th>
-          <th>No. of Counter Bore Holes<br>(Enter 0 for Nil)</th>
-          <th>No. of Pcs</th>
-          <th>Row Total Length</th>
-          <th>Reset Row</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Six static rows for layout testing -->
-        <tr>
-          <td><input type="number" placeholder="Precise Cutting"></td>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" placeholder="No. of Pcs"></td>
-          <td>0</td>
-          <td><button type="button">Reset</button></td>
-        </tr>
-        <tr>
-          <td><input type="number" placeholder="Precise Cutting"></td>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" placeholder="No. of Pcs"></td>
-          <td>0</td>
-          <td><button type="button">Reset</button></td>
-        </tr>
-        <tr>
-          <td><input type="number" placeholder="Precise Cutting"></td>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" placeholder="No. of Pcs"></td>
-          <td>0</td>
-          <td><button type="button">Reset</button></td>
-        </tr>
-        <tr>
-          <td><input type="number" placeholder="Precise Cutting"></td>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" placeholder="No. of Pcs"></td>
-          <td>0</td>
-          <td><button type="button">Reset</button></td>
-        </tr>
-        <tr>
-          <td><input type="number" placeholder="Precise Cutting"></td>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" placeholder="No. of Pcs"></td>
-          <td>0</td>
-          <td><button type="button">Reset</button></td>
-        </tr>
-        <tr>
-          <td><input type="number" placeholder="Precise Cutting"></td>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" placeholder="No. of Pcs"></td>
-          <td>0</td>
-          <td><button type="button">Reset</button></td>
-        </tr>
-      </tbody>
-    </table>
-    
-    <!-- Aggregate Totals Table -->
-    <table class="totals-table">
-      <thead>
-        <tr>
-          <th>Total Length Ordered</th>
-          <th>Rounded Off Length<br>(Nearest 500mm)</th>
-          <th>Cost of Rounded Off Length</th>
-          <th>Discount</th>
-          <th>Total No. of M5 Tapping</th>
-          <th>Total Cost M5 Tapping</th>
-          <th>Total No. of CB Holes</th>
-          <th>Total Cost CB Holes</th>
-          <th>Final Cost Payable</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-        </tr>
-      </tbody>
-    </table>
-    
-    <div class="dummy-buttons">
-      <button type="button">Reset All</button>
-      <button type="button">Add to Cart</button>
-    </div>
-  </div>
-</div>
+  </header>
 
-<script>
-  // Dummy function to simulate extrusion selection.
-  function selectExtrusion(type) {
-    console.log("Extrusion selected:", type);  // Debugging log
-
-    document.getElementById('headerText').textContent = "Ordering (" + type + ")";
-    document.getElementById('extrusionName').textContent = "Extrusion Name: " + type;
-
-    // More explicit selection of the first image
-    const firstImage = document.querySelector('.image-grid .image-box:nth-child(1) img');
-    
-    if (firstImage) {
-      const newImg = new Image();
-      if (type === 'VS22B') {
-        console.log("Changing image to VS22B");
-        newImg.src = "https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/1390339340.jpg?t=" + new Date().getTime();
-      } else {
-        console.log("Reverting to default image");
-        newImg.src = "https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/943733002.jpg?t=" + new Date().getTime();
-      }
-      
-      newImg.onload = function() {
-        firstImage.src = newImg.src;
-      };
-    }
-  }
-</script>
+  <!-- Demo content below -->
+  <main style="padding: 20px; text-align: center;">
+    <p>This is a test page showing your new header.</p>
+  </main>
 
 </body>
 </html>
