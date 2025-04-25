@@ -386,25 +386,6 @@
       z-index: 100001 !important;
       pointer-events: auto !important;
     }
-    /* Toast notification */
-    .toast {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-100%);
-      background-color: rgba(0,96,100,0.9);
-      color: #fff;
-      padding: 12px 24px;
-      border-radius: 4px;
-      font-size: 14px;
-      opacity: 0;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-      z-index: 10002;
-    }
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
     </style>
   
   <!-- Include jQuery -->
@@ -421,8 +402,6 @@
 </head>
 <body>
 
-<!-- Toast Notification -->
-<div id="toast" class="toast"></div>
 
 <h1>Custom Cut and Machined Aluminium Extrusion Ordering Tool</h1>
 
@@ -551,14 +530,6 @@
 </script>
 
 <script>
-  // Toast notification
-  function showToast(message, duration = 3000) {
-    const $toast = $('#toast');
-    $toast.text(message).addClass('show');
-    setTimeout(() => {
-      $toast.removeClass('show');
-    }, duration);
-  }
 
   // Configuration object loaded from extrusions.json
   let config = {};
@@ -1065,7 +1036,6 @@ return;
   $('#amendOrderBtn').on('click', () => { $('#orderPreviewModal').hide(); });
   $('#proceedOrderBtn').on('click', () => {
     $('#orderPreviewModal').hide();
-    showToast('✅ Successfully added to cart!');
     Ecwid.Cart.addProduct({
       id: selectedExtrusion.productId || selectedExtrusion.ProductId,
       quantity: 1,
