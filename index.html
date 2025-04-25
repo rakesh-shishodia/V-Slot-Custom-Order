@@ -129,10 +129,6 @@
     .header-right .ec-cart-widget {
       width: auto !important;
     }
-    /* Override cart widget background to white */
-    .header-right .ec-cart-widget {
-      background-color: #FFFFFF !important;
-    }
     /* Modal styles */
     .modal {
       display: none;
@@ -416,14 +412,6 @@
       z-index: 100001 !important;
       pointer-events: auto !important;
     }
-    /* Override Ecwid Cart App modal background to white */
-    .ecwid-cart-app-content {
-      background-color: #FFFFFF !important;
-    }
-    /* (Optional) Dim the page overlay behind the cart */
-    .ecwid-cart-app-overlay {
-      background-color: rgba(0, 0, 0, 0.5) !important;
-    }
     </style>
   
   <!-- Include jQuery -->
@@ -589,7 +577,7 @@
   </div> <!-- .order-panel -->
 </div> <!-- .flex-container -->
 <!-- Embedded Shopping Bag -->
-<!-- <div class="ec-cart-widget"></div> -->
+<div class="ec-cart-widget"></div>
 <link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/ecwid-addons/apps/ecwid-cart-app/cartapp.css">
 <script src="https://s3.amazonaws.com/ecwid-addons/apps/ecwid-cart-app/cart.js"></script>
 <script type="text/javascript">
