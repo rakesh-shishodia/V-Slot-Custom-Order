@@ -96,12 +96,38 @@
       padding: 6px 10px;
     }
     /* Embedded shopping bag (minicart) pinned to top right */
-    .ec-cart-widget {
+    /* .ec-cart-widget {
       position: fixed;
       top: 15px;
       right: -120px;
       z-index: 10000;
       width: 300px;
+    } */
+    /* Tool header bar */
+    .tool-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #ff8a00;
+      padding: 12px 24px;
+      box-sizing: border-box;
+    }
+    .header-left {
+      color: #fff;
+      font-size: 24px;
+      font-weight: bold;
+      font-family: Arial, sans-serif;
+    }
+    .header-title {
+      margin: 0;
+      color: #000;
+      font-size: 18px;
+      white-space: nowrap;
+      font-family: Arial, sans-serif;
+    }
+    /* Position the cart icon inside header */
+    .header-right .ec-cart-widget {
+      width: auto !important;
     }
     /* Modal styles */
     .modal {
@@ -402,8 +428,16 @@
 </head>
 <body>
 
-
-<h1>Custom Cut and Machined Aluminium Extrusion Ordering Tool</h1>
+<!-- Tool Header -->
+<header class="tool-header">
+  <div class="header-left">3DPrintronics</div>
+  <h1 class="header-title">
+    Custom Cut and Machined Aluminium Extrusion Ordering Tool
+  </h1>
+  <div class="header-right">
+    <div class="ec-cart-widget"></div>
+  </div>
+</header>
 
 <!-- Filter Controls and Product Boxes Side-by-Side -->
 <div class="filter-product-container">
@@ -522,7 +556,7 @@
   </div> <!-- .order-panel -->
 </div> <!-- .flex-container -->
 <!-- Embedded Shopping Bag -->
-<div class="ec-cart-widget"></div>
+<!-- <div class="ec-cart-widget"></div> -->
 <link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/ecwid-addons/apps/ecwid-cart-app/cartapp.css">
 <script src="https://s3.amazonaws.com/ecwid-addons/apps/ecwid-cart-app/cart.js"></script>
 <script type="text/javascript">

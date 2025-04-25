@@ -2,63 +2,58 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>3DPrintronics Tool Header</title>
+  <title>3DPrintronics Tool Header Test</title>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
     }
-    /* Tool Header */
+    /* Unified header bar */
     .tool-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       background-color: #ff8a00;
-      padding: 10px 20px;
+      padding: 12px 24px;
     }
-    .header-left .header-logo-text {
+    .header-left {
       color: #fff;
-      font-size: 1.5rem;
+      font-size: 24px;
       font-weight: bold;
-    }
-    .header-center {
-      flex: 1;
-      text-align: center;
     }
     .header-title {
       margin: 0;
       color: #000;
-      font-size: 1.2rem;
-      white-space: nowrap; /* force one line */
+      font-size: 18px;
+      white-space: nowrap;
     }
     .header-right .ec-cart-widget {
-      /* placeholder styling */
-      font-size: 1.5rem;
+      /* placeholder styling for test */
+      font-size: 24px;
       color: #000;
+      cursor: pointer;
+    }
+    main {
+      padding: 20px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
 
-  <!-- Tool Header -->
+  <!-- Header -->
   <header class="tool-header">
-    <div class="header-left">
-      <span class="header-logo-text">3DPrintronics</span>
-    </div>
-    <div class="header-center">
-      <h1 class="header-title">
-        Custom Cut and Machined Aluminium Extrusion Ordering Tool
-      </h1>
-    </div>
+    <div class="header-left">3DPrintronics</div>
+    <h1 class="header-title">Custom Cut and Machined Aluminium Extrusion Ordering Tool</h1>
     <div class="header-right">
-      <!-- Replace this with your Ecwid cart widget -->
+      <!-- Replace this with your Ecwid cart widget in production -->
       <div class="ec-cart-widget">🛒</div>
     </div>
   </header>
 
-  <!-- Demo content below -->
-  <main style="padding: 20px; text-align: center;">
-    <p>This is a test page showing your new header.</p>
+  <!-- Demo Content -->
+  <main>
+    <p>Below this header your actual tool content will live.</p>
   </main>
 
 </body>
