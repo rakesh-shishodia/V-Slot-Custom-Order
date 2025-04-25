@@ -1082,6 +1082,9 @@ return;
         });
         updateTotals();
         pendingProductOptions = null;
+        // Optionally clear modalDetails element
+        $('#modalDetails').text('');
+        $('#successModal').show();
       }
     });
   });
