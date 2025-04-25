@@ -1065,13 +1065,13 @@ return;
   $('#amendOrderBtn').on('click', () => { $('#orderPreviewModal').hide(); });
   $('#proceedOrderBtn').on('click', () => {
     $('#orderPreviewModal').hide();
+    showToast('✅ Successfully added to cart!');
     Ecwid.Cart.addProduct({
       id: selectedExtrusion.productId || selectedExtrusion.ProductId,
       quantity: 1,
       options: pendingProductOptions
     }, function(success) {
       if (success) {
-        showToast('✅ Successfully added to cart!');
         // Reset table to 4 rows
         $('#tableBody').empty();
         for (let i = 0; i < 4; i++) {
