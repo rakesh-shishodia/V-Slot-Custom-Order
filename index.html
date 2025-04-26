@@ -571,18 +571,6 @@
     </div>
   </div> <!-- .order-panel -->
 </div> <!-- .flex-container -->
-<!-- Embedded Shopping Bag -->
-<div class="ec-cart-widget"></div>
-<link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/ecwid-addons/apps/ecwid-cart-app/cartapp.css">
-<script src="https://s3.amazonaws.com/ecwid-addons/apps/ecwid-cart-app/cart.js"></script>
-<script type="text/javascript">
-  Ecwid.init();
-// Toggle the waste policy details on Read More click
-$('#readMoreLink').on('click', function(e) {
-  e.preventDefault();
-  $('#wasteDetails').slideToggle(200);
-});
-</script>
 
 <script>
 
@@ -949,6 +937,14 @@ return;
     });
   });
 </script>
+  <!-- Initialize Ecwid cart and waste-policy toggle -->
+  <script type="text/javascript">
+    Ecwid.init();
+    $('#readMoreLink').on('click', function(e) {
+      e.preventDefault();
+      $('#wasteDetails').slideToggle(200);
+    });
+  </script>
 </body>
 <script>
 (function(VSlot, $) {
