@@ -403,3 +403,7 @@ box-sizing: border-box;
   pointer-events: auto !important;
 }
 </style>
+
+/* Utility classes for toggling visibility */
+.hidden { display: none !important; }
+.modal.open { display: block !important; }
