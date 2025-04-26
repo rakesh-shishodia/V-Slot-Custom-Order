@@ -207,6 +207,9 @@
   .cb-holes-suffix {
     margin-left: 4px;
     white-space: nowrap;
+    font-size: 16px !important;
+    padding: 6px 4px !important;
+    vertical-align: middle;
   }
   /* Make table inputs and selects blend into the cell grid */
   #orderTable input,
@@ -670,126 +673,7 @@ $('#readMoreLink').on('click', function(e) {
       container.append(box);
     });
   }
-  
-  // Generate a single table row of inputs for cut length, holes, and pieces
-  function createRow() {
-    return `
-      <tr>
-        <td>
-          <input type="number" class="cut-length" placeholder="Precisely Cut" min="100" max="3000" 
-            oninput="this.value = this.value.replace(/\D/g, '');" required />
-        </td>
-        <td>
-          <select class="tap-side" required>
-            <option value="none">No Tapping</option>
-            <option value="one">One Side</option>
-            <option value="both">Both Sides</option>
-          </select>
-        </td>
-        <td class="cb-holes-cell">
-          <input type="number" class="cb-holes" value="0" min="0" max="20"
-            onblur="if(this.value < 0 || this.value > 20){this.setCustomValidity('Enter value between 0 to 20');} else {if(this.value===''){this.value='0';} this.setCustomValidity('');} this.reportValidity();"
-            oninput="if(!/^\d*\.?\d*$/.test(this.value)){this.setCustomValidity('Please enter numbers only');} else {this.setCustomValidity('');}" required />
-          <span class="cb-holes-suffix">holes</span>
-        </td>
-        <td>
-          <input type="number" class="num-pcs" placeholder="No. of Pcs" min="1" 
-            oninput="this.value = this.value.replace(/\D/g, '');" required />
-        </td>
-        <td class="row-total-length">0</td>
-        <td>
-          <button type="button" class="reset-row-btn">Reset</button>
-          <button type="button" class="delete-row-btn">Del</button>
-        </td>
-      </tr>
-    `;
-  }
-  
-  // Insert initial rows into the order table on page load
-  const tableBody = document.getElementById('tableBody');
-  for (let i = 0; i < 4; i++) {
-    tableBody.innerHTML += createRow();
-  }
-  
-  // Attach input and reset handlers to a row for live calculation
-  function attachRowListeners(row) {
-    $(row).find('input, select.tap-side').on('input change', function() {
-      // If this is a cut-length field, remove error styling when valid
-      if ($(this).hasClass('cut-length')) {
-        const raw = $(this).val().trim();
-        const v = parseFloat(raw);
-        if (!isNaN(v) && v >= 100 && v <= 3000) {
-          $(this).removeClass('error');
-        }
-        // Hide the form error banner if no more invalid fields
-        if ($('.cut-length.error').length === 0) {
-          $('#formError').hide();
-        }
-      }
-      updateRow($(row));
-      updateTotals();
-    });
-    $(row).find('.reset-row-btn').on('click', function() {
-      $(row).find('input').val('');
-      $(row).find('.tap-side').val("none");
-      $(row).find('.cb-holes').val("0");
-      updateRow($(row));
-      updateTotals();
-    });
-    $(row).find('.delete-row-btn').on('click', function() {
-      $(row).remove();
-      updateTotals();
-    });
-    // Dependent validation: pcs must be ≥1 if cut length is entered
-    $(row).find('.num-pcs').on('blur', function() {
-      const $pcs = $(this);
-      // remove any existing inline message
-      $pcs.next('.field-error').remove();
-      const pcsVal = parseInt($pcs.val(), 10) || 0;
-      const cutVal = parseFloat($pcs.closest('tr').find('.cut-length').val()) || 0;
-      // If a cut length exists and pcs < 1, show error
-      if (cutVal > 0 && pcsVal < 1) {
-        $pcs.addClass('error');
-        $('<div class="field-error">No. of pcs cannot be 0</div>')
-          .insertAfter($pcs)
-          .css({ color: 'red', 'font-size': '12px', 'margin-top': '2px' });
-      } else {
-        $pcs.removeClass('error');
-      }
-    });
-    // Clear error as soon as a valid pcs number is entered
-    $(row).find('.num-pcs').on('input', function() {
-      const $pcs = $(this);
-      if (parseInt($pcs.val(), 10) > 0) {
-        $pcs.removeClass('error');
-        $pcs.next('.field-error').remove();
-      }
-    });
-  }
-  
-  // Attach listeners to existing rows
-  $('#tableBody tr').each(function() {
-    attachRowListeners(this);
-  });
-  
-  // When "Add More Rows" is clicked, append a new row
-  $('#addRowBtn').on('click', function() {
-    $('#tableBody').append(createRow());
-    attachRowListeners($('#tableBody tr:last')[0]);
-  });
-  
-  // "Reset All" clears the table and resets totals
-  $('#resetAllBtn').on('click', function() {
-    $('#tableBody').empty();
-    for (let i = 0; i < 4; i++) {
-      $('#tableBody').append(createRow());
-    }
-    $('#tableBody tr').each(function() {
-      attachRowListeners(this);
-    });
-    updateTotals();
-  });
-  
+    
   // Calculate and display a single row’s total length
   function updateRow($row) {
     const cutLength = parseFloat($row.find('.cut-length').val()) || 0;
@@ -861,10 +745,6 @@ $('#readMoreLink').on('click', function(e) {
   
   // (Removed: Event listener moved to end of script)
   
-// Move order table input listener to the end of the script to ensure proper execution
-$('#orderTable').on('input change', 'input, select.tap-side', function() {
-  updateTotals();
-});
   // Handle "Add to Cart" button clicks: build options and call Ecwid API
   $('#addToCartBtn').on('click', function() {
     console.log('Add to Cart clicked, selectedExtrusion:', selectedExtrusion);
@@ -1051,14 +931,7 @@ return;
     }, function(success) {
       console.log('🛒 addProduct callback, success:', success);
       if (success) {
-        // Reset table to 4 rows
-        $('#tableBody').empty();
-        for (let i = 0; i < 4; i++) {
-          $('#tableBody').append(createRow());
-        }
-        $('#tableBody tr').each(function() {
-          attachRowListeners(this);
-        });
+        VSlot.table.init();
         updateTotals();
         // Show cut details in the success modal
         const detailsText = pendingProductOptions && pendingProductOptions["Cut Details"]
@@ -1077,6 +950,194 @@ return;
   });
 </script>
 </body>
+<script>
+(function(VSlot, $) {
+  // Centralized settings for table module
+  const settings = {
+    minLen: 100,
+    maxLen: 3000,
+    initRows: 4
+  };
+  // Cache jQuery selectors for table, add row, and reset all buttons
+  const $tableBody   = $('#tableBody');
+  const $addRowBtn   = $('#addRowBtn');
+  const $resetAllBtn = $('#resetAllBtn');
+  // Utility: debounce to limit frequent calls
+  function debounce(fn, delay) {
+    let timer;
+    return function() {
+      const context = this, args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(() => fn.apply(context, args), delay);
+    };
+  }
+  // Debounced version of updateTotals to prevent layout thrashing
+  const debouncedUpdateTotals = debounce(updateTotals, 100);
+  // Table module for cut orders
+  VSlot.table = {
+    createRow: function() {
+      return `
+        <tr>
+          <td><input type="number" class="cut-length" placeholder="Precisely Cut" min="${settings.minLen}" max="${settings.maxLen}" required /></td>
+          <td><select class="tap-side" required>
+            <option value="none">No Tapping</option>
+            <option value="one">One Side</option>
+            <option value="both">Both Sides</option>
+          </select></td>
+          <td class="cb-holes-cell">
+            <input type="number" class="cb-holes" value="0" min="0" max="20" required />
+            <span class="cb-holes-suffix">holes</span>
+          </td>
+          <td><input type="number" class="num-pcs" placeholder="No. of Pcs" min="1" required /></td>
+          <td class="row-total-length">0</td>
+          <td>
+            <button type="button" class="reset-row-btn">Reset</button>
+            <button type="button" class="delete-row-btn">Del</button>
+          </td>
+        </tr>
+      `;
+    },
+    attachRowListeners: function($row) {
+      // Prevent non-numeric input in cut-length and pcs fields, and remove error when pcs ≥1
+      $row.find('.cut-length, .num-pcs').on('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+        if ($(this).hasClass('num-pcs')) {
+          const v = parseInt(this.value, 10) || 0;
+          if (v >= 1) {
+            $(this).removeClass('error');
+            // Hide the form error banner if no errors remain
+            if ($('.cut-length.error, .num-pcs.error').length === 0) {
+              $('#formError').hide();
+            }
+          }
+        }
+      });
+      // Require at least 1 piece when a cut-length is specified
+      $row.find('.num-pcs').on('blur', function() {
+        const pcsVal = parseInt($(this).val(), 10) || 0;
+        const cutVal = parseFloat($row.find('.cut-length').val()) || 0;
+        if (cutVal > 0 && pcsVal < 1) {
+          $(this).addClass('error');
+          $('#formError')
+            .text("Please enter at least 1 piece for each specified cut length.")
+            .show();
+        }
+      });
+      // Prevent non-numeric input in counter bore holes, reverting to 0 if emptied
+      $row.find('.cb-holes').on('input', function() {
+        const cleaned = this.value.replace(/\D/g, '');
+        this.value = cleaned === '' ? '0' : cleaned;
+      });
+      $row.find('input, select.tap-side').on('input change', function() {
+        // If this is a cut-length field, remove error styling when valid
+        if ($(this).hasClass('cut-length')) {
+          const raw = $(this).val().trim();
+          const v = parseFloat(raw);
+          if (!isNaN(v) && v >= settings.minLen && v <= settings.maxLen) {
+            $(this).removeClass('error');
+          }
+          // Hide the form error banner if no more invalid cut-length fields
+          if ($('.cut-length.error').length === 0) {
+            $('#formError').hide();
+          }
+        }
+        updateRow($row);
+        debouncedUpdateTotals();
+      });
+      $row.find('.reset-row-btn').on('click', function() {
+        $row.find('input').val('');
+        updateRow($row);
+        updateTotals();
+      });
+      $row.find('.delete-row-btn').on('click', function() {
+        $row.remove();
+        updateTotals();
+      });
+    },
+    init: function() {
+      // Delegate all row-specific events to table container
+      $tableBody
+        .on('input change', '.cut-length, .tap-side, .num-pcs', function() {
+          // Numeric-only enforcement for cut-length and pcs
+          if ($(this).is('.cut-length, .num-pcs')) {
+            this.value = this.value.replace(/\D/g, '');
+          }
+          const $row = $(this).closest('tr');
+          // If cut-length, validate range and clear error
+          if ($(this).hasClass('cut-length')) {
+            const v = parseFloat($(this).val()) || 0;
+            if (v >= settings.minLen && v <= settings.maxLen) {
+              $(this).removeClass('error');
+              if ($('.cut-length.error').length === 0) {
+                $('#formError').hide();
+              }
+            }
+          }
+          // If this is the pcs field, remove error styling when valid
+          if ($(this).hasClass('num-pcs')) {
+            const v = parseInt($(this).val(), 10) || 0;
+            if (v >= 1) {
+              $(this).removeClass('error');
+              if ($('.cut-length.error, .num-pcs.error').length === 0) {
+                $('#formError').hide();
+              }
+            }
+          }
+          updateRow($row);
+          debouncedUpdateTotals();
+        })
+        .on('input', '.cb-holes', function() {
+          const cleaned = this.value.replace(/\D/g, '');
+          this.value = cleaned === '' ? '0' : cleaned;
+        })
+        .on('blur', '.num-pcs', function() {
+          const $pcs = $(this);
+          const cutVal = parseFloat($pcs.closest('tr').find('.cut-length').val()) || 0;
+          const pcsVal = parseInt($pcs.val(), 10) || 0;
+          if (cutVal > 0 && pcsVal < 1) {
+            $pcs.addClass('error');
+            $('#formError')
+              .text("Please enter at least 1 piece for each specified cut length.")
+              .show();
+          }
+        })
+        .on('click', '.reset-row-btn', function() {
+          const $row = $(this).closest('tr');
+          $row.find('input').val('');
+          updateRow($row);
+          updateTotals();
+        })
+        .on('click', '.delete-row-btn', function() {
+          $(this).closest('tr').remove();
+          updateTotals();
+        });
+
+      // Add More Rows button handler
+      $addRowBtn.on('click', () => {
+        const $new = $(this.createRow());
+        $tableBody.append($new);
+        debouncedUpdateTotals();
+      });
+
+      // Reset All button handler
+      $resetAllBtn.on('click', () => {
+        const resetHtml = Array(settings.initRows).fill(this.createRow()).join('');
+        $tableBody.html(resetHtml);
+        debouncedUpdateTotals();
+      });
+      // Render initial rows according to settings
+      const rowsHtml = Array(settings.initRows).fill(this.createRow()).join('');
+      $tableBody.html(rowsHtml);
+    }
+  };
+  window.VSlot = VSlot;
+})(window.VSlot = window.VSlot || {}, jQuery);
+
+// Initialize table on DOM ready
+$(function() {
+  VSlot.table.init();
+});
+</script>
 <script>
 (function(VSlot, $) {
   // Filter module for extrusion selector
