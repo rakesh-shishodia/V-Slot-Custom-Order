@@ -15,6 +15,7 @@ h1 {
   display: inline-block;
   width: 220px;
   padding: 10px;
+  height: 88px;
   margin: 5px;
   background-color: #F9F9F9;
   border: 1px solid #CCCCCC;
@@ -367,18 +368,25 @@ box-sizing: border-box;
   flex: 1;
   max-width: 280px;
   border: 1px solid #CCCCCC;
-  padding: 10px;
+  padding: 5px;
   box-sizing: border-box;
   align-self: stretch;
+  max-height: 250px;
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
 .extrusion-selector {
   flex: 3;
   display: flex;
   flex-wrap: wrap;
   border: 1px solid #CCCCCC;
-  padding: 10px;
+  padding: 5px;
   box-sizing: border-box;
   align-self: stretch;
+  max-height: 250px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  overflow-y: auto;
 }
 /* Titles for filter and selector panels */
 .filter-title,
