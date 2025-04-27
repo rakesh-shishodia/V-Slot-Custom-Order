@@ -443,18 +443,7 @@ return;
         .css('color', 'red');
     });
   });
-  // Initialize SimpleLightbox and keep reference for refresh
-  var detailLightbox;
-  $(function() {
-    detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
-      captions: false,
-      nav: true,
-      close: true,
-      docClose: true,
-      enableKeyboard: true,
-      showCounter: false
-    });
-  });
+</script>
 </script>
 
 <!-- Order Preview Modal -->
@@ -523,14 +512,7 @@ return;
     });
   });
 </script>
-  <!-- Initialize Ecwid cart and waste-policy toggle -->
-  <script type="text/javascript">
-    Ecwid.init();
-    $('#readMoreLink').on('click', function(e) {
-      e.preventDefault();
-      $('#wasteDetails').slideToggle(200);
-    });
-  </script>
+  <!-- The following scripts are initialized at the end of the file. -->
 </body>
 <script>
 (function(VSlot, $) {
@@ -715,9 +697,28 @@ return;
   window.VSlot = VSlot;
 })(window.VSlot = window.VSlot || {}, jQuery);
 
-// Initialize table on DOM ready
+</script>
+<script>
 $(function() {
+  // Initialize SimpleLightbox
+  detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
+    captions: false,
+    nav: true,
+    close: true,
+    docClose: true,
+    enableKeyboard: true,
+    showCounter: false
+  });
+
+  // Initialize ordering table
   VSlot.table.init();
+
+  // Initialize Ecwid cart and waste-policy toggle
+  Ecwid.init();
+  $('#readMoreLink').on('click', function(e) {
+    e.preventDefault();
+    $('#wasteDetails').slideToggle(200);
+  });
 });
 </script>
 <script>
