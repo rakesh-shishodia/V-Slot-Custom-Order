@@ -182,12 +182,13 @@ EcwidData.fetchAll()
     config.standardLengths = EcwidData.standardLengths;
     // Initialize filter module
     VSlot.filters.init(config.extrusions);
-    // Set default thumbnail
-    $('.detail-thumb').attr('src',
-      'https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/3963393856.png'
-    );
     // Populate selector and update totals
     populateExtrusionBoxes(config.extrusions);
+    // Auto-select first extrusion on page load
+    const $firstBox = $('#extrusionSelector .extrusion-box').first();
+    if ($firstBox.length) {
+      $firstBox.addClass('selected').trigger('click');
+    }
     updateTotals();
   })
   .catch(err => console.error('EcwidData.fetchAll() failed:', err));
