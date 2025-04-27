@@ -6,6 +6,8 @@
   <link rel="stylesheet" href="styles.css">  
   <!-- Include jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Ecwid data loader (our new module) -->
+  <script src="ecwid-data.js"></script>
   <!-- Include Ecwid script for Cart API (store id: 2442119) -->
   <script src="https://app.ecwid.com/script.js?2442119&data_platform=code&data_date=2025-03-02" charset="utf-8"></script>
   <!-- Include review script to show product review summary-->
@@ -177,21 +179,22 @@
   let selectedExtrusion = null;  // Currently selected extrusion object
   const additionalCosts = { m5Tapping: 30, counterBore: 70 };
 
-  // Load configuration (extrusions, standardLengths, additionalCosts) from JSON
-  $.getJSON('extrusions.json', function(data) {
-    config = data;
+  // Load configuration from Ecwid instead of extrusions.json
+EcwidData.fetchAll()
+  .then(data => {
+    config.extrusions      = data;
+    config.standardLengths = EcwidData.standardLengths;
     // Initialize filter module
     VSlot.filters.init(config.extrusions);
-    // Set default thumbnail to fixed image on page load
-    $('.detail-thumb').attr('src', 'https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/3963393856.png');
-    // Load default description (V‑Slot family) on initial page load
-    $('.description-container').load('partials/vs-slot-description.html');
+    // Set default thumbnail
+    $('.detail-thumb').attr('src',
+      'https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/3963393856.png'
+    );
+    // Populate selector and update totals
     populateExtrusionBoxes(config.extrusions);
     updateTotals();
-  }).fail(function(jqxhr, textStatus, error) {
-    console.error("Error loading extrusions.json: " + textStatus + ", " + error);
-  });
-  
+  })
+  .catch(err => console.error('EcwidData.fetchAll() failed:', err));
   // Dynamically build the extrusion selector buttons
   function populateExtrusionBoxes(items) {
     const list = items || config.extrusions;
@@ -246,9 +249,8 @@
           enableKeyboard: true,
           showCounter: false
         });
-        // Load appropriate description partial based on selected extrusion family
-        const family = item.id.startsWith('CB-') ? 'c-beam' : 'vs-slot';
-        $('.description-container').load(`partials/${family}-description.html`);
+        // Insert description HTML from Ecwid data
+        $('.description-container').html(item.descriptionHtml);
         $('#selectedMessage').text(`You are ordering ${selectedExtrusion.name} - Enter Details in Table Below`);
         // Recalculate aggregate totals when extrusion selection changes.
         updateTotals();
@@ -432,10 +434,10 @@ $('#orderPreviewModal').show();
 return;
   
     // Optionally, log the product options before adding to cart.
-    console.log('Adding product with options:', productOptions);
+    console.log('Adding product with options:', pendingProductOptions);
     
     Ecwid.Cart.addProduct({
-      id: selectedExtrusion.productId || selectedExtrusion.ProductId,
+      id: selectedExtrusion.id,
       quantity: 1,
       options: pendingProductOptions
     },
@@ -508,7 +510,7 @@ return;
     console.log('Proceed clicked')
     $('#orderPreviewModal').hide();
     Ecwid.Cart.addProduct({
-      id: selectedExtrusion.productId || selectedExtrusion.ProductId,
+      id: selectedExtrusion.id,
       quantity: 1,
       options: pendingProductOptions
     }, function(success) {
@@ -752,9 +754,9 @@ $(function() {
       ];
       groups.forEach(g => {
         const container = $(g.selector).empty().append(`<strong>${g.label}</strong>`);
-        const values = [...new Set(this.items.map(e => e[g.field]))];
+        const values = [...new Set(this.items.map(e => e.attributes[g.field]))];
         values.forEach(val => {
-          const count = this.items.filter(e => e[g.field] === val).length;
+          const count = this.items.filter(e => e.attributes[g.field] === val).length;
           const pill = $(`<span class="filter-pill" data-field="${g.field}" data-value="${val}">${val} (${count})</span>`);
           pill.on('click', () => this.toggleFilter(g.field, val, pill));
           container.append(pill);
@@ -774,9 +776,9 @@ $(function() {
     },
     applyFilters: function() {
       const filtered = this.items.filter(e =>
-        (this.selectedFilters.type.size === 0   || this.selectedFilters.type.has(e.type))   &&
-        (this.selectedFilters.series.size === 0 || this.selectedFilters.series.has(e.series)) &&
-        (this.selectedFilters.color.size === 0  || this.selectedFilters.color.has(e.color))
+        (this.selectedFilters.type.size === 0   || this.selectedFilters.type.has(e.attributes.type))   &&
+        (this.selectedFilters.series.size === 0 || this.selectedFilters.series.has(e.attributes.series)) &&
+        (this.selectedFilters.color.size === 0  || this.selectedFilters.color.has(e.attributes.color))
       );
       populateExtrusionBoxes(filtered);
     }

@@ -62,61 +62,56 @@
       <div class="image-cell"><img id="img3" src="" alt=""></div>
     </div>
     <div class="description" id="description"></div>
+    <div class="attributes" id="attributes"></div>
   </div>
-
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    const authToken = 'public_ZYgkrwhM5YFDC4jU3PmTuzqkRRXmbamH';
-    const productIds = [720289517, 720294011];
-
-    $(function() {
-      const fetches = productIds.map(id =>
-        fetch(`https://app.ecwid.com/api/v3/2442119/products/${id}?responseFields=id,sku,inStock,name,price,media,categories,description`, {
-          headers: { 'Authorization': 'Bearer ' + authToken }
-        }).then(res => res.json())
-      );
-
-      Promise.all(fetches)
-        .then(items => {
-          const $selector = $('#productSelector');
-
-          items.forEach(item => {
-            const pricePerM = (item.price * 2).toFixed(0);
-            const $box = $(`
-              <div class="product-box" data-id="${item.id}">
-                <div class="product-name">${item.name}</div>
-                <div class="price-pill">₹${pricePerM}/m</div>
-              </div>
-            `);
-            $selector.append($box);
-
-            $box.on('click', () => {
-              $('.product-box').removeClass('selected');
-              $box.addClass('selected');
-              showDetails(item);
-            });
-          });
-        })
-        .catch(err => console.error('Fetch error:', err));
-    });
-
-    function showDetails(item) {
-      // sort images by orderBy, take first four
-      const imgs = (item.media.images || [])
-        .sort((a,b) => a.orderBy - b.orderBy)
-        .slice(0,4);
-
-      for (let i = 0; i < 4; i++) {
-        const url = imgs[i]?.image400pxUrl || '';
-        $('#img' + i).attr('src', url);
-      }
-
-      // insert description HTML
-      $('#description').html(item.description || '');
-
-      $('#detailsPanel').show();
+<script src="ecwid-data.js"></script>
+<script>
+  // fetch and render products on page load
+  EcwidData.fetchAll()
+    .then(items => {
+      const selector = document.getElementById('productSelector');
+      items.forEach(item => {
+        const box = document.createElement('div');
+        box.className = 'product-box';
+        box.dataset.id = item.id;
+        const pricePerM = Math.round(item.baseCostPerMm * 1000);
+        box.innerHTML = `
+          <div class="product-name">${item.name}</div>
+          <div class="price-pill">₹${pricePerM}/m</div>
+        `;
+        selector.appendChild(box);
+        box.addEventListener('click', () => {
+          document.querySelectorAll('.product-box').forEach(b => b.classList.remove('selected'));
+          box.classList.add('selected');
+          showDetails(item);
+        });
+      });
+      // auto-select first product
+      const firstBox = selector.querySelector('.product-box');
+      if (firstBox) firstBox.click();
+    })
+    .catch(err => console.error('EcwidData fetchAll error:', err));
+  
+  function showDetails(item) {
+    // images
+    const imgs = item.images.slice(0, 4);
+    for (let i = 0; i < 4; i++) {
+      document.getElementById('img' + i).src = imgs[i] || '';
     }
-  </script>
+    // description
+    document.getElementById('description').innerHTML = item.descriptionHtml;
+    // attributes display
+    const attrDiv = document.getElementById('attributes');
+    attrDiv.innerHTML = `
+      <p><strong>Type:</strong> ${item.attributes.type}</p>
+      <p><strong>Series:</strong> ${item.attributes.series}</p>
+      <p><strong>Color:</strong> ${item.attributes.color}</p>
+      <p><strong>Holes per side:</strong> ${item.holesPerSide}</p>
+    `;
+    // show panel
+    document.getElementById('detailsPanel').style.display = 'block';
+  }
+</script>
 
 </body>
 </html>
