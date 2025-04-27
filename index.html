@@ -64,16 +64,14 @@
         <span class="zoom-icon">🔍</span>
       </div>
       <div class="image-cell">
-        <a href="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/1887521108.jpg">
-          <img src="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/1887521108.jpg"
-               alt="Common image 1" />
+        <a href="" class="detail-image-link">
+          <img src="" alt="" />
         </a>
         <span class="zoom-icon">🔍</span>
       </div>
       <div class="image-cell">
-        <a href="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/943723998.jpg">
-          <img src="https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/943723998.jpg"
-               alt="Common image 2" />
+        <a href="" class="detail-image-link">
+          <img src="" alt="" />
         </a>
         <span class="zoom-icon">🔍</span>
       </div>
@@ -171,11 +169,9 @@
 
 <script>
 
-  // Configuration object loaded from extrusions.json
   let config = {};
   let pendingProductOptions = null;
   // Global variables
-  let extrusionData = [];  // Loaded from extrusions.json
   let selectedExtrusion = null;  // Currently selected extrusion object
   const additionalCosts = { m5Tapping: 30, counterBore: 70 };
 
@@ -215,28 +211,21 @@ EcwidData.fetchAll()
         $('.extrusion-box').removeClass('selected');
         $(this).addClass('selected');
         selectedExtrusion = item;
-        // Update details-panel thumbnail
-        if (item.thumbnailUrl) {
-          $('.detail-thumb').attr('src', item.thumbnailUrl);
-          $('.detail-thumb-link').attr('href', item.thumbnailUrl);
-        } else {
-          // fallback to default image
-          const defaultUrl = 'https://d2j6dbq0eux0bg.cloudfront.net/images/2442119/3963393856.png';
-          $('.detail-thumb').attr('src', defaultUrl);
-          $('.detail-thumb-link').attr('href', defaultUrl);
-        }
-        // Update top-right detail image from JSON
-        const secondImageUrl = item.secondaryImageUrl || '';
-        const $secondCell = $('.details-panel .image-grid .image-cell').eq(1);
-        const $secondLink = $secondCell.find('a');
-        const $secondImg  = $secondLink.find('img');
-        if (secondImageUrl) {
-          $secondLink.attr('href', secondImageUrl);
-          $secondImg.attr('src', secondImageUrl);
-        } else {
-          $secondLink.removeAttr('href');
-          $secondImg.attr('src', '');
-        }
+        // Populate all four detail images from Ecwid data
+        const imgs = item.images; 
+        const $cells = $('.details-panel .image-grid .image-cell');
+        $cells.each(function(idx) {
+          const url = imgs[idx] || '';
+          const $link = $(this).find('a');
+          const $img  = $link.find('img');
+          if (url) {
+            $link.attr('href', url);
+            $img.attr('src', url);
+          } else {
+            $link.removeAttr('href');
+            $img.attr('src', '');
+          }
+        });
         // Reinitialize SimpleLightbox to include updated anchors
         if (detailLightbox && typeof detailLightbox.destroy === 'function') {
           detailLightbox.destroy();
