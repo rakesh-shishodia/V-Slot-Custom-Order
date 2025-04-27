@@ -93,12 +93,13 @@ button:hover {
 }
 /* Tool header bar */
 .tool-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
   background-color: #ff8a00;
-  padding: 12px 24px;
+  padding: 8px 20px;
   box-sizing: border-box;
+  min-height: 72px;
 }
 .header-left {
   color: #fff;
@@ -116,6 +117,9 @@ button:hover {
 /* Position the cart icon inside header */
 .header-right .ec-cart-widget {
   width: auto !important;
+}
+.header-right {
+  min-width: 100px;
 }
 /* Modal styles */
 .modal {
