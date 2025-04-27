@@ -1,4 +1,3 @@
-
 <style>
 /* Basic styling for layout */
 body {
@@ -380,16 +379,19 @@ box-sizing: border-box;
   margin-top: 5px;
 }
 .extrusion-selector {
-  flex: 3;
-  display: flex;
-  flex-wrap: wrap;
+  position: relative;
+  padding-top: 80px;
+  display: grid;
+  grid-template-columns: repeat(4, 220px);
+  grid-template-rows: repeat(2, 88px);
+  grid-auto-rows: 88px;
+  gap: 10px;
   border: 1px solid #CCCCCC;
   padding: 5px;
   box-sizing: border-box;
   align-self: stretch;
-  max-height: 250px;
-  margin-bottom: 5px;
-  margin-top: 5px;
+  max-height: 196px;
+  margin: 5px 0;
   overflow-y: auto;
 }
 /* Titles for filter and selector panels */
@@ -419,3 +421,19 @@ box-sizing: border-box;
 /* Utility classes for toggling visibility */
 .hidden { display: none !important; }
 .modal.open { display: block !important; }
+
+/* Wrapper to center the selector title above the grid */
+.selector-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.extrusion-selector .selector-title {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  width: auto;
+  z-index: 1;
+}
