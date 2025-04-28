@@ -42,9 +42,13 @@
     <button type="button" id="clearFiltersBtn">Clear Filters</button>
   </div>
   <!-- Extrusion Selector -->
-  <div class="extrusion-selector" id="extrusionSelector">
-    <div class="selector-title">Select Extrusion</div>
-    <!-- Extrusion boxes will be dynamically populated from extrusions.json -->
+  <div class="selector-panel">
+    <h2 class="selector-title">Select Extrusion</h2>
+  <div class="extrusion-selector-wrapper">
+    <div class="extrusion-selector" id="extrusionSelector">
+      <!-- Extrusion boxes will be dynamically populated from extrusions.json -->
+    </div>
+  </div>
   </div>
 </div> <!-- /.filter-product-container -->
 <div class="flex-container">
@@ -199,7 +203,6 @@ EcwidData.fetchAll()
     // Clear existing selector boxes
     container.empty();
     // Re-add selector title
-    container.append('<div class="selector-title">Select Extrusion</div>');
     list.forEach(function(item) {
       const pricePerMeter = (item.baseCostPerMm * 1000).toFixed(0);
       const box = $(`
