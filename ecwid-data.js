@@ -6,7 +6,7 @@
     // in the order you want them displayed
     const productIds = [
       729803262, 743849525, 745113497, 745701420,
-      745719971, 745744298, 745719976, 745719977
+      745719971, 745744298, 745719976, 745719977, 409974620
     ];
     // standard lengths formerly in extrusions.json
     const standardLengths = [

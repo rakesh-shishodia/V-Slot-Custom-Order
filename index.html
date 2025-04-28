@@ -34,13 +34,15 @@
 <!-- Filter Controls and Product Boxes Side-by-Side -->
 <div class="filter-product-container">
   <!-- Filter Controls -->
-  <div id="filterControls">
-    <div class="filter-title">Filter</div>
-    <div class="filter-group" id="typeFilters"><strong>Type:</strong></div>
-    <div class="filter-group" id="seriesFilters"><strong>Series:</strong></div>
-    <div class="filter-group" id="colorFilters"><strong>Colour:</strong></div>
-    <button type="button" id="clearFiltersBtn">Clear Filters</button>
-  </div>
+  <div class="filter-panel">
+    <h2 class="filter-title">Filter</h2>
+    <div id="filterControls">
+      <div class="filter-group" id="typeFilters"><strong>Type:</strong></div>
+      <div class="filter-group" id="seriesFilters"><strong>Series:</strong></div>
+      <div class="filter-group" id="colorFilters"><strong>Colour:</strong></div>
+      <button type="button" id="clearFiltersBtn">Clear Filters</button>
+    </div> <!-- /#filterControls -->
+  </div> <!-- /.filter-panel -->
   <!-- Extrusion Selector -->
   <div class="selector-panel">
     <h2 class="selector-title">Select Extrusion and Enter Details in Table Below</h2>
@@ -85,7 +87,6 @@
     </div>
   </div>
   <div class="order-panel">
-    <div id="selectedMessage">Order in Table Below</div>
 
 <!-- Custom Ordering Table -->
 <div id="formError" class="error-banner" style="display:none;"></div>
@@ -244,7 +245,6 @@ EcwidData.fetchAll()
         });
         // Insert description HTML from Ecwid data
         $('.description-container').html(item.descriptionHtml);
-        $('#selectedMessage').text(`You are ordering ${selectedExtrusion.name} - Enter Details in Table Below`);
         // Recalculate aggregate totals when extrusion selection changes.
         updateTotals();
       });
@@ -442,9 +442,6 @@ return;
     },
     function(error) {
       console.error('Add to Cart error callback, error:', error);
-      $('#selectedMessage')
-        .text("Failed to add product to cart.")
-        .css('color', 'red');
     });
   });
 </script>
@@ -509,9 +506,6 @@ return;
         $('#successModal').show();
       } else {
         console.error('Add to cart failed.');
-        $('#selectedMessage')
-          .text("Failed to add product to cart. Please try again.")
-          .css('color', 'red');
       }
     });
   });

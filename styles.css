@@ -42,6 +42,7 @@ h1 {
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 10px;
   margin-bottom: 10px;
   word-wrap: break-word;
 }
@@ -160,7 +161,7 @@ align-items: flex-start;
 .details-panel {
 flex: 1;
 max-width: 40%;
-margin-top: 35px;
+margin-top: 10px;
 }
 .order-panel {
 flex: 2;
@@ -359,14 +360,16 @@ box-sizing: border-box;
 }
 #filterControls {
   flex: 1;
-  max-width: 280px;
+  max-width: 340px;
+  min-height: 220px;    /* exactly the final height you know it will become */
+  min-width: 340px;     /* same as the populated state */
   border: 1px solid #CCCCCC;
   padding: 5px;
   box-sizing: border-box;
   align-self: stretch;
-  max-height: 250px;
-  margin-bottom: 5px;
-  margin-top: 5px;
+  max-height: 220px;
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
 .extrusion-selector {
   position: relative;
@@ -393,20 +396,11 @@ box-sizing: border-box;
   display: flex;
   align-items: center;       /* vertical centering of the grid */
   justify-content: center;   /* horizontal centering */
-  width: fit-content;              /* fill the parent so centering works */
+  width: 950px;              /* fill the parent so centering works */
   height: 220px;             /* exactly two rows × 88px + gaps */
   margin: 0 auto;            /* center the wrapper in its container */
   border: 1px solid #CCCCCC;
   box-sizing: border-box;
-}
-/* Titles for filter and selector panels */
-.filter-title {
-  flex: 0 0 100%;
-  text-align: center;
-  margin-bottom: 10px;
-  font-size: 18px;
-  color: #333;
-  font-weight: bold;
 }
 /* Ensure lightbox overlay and close button are on top and clickable */
 .sl-overlay {
@@ -439,4 +433,24 @@ box-sizing: border-box;
   font-size: 18px;
   color: #333;
   font-weight: bold;
+}
+/* Center the Filter title above its controls */
+.filter-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.filter-panel .filter-title {
+  margin: 5px;
+  text-align: center;
+  font-size: 18px;
+  color: #333;
+  font-weight: bold;
+}
+
+/* Make sure the individual filter groups still align flush left under the centered title */
+#filterControls .filter-group {
+  width: 100%;
+  text-align: left;
 }
