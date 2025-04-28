@@ -6,6 +6,8 @@ body {
 }
 h1 {
   text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 24px;
 }
 .extrusion-box {
   display: inline-block;
@@ -94,7 +96,7 @@ button:hover {
   grid-template-columns: auto 1fr auto;
   align-items: center;
   background-color: #ff8a00;
-  padding: 8px 20px;
+  padding: 4px 20px;
   box-sizing: border-box;
   min-height: 72px;
 }
@@ -278,6 +280,8 @@ margin: 4px 0 0 0;          /* top margin only, no left margin */
 }
 .image-cell {
   border: 1px solid #ccc;
+  min-width: 236px;
+  min-height: 236px;
   overflow: hidden;
 }
 .image-cell img {
@@ -431,7 +435,8 @@ box-sizing: border-box;
   margin: 5px;
   text-align: center;
   font-size: 18px;
-  color: #333;
+  color: #ee1919;
+  ;
   font-weight: bold;
 }
 /* Center the Filter title above its controls */
@@ -445,7 +450,7 @@ box-sizing: border-box;
   margin: 5px;
   text-align: center;
   font-size: 18px;
-  color: #333;
+  color: #ee1919;
   font-weight: bold;
 }
 
@@ -453,4 +458,22 @@ box-sizing: border-box;
 #filterControls .filter-group {
   width: 100%;
   text-align: left;
+}
+
+/* Quick & dirty: lock in dimensions to prevent layout shifts */
+.details-panel {
+  /* adjust these values as needed */
+  min-width: 486px;
+  min-height: 800px;
+}
+
+#orderTable {
+  /* ensure table area reserves space */
+  min-width: 970px;
+}
+
+.totals-table {
+  /* prevent aggregate table from collapsing */
+  min-width: 600px;
+  min-height: 80px;
 }
