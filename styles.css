@@ -376,21 +376,28 @@ box-sizing: border-box;
   grid-auto-rows: 88px;
   gap: 10px;
   border: 0px solid #CCCCCC;
-  padding: 5px;
+  padding-top: 0px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
   box-sizing: border-box;
-  max-height: 220px;
-  margin-bottom: 10px;
-  margin-top: 0px;
   margin-right: 10px;
-  overflow-y: auto;
+  margin-top: 0px;
+  height: auto;              /* let the wrapper set the height */
+  max-height: 100%;          /* fill the wrapper vertically */
+  overflow-y: auto;          /* scroll if more than two rows */
   overflow-x: hidden;
   justify-content: center;
-  align-content: center;
 }
 .extrusion-selector-wrapper {
+  display: flex;
+  align-items: center;       /* vertical centering of the grid */
+  justify-content: center;   /* horizontal centering */
+  width: fit-content;              /* fill the parent so centering works */
+  height: 220px;             /* exactly two rows × 88px + gaps */
+  margin: 0 auto;            /* center the wrapper in its container */
   border: 1px solid #CCCCCC;
-  width: max-content;
-  margin: 0 auto;
+  box-sizing: border-box;
 }
 /* Titles for filter and selector panels */
 .filter-title {
