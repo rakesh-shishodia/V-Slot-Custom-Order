@@ -124,12 +124,14 @@
         <th>Total Length <br> Ordered</th>
         <th>Rounded Off Length <br> (to nearest 500mm)</th>
         <th>Cost of Rounded Off Length</th>
-        <th>Discount (5% on 2000mm, 10% on 4000mm)</th>
-        <th>Total M5 Taps</th>
+        <!-- <th>Discount (2.5-4m:5%, 4.5-8m:10%, Above 8.5m:15%)</th> -->
+        <th>Total <br>M5 Taps</th>
         <th>Cost M5 Taps <br>(₹30/hole)</th>
-        <th>Total CB Holes</th>
+        <th>Total <br>CB Holes</th>
         <th>Cost CB Holes<br>(₹70/hole)</th>
-        <th>Final Cost Payable</th>
+        <th>Subtotal</th>
+        <th>GST<br>@18%</th>
+        <th>Total</th>
       </tr>
     </thead>
     <tbody>
@@ -137,12 +139,14 @@
         <td id="totalOrdered">0</td>
         <td id="roundedLength">0</td>
         <td id="costExtrusions">0</td>
-        <td id="discount">0</td>
+        <!-- <td id="discount">0</td> -->
         <td id="totalM5Count">0</td>
         <td id="totalM5Cost">0</td>
         <td id="totalCBCount">0</td>
         <td id="totalCBCost">0</td>
-        <td id="finalCost">0</td>
+        <td id="subtotal">0</td>
+        <td id="GST">0</td>
+        <td id="Total">0</td>
       </tr>
     </tbody>
   </table>
@@ -167,7 +171,7 @@
         • You specify: 2 pcs of 1000 mm and 1 pc of 1200 mm (total 3200 mm).<br>
         • We round up and bill 3500 mm at your per-metre rate.<br>
         • You receive 2 pcs of 1000 mm and 1 pc of 1200 mm plus a 300 mm off-cut which you can use for jigs, fixtures, or future tweaks.<br><br>
-        This policy keeps our material costs predictable and our prices competitive—while ensuring you never pay for wasted material.
+        This policy keeps our material costs predictable and our prices competitive—while ensuring you never Total for wasted material.
       </div>
     </div>
   </div> <!-- .order-panel -->
@@ -311,8 +315,15 @@ EcwidData.fetchAll()
     $('#totalM5Cost').text(totalM5Cost.toFixed(2));
     $('#totalCBCost').text(totalCBCost.toFixed(2));
   
-    const finalCost = costExtrusions + totalM5Cost + totalCBCost;
-    $('#finalCost').text(finalCost.toFixed(2));
+    const subtotal = costExtrusions + totalM5Cost + totalCBCost;
+    $('#subtotal').text(subtotal.toFixed(2));
+
+    const GST = subtotal * .18;
+    $('#GST').text(GST.toFixed(2));
+
+    const Total = subtotal + GST;
+    $('#Total').text(Total.toFixed(2));
+
   
     // Disable Add to Cart if aggregate rounded length is 0.
     if (roundedLength === 0) {
