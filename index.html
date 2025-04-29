@@ -9,6 +9,12 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- Ecwid data loader (our new module) -->
   <script src="ecwid-data.js"></script>
+  <!-- Redirect all Ecwid cart/search/menu clicks to the full store page -->
+  <script>
+    // Redirect all Ecwid cart/search/menu clicks to the full store page
+    var ecwid_ProductBrowserURL = "https://www.3dprintronics.com/products/cart";
+  </script>
+  <!-- re-direct cart clicks to full page -->
   <!-- Include Ecwid script for Cart API (store id: 2442119) -->
   <script src="https://app.ecwid.com/script.js?2442119&data_platform=code&data_date=2025-03-02" charset="utf-8"></script>
   <!-- Include review script to show product review summary-->
@@ -28,7 +34,7 @@
     Custom Cut and Machined Aluminium Extrusion Orders in India
   </h1>
   <div class="header-right">
-    <div class="ec-cart-widget"></div>
+      <div class="ec-cart-widget"></div>
   </div>
 </header>
 
