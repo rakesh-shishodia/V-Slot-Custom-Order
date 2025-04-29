@@ -1,7 +1,7 @@
 <style>
 /* Basic styling for layout */
 body {
-  font-family: Arial, sans-serif;
+  font-family: sans-serif;
   margin: 20px;
 }
 h1 {
@@ -49,9 +49,10 @@ table {
   word-wrap: break-word;
 }
 th, td {
-  border: 1px solid #ccc;
+  border: 1px solid rgb(26, 122, 196);
   padding: 6px;
   text-align: center;
+  font-family: sans-serif;
 }
 th {
   background-color: #f2f2f2;
@@ -104,7 +105,7 @@ button:hover {
   color: #fff;
   font-size: 24px;
   font-weight: bold;
-  font-family: Arial, sans-serif;
+  font-family: sans-serif;
 }
 /* Position the cart icon inside header */
 .header-right .ec-cart-widget {
@@ -221,12 +222,31 @@ background: #ffecec !important; /* optional: light red bg for clarity */
 .totals-table th:nth-child(1) { width: 200px; }  /* Total Length Ordered */
 .totals-table th:nth-child(2) { width: 200px; }  /* Rounded Off Length */
 .totals-table th:nth-child(3) { width: 160px; }  /* Cost of Rounded Off Length */
-.totals-table th:nth-child(4) { width: 200px; }  /* Discount */
-.totals-table th:nth-child(5) { width: 80px; }  /* Total No. of M5 Tapping */
-.totals-table th:nth-child(6) { width: 100px; }  /* Total Cost M5 Tapping */
-.totals-table th:nth-child(7) { width: 80px; }  /* Total No. of CB Holes */
-.totals-table th:nth-child(8) { width: 100px; }  /* Total Cost CB Holes */
-.totals-table th:nth-child(9) { width: 140px; }  /* Final Cost Payable */
+.totals-table th:nth-child(4) { width: 80px; }  /* Total No. of M5 Tapping */
+.totals-table th:nth-child(5) { width: 80px; }  /* Total Cost M5 Tapping */
+.totals-table th:nth-child(6) { width: 80px; }  /* Total No. of CB Holes */
+.totals-table th:nth-child(7) { width: 80px; }  /* Total Cost CB Holes */
+.totals-table th:nth-child(8) { width: 140px; }  /* Subtotal */
+.totals-table th:nth-child(9) { width: 140px; }  /* GST */
+.totals-table th:nth-child(10) { width: 160px; }  /* Total */
+.totals-table th {
+  background-color: #ffd099;
+  color: #080202;
+  font-family: sans-serif;
+  font-weight: bold;
+  border-width: 1px;
+  border-color: rgb(26, 122, 196);
+}
+
+.totals-table td {
+  background-color: #e0f2f1;
+  color: #080202;
+  font-family: sans-serif;
+  font-weight: bold;
+  border-width: 1px;
+  border-color: rgb(26, 122, 196);
+}
+
 /* Price per meter under each extrusion box */
 .extrusion-box .price-per-meter {
   font-size: 14px;
@@ -333,6 +353,7 @@ margin: 4px 0 0 0;          /* top margin only, no left margin */
   color: #006064;
   cursor: pointer;
   user-select: none;
+  font-family: sans-serif;
   font-size: 14px;
 }
 .filter-pill.selected {
