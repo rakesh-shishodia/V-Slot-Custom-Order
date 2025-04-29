@@ -61,6 +61,7 @@
             return {
               id:               item.id,
               name:             item.name,
+              inStock:          item.inStock,
               images:           imgs.map(i => i.image400pxUrl || ''),
               thumbnailUrl:     imgs[0]?.image400pxUrl || '',
               secondaryImageUrl: imgs[1]?.image400pxUrl || '',
