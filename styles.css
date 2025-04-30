@@ -573,3 +573,7 @@ box-sizing: border-box;
   right: 8px;
   z-index: 10;
 }
+.ecwid-ProductBrowserPopup, .ecwid-popup
+.ecwid-ProductBrowserPopup .popupContent {
+  background-color: #ffffff !important;
+}
