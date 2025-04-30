@@ -249,6 +249,10 @@ EcwidData.fetchAll()
         $('.extrusion-box').removeClass('selected');
         $(this).addClass('selected');
         selectedExtrusion = item;
+        // Disable Add to Cart if the selected extrusion is out of stock
+        if (!item.inStock) {
+          $('#addToCartBtn').prop('disabled', true);
+        }
         // Populate all four detail images from Ecwid data
         const imgs = item.images; 
         const $cells = $('.details-panel .image-grid .image-cell');
