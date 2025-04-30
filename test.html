@@ -2,109 +2,101 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Scrollable Selector Test</title>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <title>Info-Icon Test</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
-    .filter-controls { margin-bottom: 10px; }
-    .filter-controls label { margin-right: 15px; cursor: pointer; }
-    #selectorContainer {
-      height: 200px;            /* fixed height */
-      width: 600px;
-      border: 1px solid #333;
-      overflow-y: scroll;         /* enable vertical scrolling, always show scrollbar */
-      padding: 10px;
-      box-sizing: border-box;
-    }
-    .item-box {
-      width: 80px;
-      height: 40px;
-      line-height: 40px;
-      margin: 5px;
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    .info-icon {
       display: inline-block;
-      text-align: center;
-      color: #fff;
-      font-weight: bold;
+      width: 16px;
+      height: 16px;
+      margin-left: 4px;
+      vertical-align: middle;
+      cursor: pointer;
+      color: #006064;
+    }
+    /* Modal backdrop */
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 20px;
       border-radius: 4px;
+      max-width: 300px;
+      text-align: left;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
-    /* overflow cue */
-    #selectorContainer {
-      position: relative;
-    }
-    #selectorContainer.has-overflow::after {
-      content: '˅˅';
-      position: absolute;
-      bottom: 4px;
-      left: 50%;
-      transform: translateX(-50%);
+    .modal-close {
+      float: right;
       font-size: 18px;
-      color: rgba(0,0,0,0.3);
-      pointer-events: none;
-      animation: bounce 1s ease-in-out infinite alternate;
-    }
-    @keyframes bounce {
-      from { transform: translateX(-50%) translateY(0); }
-      to   { transform: translateX(-50%) translateY(4px); }
+      cursor: pointer;
+      color: #666;
     }
   </style>
 </head>
 <body>
-  <h2>Filterable, Scrollable Selector Test</h2>
 
-  <div class="filter-controls">
-    <strong>Filter by Color:</strong>
-    <label><input type="checkbox" class="colorFilter" value="red" checked> Red</label>
-    <label><input type="checkbox" class="colorFilter" value="green" checked> Green</label>
-    <label><input type="checkbox" class="colorFilter" value="blue" checked> Blue</label>
-  </div>
+  <h2>Tap &amp; CB Info-Icon Demo</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          M5 Tapping
+          <span class="info-icon" data-info="M5 tapping holes are tapped threads on one or both sides.">
+            <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7" stroke="currentColor" fill="none" stroke-width="2"/><rect x="7.25" y="4" width="1.5" height="1.5"/><rect x="7.25" y="7" width="1.5" height="5"/></svg>
+          </span>
+        </th>
+        <th>
+          Counter Bore Holes
+          <span class="info-icon" data-info="Counter bore holes are recessed to accept bolt heads.">
+            <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7" stroke="currentColor" fill="none" stroke-width="2"/><rect x="7.25" y="4" width="1.5" height="1.5"/><rect x="7.25" y="7" width="1.5" height="5"/></svg>
+          </span>
+        </th>
+        <th>No. of Pcs</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>None</td>
+        <td>2 holes</td>
+        <td>4</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <div id="selectorContainer">
-    <!-- item-boxes will be injected here -->
+  <div class="modal-backdrop" id="infoModal">
+    <div class="modal-content">
+      <span class="modal-close" id="modalClose">&times;</span>
+      <p id="modalText"></p>
+    </div>
   </div>
 
   <script>
-    function updateOverflowCue() {
-      const el = document.getElementById('selectorContainer');
-      if (el.scrollHeight > el.clientHeight) {
-        el.classList.add('has-overflow');
-      } else {
-        el.classList.remove('has-overflow');
-      }
-    }
-
-    // Prepare 30 dummy items with a color attribute
-    const colors = ['red','green','blue'];
-    const items = Array.from({length:30}, (_, i) => ({
-      id: i+1,
-      color: colors[i % colors.length]
-    }));
-
-    // Render a given list of items into the fixed-height container
-    function renderItems(list) {
-      const $c = $('#selectorContainer').empty();
-      list.forEach(item => {
-        const $box = $(`
-          <div class="item-box" style="background-color: ${item.color};">
-            ${item.id}
-          </div>
-        `);
-        $c.append($box);
-      });
-    }
-
-    // On page load: render all items, wire up filters
-    $(function() {
-      renderItems(items);
-      updateOverflowCue();
-
-      $('.colorFilter').on('change', () => {
-        const selected = $('.colorFilter:checked')
-                           .map((_, cb) => cb.value).get();
-        const filtered = items.filter(it => selected.includes(it.color));
-        renderItems(filtered);
-        updateOverflowCue();
+    document.querySelectorAll('.info-icon').forEach(el => {
+      el.addEventListener('click', () => {
+        const msg = el.getAttribute('data-info');
+        document.getElementById('modalText').textContent = msg;
+        document.getElementById('infoModal').style.display = 'flex';
       });
     });
+    document.getElementById('modalClose').addEventListener('click', () => {
+      document.getElementById('infoModal').style.display = 'none';
+    });
+    // clicking outside content closes modal
+    document.getElementById('infoModal').addEventListener('click', e => {
+      if (e.target === e.currentTarget) {
+        e.currentTarget.style.display = 'none';
+      }
+    });
   </script>
+
 </body>
 </html>

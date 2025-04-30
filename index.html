@@ -12,7 +12,7 @@
   <!-- Redirect all Ecwid cart/search/menu clicks to the full store page -->
   <script>
     // Redirect all Ecwid cart/search/menu clicks to the full store page
-    var ecwid_ProductBrowserURL = "https://www.3dprintronics.com/products/cart";
+    var ecwid_ProductBrowserURL = "https://www.3dprintronics.com";
   </script>
   <!-- re-direct cart clicks to full page -->
   <!-- Include Ecwid script for Cart API (store id: 2442119) -->
@@ -105,9 +105,24 @@
           Enter Cut Length in mm<br>
           (min 100mm, max 3000mm)
         </th>
-        <th>M5 Tap</th>
         <th>
-          Counter Bore</th>
+          M5 Tap
+          <span class="info-icon" data-info="For V Slot - M5x15mm, For 3030 T Slot - M8X15mm, For others please check drawing">
+            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="7" fill="#006064"/>
+              <text x="8" y="12" font-size="10" text-anchor="middle" fill="#fff">i</text>
+            </svg>
+          </span>
+        </th>
+        <th>
+          Counter Bore
+          <span class="info-icon" data-info="For V Slot: ID 5mm, OD 10mm; For 3030: ID 8mm, OD 15mm; For others, check drawing">
+            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="8" cy="8" r="7" fill="#006064"/>
+              <text x="8" y="12" font-size="10" text-anchor="middle" fill="#fff">i</text>
+            </svg>
+          </span>
+        </th>
         <th>No. of Pcs</th>
         <th>Row Total <br>
           Length</th>
@@ -221,8 +236,12 @@ EcwidData.fetchAll()
         <div class="extrusion-box" data-id="${item.id}">
           <div class="extrusion-name">${item.name}</div>
           <div class="price-per-meter">₹${pricePerMeter}/m</div>
+           <div class="stock-pill">${ item.inStock ? 'In Stock' : 'Out of Stock' }</div>
         </div>
       `);
+      if (!item.inStock) {
+      box.find('.stock-pill').addClass('out-of-stock');
+      }
       box.on('click', function() {
         $('.extrusion-box').removeClass('selected');
         $(this).addClass('selected');
@@ -336,6 +355,11 @@ EcwidData.fetchAll()
       $('#addToCartBtn').prop('disabled', true);
     } else {
       $('#addToCartBtn').prop('disabled', false);
+    }
+
+    // Disable Add to Cart if item is out of stock.
+    if (!selectedExtrusion.inStock) {
+    $('#addToCartBtn').prop('disabled', true);
     }
   }
   
@@ -485,6 +509,14 @@ return;
   </div>
 </div>
 
+<!-- Info-icon modal (singleton!) -->
+<div id="infoModal" class="modal">
+  <div class="modal-content">
+    <span id="infoModalClose" class="close" aria-label="Close info">&times;</span>
+    <div id="infoModalText"></div>
+  </div>
+</div>
+
 <script>
   // Modal behavior: close on click outside or on close button
   // Modal control
@@ -528,7 +560,28 @@ return;
     });
   });
 </script>
-  <!-- The following scripts are initialized at the end of the file. -->
+  <!-- Code for Inline Info Icon -->
+<script>
+  (function() {
+    const modal = document.getElementById('infoModal');
+    const text  = document.getElementById('infoModalText');
+    const close = document.getElementById('infoModalClose');
+
+    document.body.addEventListener('click', (e) => {
+      const icon = e.target.closest('.info-icon');
+      if (!icon) return;
+      const msg = icon.dataset.info;
+      if (!msg) return;
+      text.textContent = msg;
+      modal.style.display = 'flex';
+    });
+
+    close.addEventListener('click', () => modal.style.display = 'none');
+    modal.addEventListener('click', e => {
+      if (e.target === modal) modal.style.display = 'none';
+    });
+  })();
+  </script>
 </body>
 <script>
 (function(VSlot, $) {
