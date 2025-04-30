@@ -562,6 +562,12 @@ return;
         $('#modalDetails').text(detailsText);
         pendingProductOptions = null;
         $('#successModal').show();
+        parent.postMessage({
+          action: "ecwidAdd",
+          productId: selectedExtrusion.id,
+          quantity: 1,
+          options: pendingProductOptions
+        }, "https://www.3dprintronics.com");
       } else {
         console.error('Add to cart failed.');
       }
