@@ -9,11 +9,6 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- Ecwid data loader (our new module) -->
   <script src="ecwid-data.js"></script>
-  <!-- Redirect all Ecwid cart/search/menu clicks to the full store page -->
-  <script>
-    // Redirect all Ecwid cart/search/menu clicks to the full store page
-    var ecwid_ProductBrowserURL = "https://www.3dprintronics.com/products/cart";
-  </script>
   <!-- re-direct cart clicks to full page -->
   <!-- <script>
     // Scope Ecwid cart cookie to parent domain
@@ -562,12 +557,6 @@ return;
         $('#modalDetails').text(detailsText);
         pendingProductOptions = null;
         $('#successModal').show();
-        parent.postMessage({
-          action: "ecwidAdd",
-          productId: selectedExtrusion.id,
-          quantity: 1,
-          options: pendingProductOptions
-        }, "https://www.3dprintronics.com");
       } else {
         console.error('Add to cart failed.');
       }
