@@ -119,6 +119,7 @@ button:hover {
 /* Position the cart icon inside header */
 .header-right .ec-cart-widget {
   width: auto !important;
+  background-color: #fff;
 }
 .header-right {
   min-width: 100px;
