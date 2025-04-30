@@ -57,11 +57,16 @@
             const imgs = (item.media.images || [])
               .sort((a, b) => a.orderBy - b.orderBy)
               .slice(0, 4);
+            // sort & pick up to videos
+            const videos = (item.media.videos || [])
+            .sort((a, b) => a.orderBy - b.orderBy)
+            .map(v => v.videourl);
     
             return {
               id:               item.id,
               name:             item.name,
               inStock:          item.inStock,
+              videos:           videos,
               images:           imgs.map(i => i.image400pxUrl || ''),
               thumbnailUrl:     imgs[0]?.image400pxUrl || '',
               secondaryImageUrl: imgs[1]?.image400pxUrl || '',

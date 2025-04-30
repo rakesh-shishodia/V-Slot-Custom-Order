@@ -10,14 +10,6 @@
   <!-- Ecwid data loader (our new module) -->
   <script src="ecwid-data.js"></script>
   <!-- re-direct cart clicks to full page -->
-  <!-- <script>
-    // Scope Ecwid cart cookie to parent domain
-    window.ecwid_init_options = {
-      cart: {
-        cookie_domain: ".3dprintronics.com"
-      }
-    };
-  </script> -->
   <!-- Include Ecwid script for Cart API (store id: 2442119) -->
   <script src="https://app.ecwid.com/script.js?2442119&data_platform=code&data_date=2025-03-02" charset="utf-8"></script>
   <!-- Include review script to show product review summary-->
@@ -91,6 +83,9 @@
         </a>
         <span class="zoom-icon">🔍</span>
       </div>
+    </div>
+    <div class="video-grid" id="videoGrid">
+      <!-- Video iframes will be inserted here -->
     </div>
     <div class="description-container">
       <!-- Product description (supports HTML formatting) -->
@@ -282,6 +277,20 @@ EcwidData.fetchAll()
         });
         // Insert description HTML from Ecwid data
         $('.description-container').html(item.descriptionHtml);
+        // Insert video iframes (up to 4), stacked vertically
+        const $videoGrid = $('#videoGrid').empty();
+        const videoUrls = (item.videos || []).slice(0, 4);
+        videoUrls.forEach(url => {
+        const embedUrl = url.replace("watch?v=", "embed/");
+        const $iframe = $(`
+        <iframe width="100%" height="315" 
+            src="${embedUrl}" 
+            title="YouTube video player" 
+            frameborder="0" allowfullscreen loading="lazy">
+        </iframe>
+  `);
+  $videoGrid.append($iframe);
+});
         // Recalculate aggregate totals when extrusion selection changes.
         updateTotals();
       });
