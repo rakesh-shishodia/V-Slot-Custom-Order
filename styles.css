@@ -119,7 +119,6 @@ button:hover {
 /* Position the cart icon inside header */
 .header-right .ec-cart-widget {
   width: auto !important;
-  background-color: #fff;
 }
 .header-right {
   min-width: 100px;
@@ -572,8 +571,4 @@ box-sizing: border-box;
   top: 8px;
   right: 8px;
   z-index: 10;
-}
-.ecwid-ProductBrowserPopup
-.ecwid-ProductBrowserPopup .popupContent {
-  background-color: #ffffff !important;
 }
