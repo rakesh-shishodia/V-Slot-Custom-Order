@@ -438,14 +438,17 @@ EcwidData.fetchAll()
       const [length, pcsPart, tapPart, cbPart] = detail.split('-');
       const count = parseInt(pcsPart, 10) || 0;
       const pcsLabel = count === 1 ? '1 pc' : `${count} pcs`;
-      let tapsLabel = tapPart === 'M5Tap0'
-        ? 'No Tapping'
-        : (tapPart === 'M5Tap1'
-            ? 'One Side M5 Tapped'
-            : 'Both Sides M5 Tapped');
+      const tapCount = parseInt(tapPart.replace('M5Tap', ''), 10) || 0;
       const cbCount = parseInt(cbPart.replace('CBHole', ''), 10) || 0;
-      const cbsLabel = cbCount === 0 ? 'No CB Holes' : `${cbCount} CB Holes`;
-      return `${pcsLabel} of ${length} mm – ${tapsLabel}, ${cbsLabel} in each`;
+
+      const machining = [];
+      if (tapCount === 1) machining.push('One Side M5 Tapped');
+      else if (tapCount > 1) machining.push('Both Sides M5 Tapped');
+      if (cbCount > 0) machining.push(`${cbCount} CB Holes in each`);
+
+      return machining.length > 0
+        ? `${pcsLabel} of ${length} mm – ${machining.join(', ')}`
+        : `${pcsLabel} of ${length} mm`;
     });
     // Assign to pendingProductOptions for Ecwid
     pendingProductOptions = {
@@ -463,20 +466,19 @@ EcwidData.fetchAll()
       const [length, pcsPart, tapPart, cbPart] = detail.split('-');
       const count = parseInt(pcsPart, 10) || 0;
       const pcsLabel = count === 1 ? '1 pc' : `${count} pcs`;
-      // Determine tap description
-      let tapsLabel;
-      if (tapPart === 'M5Tap0') tapsLabel = 'No Tapping';
-      else if (tapPart === 'M5Tap1') tapsLabel = 'One Side M5 Tapped';
-      else tapsLabel = 'Both Sides M5 Tapped';
-      // Determine CB description
+      const tapCount = parseInt(tapPart.replace('M5Tap', ''), 10) || 0;
       const cbCount = parseInt(cbPart.replace('CBHole', ''), 10) || 0;
-      const cbsLabel = cbCount === 0
-        ? 'No CB Holes'
-        : `${cbCount} CB Holes`;
-      // Append as list item
-      $('#previewList').append(
-        `<li>${pcsLabel} of ${length} mm – ${tapsLabel}, ${cbsLabel} in each</li>`
-      );
+
+      const machining = [];
+      if (tapCount === 1) machining.push('One Side M5 Tapped');
+      else if (tapCount > 1) machining.push('Both Sides M5 Tapped');
+      if (cbCount > 0) machining.push(`${cbCount} CB Holes in each`);
+
+      const line = machining.length > 0
+        ? `${pcsLabel} of ${length} mm – ${machining.join(', ')}`
+        : `${pcsLabel} of ${length} mm`;
+
+      $('#previewList').append(`<li>${line}</li>`);
       totalPcs += count;
     });
     $('#previewTotal').text(`Total Pcs – ${totalPcs}`);
