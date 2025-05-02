@@ -481,6 +481,20 @@ EcwidData.fetchAll()
       $('#previewList').append(`<li>${line}</li>`);
       totalPcs += count;
     });
+    // Check for lengths > 1000mm and show a warning message
+    const hasLongExtrusion = orderDetails.some(detail => {
+      const [length] = detail.split('-');
+      return parseFloat(length) > 1000;
+    });
+    if (hasLongExtrusion) {
+      $('#previewShippingNote').html(
+        `<div style="margin-top:10px; padding:10px; background:#fff3cd; border-left:5px solid #ff9800;">
+          <strong>Note:</strong> We offer free shipping up to 1000mm length pcs. One or more extrusions are more than 1000mm in length and thus we will have to charge applicable shipping. For your order, please checkout using <strong>'Wire Transfer'</strong> as payment option. We will update shipping costs and then seek your payment through UPI or payment link. You will get an email and call from us for this.
+        </div>`
+      );
+    } else {
+      $('#previewShippingNote').empty();
+    }
     $('#previewTotal').text(`Total Pcs – ${totalPcs}`);
 // Show preview modal and halt actual add-to-cart
 $('#orderPreviewModal').show();
@@ -513,6 +527,7 @@ return;
     <span class="close" id="previewClose" aria-label="Close preview">&times;</span>
     <h2 id="previewTitle">Your Order for </h2>
     <ul id="previewList" style="text-align:left; margin:10px 0;"></ul>
+    <div id="previewShippingNote"></div>
     <p id="previewTotal" style="font-weight:bold;"></p>
     <button type="button" id="amendOrderBtn">Amend Order</button>
     <button type="button" id="proceedOrderBtn">Proceed to Add to Cart</button>
