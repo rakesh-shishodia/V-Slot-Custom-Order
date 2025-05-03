@@ -1,208 +1,74 @@
-/* mobile.css */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Product Order</title>
+  <link rel="stylesheet" href="mobile.css" />
+</head>
+<body>
+  <div class="selector-panel">
+    <h2>Select Extrusion</h2>
+    <select id="mobileExtrusionSelect">
+      <option value="1">Extrusion 1</option>
+      <option value="2">Extrusion 2</option>
+    </select>
+  </div>
 
-/*--------------------------------------------------------------
-# Utility classes
---------------------------------------------------------------*/
+  <div class="filter-product-container">
+    <!-- product filters -->
+  </div>
 
-/* By default on mobile: hide any elements marked desktop-only */
-.hide-mobile {
-    display: none !important;
-  }
-  
-  /* Elements explicitly shown on mobile */
-  .show-mobile {
-    display: block !important;
-  }
-  
-  /* On desktop, hide mobile-only elements and show desktop-only */
-  @media (min-width: 769px) {
-    .hide-desktop {
-      display: none !important;
-    }
-    .show-desktop {
-      display: block !important;
-    }
-  }
-  
-  /*--------------------------------------------------------------
-  # Mobile breakpoint: stack layout at ≤768px
-  --------------------------------------------------------------*/
-  @media (max-width: 768px) {
-    .filter-product-container {
-      display: none !important;
-    }
-    /* Make body full width and comfortable padding */
-    body {
-      padding: 0;
-      margin: 0;
-      font-size: 16px;
-      line-height: 1.4;
-    }
-  
-    /* 1. Header */
-    .tool-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    .tool-header .header-left,
-    .tool-header .header-title,
-    .tool-header .header-right {
-      width: 100%;
-      text-align: center;
-      margin-bottom: 0.5rem;
-    }
-    .tool-header .header-right {
-      display: none; /* cart widget can move elsewhere */
-    }
-  
-    /* 2. Extrusion selector → dropdown */
-    .selector-panel .extrusion-selector {
-      display: none;
-    }
-    #mobileExtrusionSelect {
-      display: block;
-      width: 100%;
-      padding: 0.75rem;
-      margin: 0 1rem 1rem;
-      font-size: 1rem;
-    }
-    /* Position dropdown directly below the section heading */
-    /* Adjust selector to match your actual heading element if needed */
-    .selector-panel h2 + #mobileExtrusionSelect {
-      margin-top: 0.5rem;
-    }
-  
-    /* 3. Stack filter + product containers */
-    .filter-product-container,
-    .flex-container {
-      display: block;
-      width: 100%;
-      padding: 0;
-      margin: 0;
-    }
-  
-    /* 4. Order table as accordion rows */
-    #orderTable {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    /* Hide desktop header row */
-    #orderTable thead {
-      display: none;
-    }
-    /* Each row becomes a block panel */
-    #orderTable tbody tr {
-      display: block;
-      margin: 0.5rem 1rem;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      overflow: hidden;
-      background: #fff;
-    }
-    /* Collapsed summary area */
-    #orderTable tbody tr .row-summary {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.75rem;
-      font-weight: 600;
-      background: #f7f7f7;
-      cursor: pointer;
-    }
-    /* Hidden details by default */
-    #orderTable tbody tr .row-details {
-      display: none;
-      padding: 0.75rem;
-    }
-    /* When open, show details */
-    #orderTable tbody tr.open .row-details {
-      display: block;
-    }
-    /* Inputs inside details stack vertically */
-    #orderTable tbody tr .row-details .field-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 0.75rem;
-    }
-    #orderTable tbody tr .row-details label {
-      margin-bottom: 0.25rem;
-      font-size: 0.9rem;
-    }
-    #orderTable tbody tr .row-details input,
-    #orderTable tbody tr .row-details select {
-      width: 100%;
-      padding: 0.5rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    /* Delete button inside details */
-    #orderTable tbody tr .row-details .delete-row-btn {
-      margin-top: 0.5rem;
-      padding: 0.5rem;
-      background: #e53935;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      width: 100%;
-      font-size: 1rem;
-    }
-  
-    /* 5. Floating “Add Row” button */
-    #addRowBtn {
-      display: none;
-    }
-    .fab-add {
-      position: fixed;
-      bottom: 5rem;
-      right: 1rem;
-      width: 3.5rem;
-      height: 3.5rem;
-      font-size: 2rem;
-      line-height: 3.5rem;
-      text-align: center;
-      background: #006064;
-      color: #fff;
-      border-radius: 50%;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      z-index: 1000;
-    }
-  
-    /* 6. Aggregate totals: stack metrics */
-    .totals-table {
-      display: none;
-    }
-    .mobile-aggregate {
-      display: block;
-      margin: 1rem;
-      padding: 1rem;
-      background: #fafafa;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    .mobile-aggregate .agg-line {
-      margin-bottom: 0.5rem;
-      font-size: 1rem;
-    }
-    .mobile-aggregate .agg-line:last-child {
-      font-weight: 700;
-    }
-  
-    /* 7. Add to Cart button: fixed, full-width */
-    #addToCartBtn {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      padding: 1rem;
-      font-size: 1.1rem;
-      background: #ff9800;
-      color: #000;
-      border: none;
-      text-align: center;
-      z-index: 1000;
-    }
-  }
+  <table id="orderTable">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="row-summary">Product A <span>$10</span></td>
+        <td class="row-details">
+          <div class="field-group">
+            <label for="qty1">Quantity</label>
+            <input id="qty1" type="number" min="1" value="1" />
+          </div>
+          <button class="delete-row-btn">Delete</button>
+        </td>
+      </tr>
+      <tr>
+        <td class="row-summary">Product B <span>$20</span></td>
+        <td class="row-details">
+          <div class="field-group">
+            <label for="qty2">Quantity</label>
+            <input id="qty2" type="number" min="1" value="2" />
+          </div>
+          <button class="delete-row-btn">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="mobile-aggregate">
+    <div class="agg-line">Subtotal: $50</div>
+    <div class="agg-line">Tax: $5</div>
+    <div class="agg-line">Total: $55</div>
+  </div>
+
+  <div class="details-panel">
+    <!-- picture grid and description -->
+    <div class="picture-grid">
+      <img src="product1.jpg" alt="Product 1" />
+      <img src="product2.jpg" alt="Product 2" />
+    </div>
+    <div class="product-description">
+      <h3>Product Details</h3>
+      <p>This is a detailed description of the products.</p>
+    </div>
+  </div>
+
+  <button id="addToCartBtn">Add to Cart</button>
+</body>
+</html>

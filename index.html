@@ -50,6 +50,10 @@
   <!-- Extrusion Selector -->
   <div class="selector-panel">
     <h2 class="selector-title">Select Extrusion and Enter Details in Table Below</h2>
+    <!-- Mobile-only extrusion dropdown -->
+    <select id="mobileExtrusionSelect" class="show-mobile hide-desktop">
+      <option value="">Select extrusion</option>
+    </select>
   <div class="extrusion-selector-wrapper">
     <div class="extrusion-selector" id="extrusionSelector">
       <!-- Extrusion boxes will be dynamically populated from extrusions.json -->
@@ -215,6 +219,8 @@ EcwidData.fetchAll()
     VSlot.filters.init(config.extrusions);
     // Populate selector and update totals
     populateExtrusionBoxes(config.extrusions);
+    // Populate mobile dropdown after extrusion boxes
+    populateMobileDropdown(config.extrusions);
     // Auto-select first extrusion on page load
     const $firstBox = $('#extrusionSelector .extrusion-box').first();
     if ($firstBox.length) {
@@ -299,6 +305,33 @@ EcwidData.fetchAll()
       container.append(box);
     });
   }
+
+  // Populate the mobile dropdown with extrusion options
+  function populateMobileDropdown(items) {
+    const $select = $('#mobileExtrusionSelect');
+    // Remove all options except the placeholder (value="")
+    $select.find('option:not([value=""])').remove();
+    (items || []).forEach(function(item) {
+      $('<option>')
+        .val(item.id)
+        .text(item.name + ' (₹' + (item.baseCostPerMm*1000).toFixed(0) + '/m)')
+        .prop('disabled', !item.inStock)
+        .appendTo($select);
+    });
+  }
+
+  // Handle change event for mobile dropdown
+  $('#mobileExtrusionSelect').on('change', function() {
+    const id = $(this).val();
+    if (!id) return;
+    // Find the corresponding extrusion box and trigger its click handler
+    const $box = $('.extrusion-box[data-id="' + id + '"]');
+    if ($box.length) {
+      $box.trigger('click');
+    }
+    // Reset select to placeholder (optional)
+    $(this).val('');
+  });
     
   // Calculate and display a single row’s total length
   function updateRow($row) {
