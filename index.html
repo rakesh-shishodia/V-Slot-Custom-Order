@@ -100,107 +100,126 @@
   </div>
   <div class="order-panel">
 
-<!-- Custom Ordering Table -->
-<div id="formError" class="error-banner" style="display:none;"></div>
-<form id="extrusionForm">
-  <table id="orderTable">
-    <thead>
-      <tr>
-        <th>
-          Enter Cut Length in mm<br>
-          (min 100mm, max 3000mm)
-        </th>
-        <th>
-          M5 Tap
-          <span class="info-icon" data-info="For V Slot - M5x15mm, For 3030 T Slot - M8X15mm, For others please check drawing">
-            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="8" cy="8" r="7" fill="#006064"/>
-              <text x="8" y="12" font-size="10" text-anchor="middle" fill="#fff">i</text>
-            </svg>
-          </span>
-        </th>
-        <th>
-          Counter Bore
-          <span class="info-icon" data-info="For V Slot: ID 5mm, OD 10mm; For 3030: ID 8mm, OD 15mm; For others, check drawing">
-            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="8" cy="8" r="7" fill="#006064"/>
-              <text x="8" y="12" font-size="10" text-anchor="middle" fill="#fff">i</text>
-            </svg>
-          </span>
-        </th>
-        <th>No. of Pcs</th>
-        <th>Row Total <br>
-          Length</th>
-        <th>Reset or <br>
-          Delete Row</th>
-      </tr>
-    </thead>
-    <tbody id="tableBody">
-      <!-- 6 rows will be inserted dynamically -->
-    </tbody>
-  </table>
-  
-  <button type="button" id="addRowBtn">Add More Rows</button>
-  <button type="button" id="resetAllBtn">Reset All</button>
-  
-  <!-- Aggregate Totals Table -->
-  <table class="totals-table">
-    <thead>
-      <tr>
-        <th>Total Length <br> Ordered</th>
-        <th>Rounded Off Length <br> (to nearest 500mm)</th>
-        <th>Cost of Rounded Off Length</th>
-        <!-- <th>Discount (2.5-4m:5%, 4.5-8m:10%, Above 8.5m:15%)</th> -->
-        <th>Total <br>M5 Taps</th>
-        <th>Cost M5 Taps <br>(₹30/hole)</th>
-        <th>Total <br>CB Holes</th>
-        <th>Cost CB Holes<br>(₹70/hole)</th>
-        <th>Subtotal</th>
-        <th>GST<br>@18%</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="totalOrdered">0</td>
-        <td id="roundedLength">0</td>
-        <td id="costExtrusions">0</td>
-        <!-- <td id="discount">0</td> -->
-        <td id="totalM5Count">0</td>
-        <td id="totalM5Cost">0</td>
-        <td id="totalCBCount">0</td>
-        <td id="totalCBCost">0</td>
-        <td id="subtotal">0</td>
-        <td id="GST">0</td>
-        <td id="Total">0</td>
-      </tr>
-    </tbody>
-  </table>
-  
-  <button type="button" id="addToCartBtn">Add to Cart</button>
-</form>
-
-    <!-- Material & Waste Policy Notice -->
-    <div class="waste-policy" style="margin: 15px 0; font-size: 14px; color: #333;">
-      <p>
-        <strong>Billing is rounded up to the nearest 500 mm; any off-cut over 100 mm is shipped to you.</strong><br>
-        <strong>Example</strong> – You order <strong>2 pcs of 1000 mm</strong> and <strong>1 pc of 1200 mm</strong> (total 3200 mm), so we bill for <strong>3500 mm</strong>. You’ll receive your <strong>2 pcs of 1000 mm</strong>, <strong>1 pc of 1200 mm</strong> plus a <strong>300 mm off-cut</strong>.<br>
-        <a href="#" id="readMoreLink" style="text-decoration: underline; cursor: pointer;">[Read More]</a>
-      </p>
-      <div id="wasteDetails" style="display:none; margin-top:10px; padding-left:10px; border-left: 3px solid #ff9800;">
-        <strong>Material &amp; Waste Policy</strong><br><br>
-        We cut orders in 500 mm increments to reduce material wastage, keep our prices low and our operations efficient, and <strong>those savings go straight into your final per-metre rate</strong>.<br><br>
-        <strong>How it works:</strong><br>
-        1. Rounding: Every order is rounded up to the next 500 mm increment and accordingly billed for.<br>
-        2. Clean-offs: Rather than discard leftovers, we ship you any piece longer than 100 mm.<br><br>
-        <strong>Real-world example:</strong><br>
-        • You specify: 2 pcs of 1000 mm and 1 pc of 1200 mm (total 3200 mm).<br>
-        • We round up and bill 3500 mm at your per-metre rate.<br>
-        • You receive 2 pcs of 1000 mm and 1 pc of 1200 mm plus a 300 mm off-cut which you can use for jigs, fixtures, or future tweaks.<br><br>
-        This policy keeps our material costs predictable and our prices competitive—while ensuring you never Total for wasted material.
+    <!-- Custom Ordering Table -->
+    <div id="formError" class="error-banner" style="display:none;"></div>
+    <form id="extrusionForm">
+      <table id="orderTable">
+        <thead>
+          <tr>
+            <th>
+              Enter Cut Length in mm<br>
+              (min 100mm, max 3000mm)
+            </th>
+            <th>
+              M5 Tap
+              <span class="info-icon" data-info="For V Slot - M5x15mm, For 3030 T Slot - M8X15mm, For others please check drawing">
+                <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="8" cy="8" r="7" fill="#006064"/>
+                  <text x="8" y="12" font-size="10" text-anchor="middle" fill="#fff">i</text>
+                </svg>
+              </span>
+            </th>
+            <th>
+              Counter Bore
+              <span class="info-icon" data-info="For V Slot: ID 5mm, OD 10mm; For 3030: ID 8mm, OD 15mm; For others, check drawing">
+                <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="8" cy="8" r="7" fill="#006064"/>
+                  <text x="8" y="12" font-size="10" text-anchor="middle" fill="#fff">i</text>
+                </svg>
+              </span>
+            </th>
+            <th>No. of Pcs</th>
+            <th>Row Total <br>
+              Length</th>
+            <th>Reset or <br>
+              Delete Row</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- 6 rows will be inserted dynamically -->
+        </tbody>
+      </table>
+      
+      <button type="button" id="addRowBtn">Add More Rows</button>
+      <button type="button" id="resetAllBtn">Reset All</button>
+      
+      <!-- Aggregate Totals Table -->
+      <table class="totals-table">
+        <thead>
+          <tr>
+            <th>Total Length <br> Ordered</th>
+            <th>Rounded Off Length <br> (to nearest 500mm)</th>
+            <th>Cost of Rounded Off Length</th>
+            <!-- <th>Discount (2.5-4m:5%, 4.5-8m:10%, Above 8.5m:15%)</th> -->
+            <th>Total <br>M5 Taps</th>
+            <th>Cost M5 Taps <br>(₹30/hole)</th>
+            <th>Total <br>CB Holes</th>
+            <th>Cost CB Holes<br>(₹70/hole)</th>
+            <th>Subtotal</th>
+            <th>GST<br>@18%</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="totalOrdered">0</td>
+            <td id="roundedLength">0</td>
+            <td id="costExtrusions">0</td>
+            <!-- <td id="discount">0</td> -->
+            <td id="totalM5Count">0</td>
+            <td id="totalM5Cost">0</td>
+            <td id="totalCBCount">0</td>
+            <td id="totalCBCost">0</td>
+            <td id="subtotal">0</td>
+            <td id="GST">0</td>
+            <td id="Total">0</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Desktop Add to Cart button and waste policy (hide on mobile) -->
+      <button type="button" id="addToCartBtn" class="hide-mobile">Add to Cart</button>
+      <div class="waste-policy hide-mobile" style="margin: 15px 0; font-size: 14px; color: #333;">
+        <p>
+          <strong>Billing is rounded up to the nearest 500 mm; any off-cut over 100 mm is shipped to you.</strong><br>
+          <strong>Example</strong> – You order <strong>2 pcs of 1000 mm</strong> and <strong>1 pc of 1200 mm</strong> (total 3200 mm), so we bill for <strong>3500 mm</strong>. You’ll receive your <strong>2 pcs of 1000 mm</strong>, <strong>1 pc of 1200 mm</strong> plus a <strong>300 mm off-cut</strong>.<br>
+          <a href="#" id="readMoreLink" style="text-decoration: underline; cursor: pointer;">[Read More]</a>
+        </p>
+        <div id="wasteDetails" style="display:none; margin-top:10px; padding-left:10px; border-left: 3px solid #ff9800;">
+          <strong>Material &amp; Waste Policy</strong><br><br>
+          We cut orders in 500 mm increments to reduce material wastage, keep our prices low and our operations efficient, and <strong>those savings go straight into your final per-metre rate</strong>.<br><br>
+          <strong>How it works:</strong><br>
+          1. Rounding: Every order is rounded up to the next 500 mm increment and accordingly billed for.<br>
+          2. Clean-offs: Rather than discard leftovers, we ship you any piece longer than 100 mm.<br><br>
+          <strong>Real-world example:</strong><br>
+          • You specify: 2 pcs of 1000 mm and 1 pc of 1200 mm (total 3200 mm).<br>
+          • We round up and bill 3500 mm at your per-metre rate.<br>
+          • You receive 2 pcs of 1000 mm and 1 pc of 1200 mm plus a 300 mm off-cut which you can use for jigs, fixtures, or future tweaks.<br><br>
+          This policy keeps our material costs predictable and our prices competitive—while ensuring you never Total for wasted material.
+        </div>
       </div>
-    </div>
+    </form>
   </div> <!-- .order-panel -->
+
+  <button type="button" id="addToCartBtnMobile" class="show-mobile hide-desktop">Add to Cart</button>
+  <div class="waste-policy show-mobile hide-desktop" style="margin: 15px 0; font-size: 14px; color: #333;">
+    <p>
+      <strong>Billing is rounded up to the nearest 500 mm; any off-cut over 100 mm is shipped to you.</strong><br>
+      <strong>Example</strong> – You order <strong>2 pcs of 1000 mm</strong> and <strong>1 pc of 1200 mm</strong> (total 3200 mm), so we bill for <strong>3500 mm</strong>. You’ll receive your <strong>2 pcs of 1000 mm</strong>, <strong>1 pc of 1200 mm</strong> plus a <strong>300 mm off-cut</strong>.<br>
+      <a href="#" id="readMoreLink" style="text-decoration: underline; cursor: pointer;">[Read More]</a>
+    </p>
+    <div id="wasteDetails" style="display:none; margin-top:10px; padding-left:10px; border-left: 3px solid #ff9800;">
+      <strong>Material &amp; Waste Policy</strong><br><br>
+      We cut orders in 500 mm increments to reduce material wastage, keep our prices low and our operations efficient, and <strong>those savings go straight into your final per-metre rate</strong>.<br><br>
+      <strong>How it works:</strong><br>
+      1. Rounding: Every order is rounded up to the next 500 mm increment and accordingly billed for.<br>
+      2. Clean-offs: Rather than discard leftovers, we ship you any piece longer than 100 mm.<br><br>
+      <strong>Real-world example:</strong><br>
+      • You specify: 2 pcs of 1000 mm and 1 pc of 1200 mm (total 3200 mm).<br>
+      • We round up and bill 3500 mm at your per-metre rate.<br>
+      • You receive 2 pcs of 1000 mm and 1 pc of 1200 mm plus a 300 mm off-cut which you can use for jigs, fixtures, or future tweaks.<br><br>
+      This policy keeps our material costs predictable and our prices competitive—while ensuring you never Total for wasted material.
+    </div>
+  </div>
 </div> <!-- .flex-container -->
 
 <script>
@@ -419,7 +438,7 @@ EcwidData.fetchAll()
   // (Removed: Event listener moved to end of script)
   
   // Handle "Add to Cart" button clicks: build options and call Ecwid API
-  $('#addToCartBtn').on('click', function() {
+  $('#addToCartBtn, #addToCartBtnMobile').on('click', function() {
     console.log('Add to Cart clicked, selectedExtrusion:', selectedExtrusion);
     // Clear previous errors
     $('#formError').hide();

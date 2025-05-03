@@ -35,6 +35,13 @@
     min-height: 2.5rem;           /* increase height */
     line-height: 1.4;             /* improve readability */
     white-space: normal;          /* allow text wrap */
+    appearance: none;              /* remove native styling */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 1px solid #ccc;       /* define a rectangular border */
+    border-radius: 4px;           /* slight corner radius */
+    background-color: #fff;       /* white background */
+    background-image: none;       /* remove any dropdown arrow styling */
   }
 
   /* Add horizontal padding to all stack blocks */
