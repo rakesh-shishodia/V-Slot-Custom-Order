@@ -1,74 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Product Order</title>
-  <link rel="stylesheet" href="mobile.css" />
-</head>
-<body>
-  <div class="selector-panel">
-    <h2>Select Extrusion</h2>
-    <select id="mobileExtrusionSelect">
-      <option value="1">Extrusion 1</option>
-      <option value="2">Extrusion 2</option>
-    </select>
-  </div>
+/* mobile.css */
 
-  /*<div class="filter-product-container">
-    <!-- product filters -->
-  </div> */
+/* Ensure proper viewport scaling */
+@viewport {
+  width: device-width;
+  initial-scale: 1.0;
+}
 
-  <table id="orderTable">
-    <thead>
-      <tr>
-        <th>Product</th>
-        <th>Qty</th>
-        <th>Price</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="row-summary">Product A <span>$10</span></td>
-        <td class="row-details">
-          <div class="field-group">
-            <label for="qty1">Quantity</label>
-            <input id="qty1" type="number" min="1" value="1" />
-          </div>
-          <button class="delete-row-btn">Delete</button>
-        </td>
-      </tr>
-      <tr>
-        <td class="row-summary">Product B <span>$20</span></td>
-        <td class="row-details">
-          <div class="field-group">
-            <label for="qty2">Quantity</label>
-            <input id="qty2" type="number" min="1" value="2" />
-          </div>
-          <button class="delete-row-btn">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+/* Utility classes */
+.hide-mobile { display: none !important; }
+.show-mobile { display: block !important; }
 
-  <div class="mobile-aggregate">
-    <div class="agg-line">Subtotal: $50</div>
-    <div class="agg-line">Tax: $5</div>
-    <div class="agg-line">Total: $55</div>
-  </div>
+/* Desktop-only / Mobile-only toggles */
+@media (min-width: 769px) {
+  .hide-desktop { display: none !important; }
+  .show-desktop { display: block !important; }
+}
 
-  <div class="details-panel">
-    <!-- picture grid and description -->
-    <div class="picture-grid">
-      <img src="product1.jpg" alt="Product 1" />
-      <img src="product2.jpg" alt="Product 2" />
-    </div>
-    <div class="product-description">
-      <h3>Product Details</h3>
-      <p>This is a detailed description of the products.</p>
-    </div>
-  </div>
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  /* Hide filter block and desktop selector panels */
+  .filter-product-container,
+  .selector-panel .extrusion-selector-wrapper,
+  .selector-panel .extrusion-selector {
+    display: none !important;
+  }
 
-  <button id="addToCartBtn">Add to Cart</button>
-</body>
-</html>
+  /* Selector title remains, dropdown is mobile-only */
+  #mobileExtrusionSelect {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    margin: 0 1rem 1rem;
+    font-size: 1rem;
+  }
+
+  /* Stack order table rows as accordion */
+  #orderTable thead { display: none; }
+  #orderTable tbody tr {
+    display: block;
+    margin: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .row-summary {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem;
+    background: #f7f7f7;
+    cursor: pointer;
+  }
+  .row-details { display: none; padding: 0.75rem; }
+  tr.open .row-details { display: block; }
+  
+  /* Mobile aggregate section */
+  .mobile-aggregate {
+    margin: 1rem;
+    padding: 1rem;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  /* Floating add row button */
+  .fab-add {
+    position: fixed;
+    bottom: 5rem;
+    right: 1rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 2rem;
+    line-height: 3.5rem;
+    text-align: center;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    background: #006064;
+    color: #fff;
+    z-index: 1000;
+  }
+
+  /* Fixed add to cart button */
+  #addToCartBtn {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    background: #ff9800;
+    color: #000;
+    text-align: center;
+    z-index: 1000;
+  }
+}
