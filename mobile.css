@@ -107,6 +107,25 @@
     word-wrap: break-word;
     white-space: normal;
   }
+
+  /* Prevent horizontal overflow */
+  html, body {
+    overflow-x: hidden !important;
+  }
+
+  /* Ensure flex-container fits within viewport */
+  .flex-container {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Add safe padding to details panel */
+  .details-panel {
+    padding: 0 0.5rem !important;
+    box-sizing: border-box !important;
+  }
 }
 
 /* Desktop-only / Mobile-only toggles (viewport ≥ 769px) */
