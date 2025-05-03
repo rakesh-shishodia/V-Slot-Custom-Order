@@ -1,96 +1,63 @@
-/* mobile.css */
+/* mobile.css - mobile-first overrides */
 
-/* Ensure proper viewport scaling */
-@viewport {
-  width: device-width;
-  initial-scale: 1.0;
-}
-
-/* Utility classes */
-.hide-mobile { display: none !important; }
-.show-mobile { display: block !important; }
-
-/* Desktop-only / Mobile-only toggles */
-@media (min-width: 769px) {
-  .hide-desktop { display: none !important; }
-  .show-desktop { display: block !important; }
-}
-
-/* Mobile-specific styles */
+/* Mobile-specific styles (viewport ≤ 768px) */
 @media (max-width: 768px) {
-  /* Hide filter block and desktop selector panels */
+  /* Utility toggles */
+  .hide-mobile { display: none !important; }
+  .show-mobile { display: block !important; }
+
+  /* Layout stacking: full-bleed blocks with vertical spacing */
+  .tool-header {
+    display: block !important;
+    width: 100%;
+  }
+  .tool-header > * {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  /* Hide desktop-only components */
   .filter-product-container,
   .selector-panel .extrusion-selector-wrapper,
   .selector-panel .extrusion-selector {
     display: none !important;
   }
 
-  /* Selector title remains, dropdown is mobile-only */
+  /* Mobile extrusion dropdown: show and style */
   #mobileExtrusionSelect {
-    display: block;
+    display: block !important;
     width: 100%;
+    margin: 0 0 1rem;
     padding: 0.75rem;
-    margin: 0 1rem 1rem;
     font-size: 1rem;
   }
 
-  /* Stack order table rows as accordion */
-  #orderTable thead { display: none; }
-  #orderTable tbody tr {
+  /* Placeholder for order table wrapper */
+  .order-panel {
     display: block;
-    margin: 0.5rem 1rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    overflow: hidden;
-    background: #fff;
-  }
-  .row-summary {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.75rem;
-    background: #f7f7f7;
-    cursor: pointer;
-  }
-  .row-details { display: none; padding: 0.75rem; }
-  tr.open .row-details { display: block; }
-  
-  /* Mobile aggregate section */
-  .mobile-aggregate {
-    margin: 1rem;
-    padding: 1rem;
-    background: #fafafa;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  /* Floating add row button */
-  .fab-add {
-    position: fixed;
-    bottom: 5rem;
-    right: 1rem;
-    width: 3.5rem;
-    height: 3.5rem;
-    font-size: 2rem;
-    line-height: 3.5rem;
-    text-align: center;
-    border-radius: 50%;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    background: #006064;
-    color: #fff;
-    z-index: 1000;
+    width: 100%;
+    margin-bottom: 1rem;
   }
 
-  /* Fixed add to cart button */
-  #addToCartBtn {
-    position: fixed;
-    bottom: 0;
-    left: 0;
+  /* Placeholder for aggregate totals wrapper */
+  .mobile-aggregate {
+    display: block;
     width: 100%;
-    padding: 1rem;
-    font-size: 1.1rem;
-    background: #ff9800;
-    color: #000;
-    text-align: center;
-    z-index: 1000;
+    margin-bottom: 1rem;
   }
+
+  /* Details panel */
+  .details-panel {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Desktop-only / Mobile-only toggles (viewport ≥ 769px) */
+@media (min-width: 769px) {
+  .hide-desktop { display: none !important; }
+  .show-desktop { display: block !important; }
 }
