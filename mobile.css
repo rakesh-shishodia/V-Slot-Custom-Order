@@ -54,11 +54,9 @@
     box-sizing: border-box;
   }
 
-  /* Placeholder for order table wrapper */
+  /* Hide order panel on mobile */
   .order-panel {
-    display: block;
-    width: 100%;
-    margin-bottom: 1rem;
+    display: none !important;
   }
 
   /* Placeholder for aggregate totals wrapper */
@@ -73,6 +71,41 @@
     display: block;
     width: 100%;
     margin-bottom: 1rem;
+  }
+
+  /* Make details-panel content responsive */
+  .details-panel {
+    /* ensure panel itself is fluid */
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  /* Collapse any fixed-width grid to single column */
+  .details-panel .image-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: auto !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Allow images to shrink */
+  .details-panel .image-cell,
+  .details-panel .image-cell img {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    min-width: 0 !important;
+  }
+
+  /* Reset any min-width on child containers */
+  .details-panel * {
+    min-width: 0 !important;
+  }
+
+  /* Ensure description text wraps */
+  .details-panel .product-description {
+    word-wrap: break-word;
+    white-space: normal;
   }
 }
 
