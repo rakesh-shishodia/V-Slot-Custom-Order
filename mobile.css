@@ -28,6 +28,9 @@
   # Mobile breakpoint: stack layout at ≤768px
   --------------------------------------------------------------*/
   @media (max-width: 768px) {
+    .filter-product-container {
+      display: none !important;
+    }
     /* Make body full width and comfortable padding */
     body {
       padding: 0;
@@ -65,6 +68,11 @@
       padding: 0.75rem;
       margin: 0 1rem 1rem;
       font-size: 1rem;
+    }
+    /* Position dropdown directly below the section heading */
+    /* Adjust selector to match your actual heading element if needed */
+    .selector-panel h2 + #mobileExtrusionSelect {
+      margin-top: 0.5rem;
     }
   
     /* 3. Stack filter + product containers */
