@@ -66,19 +66,16 @@
     margin-bottom: 1rem;
   }
 
-  /* Details panel */
+  /* Hide details panel on mobile */
   .details-panel {
-    display: block;
-    width: 100%;
-    margin-bottom: 1rem;
+    display: none !important;
   }
 
   /* Make details-panel content responsive */
-  .details-panel {
-    /* ensure panel itself is fluid */
+  /* .details-panel {
     max-width: 100%;
     overflow: hidden;
-  }
+  } */
 
   /* Collapse any fixed-width grid to single column */
   .details-panel .image-grid {
@@ -122,10 +119,10 @@
   }
 
   /* Add safe padding to details panel */
-  .details-panel {
+  /* .details-panel {
     padding: 0 0.5rem !important;
     box-sizing: border-box !important;
-  }
+  } */
 }
 
 /* Desktop-only / Mobile-only toggles (viewport ≥ 769px) */
