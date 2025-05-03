@@ -100,46 +100,54 @@
   </div>
   <!-- Mobile card-style ordering interface -->
   <div class="mobile-order-cards show-mobile hide-desktop">
-    <table class="order-card table-card" data-index="1">
-      <thead>
-        <tr>
-          <th colspan="2">Enter Details of 1st Pc</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><label for="card1-length">Length (mm)</label></td>
-          <td><input type="number" id="card1-length" class="card-cut-length" min="100" max="3000" placeholder="e.g. 1000" /></td>
-        </tr>
-        <tr>
-          <td><label for="card1-tap">M5 Tap</label></td>
-          <td>
-            <select id="card1-tap" class="card-tap-side">
-              <option value="none">No Tapping</option>
-              <option value="one">One Side</option>
-              <option value="both">Both Sides</option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td><label for="card1-cb">Counter Bore Holes</label></td>
-          <td><input type="number" id="card1-cb" class="card-cb-holes" min="0" max="20" value="0" /></td>
-        </tr>
-        <tr>
-          <td><label for="card1-pcs">No. of Pcs</label></td>
-          <td><input type="number" id="card1-pcs" class="card-num-pcs" min="1" placeholder="e.g. 2" /></td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="2">
-            <button type="button" class="remove-card-btn">Remove this piece</button>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
+    <!-- Piece Count Control -->
+    <div class="pieces-control">
+      <label for="pieceCountInput">Enter number of pieces you want to order</label>
+      <input type="number" id="pieceCountInput" min="1" value="1" />
+      <button type="button" id="updatePiecesBtn">Update</button>
+    </div>
 
-    <button type="button" id="addCardBtn" class="add-card-btn">+ Add another piece</button>
+    <!-- Order Cards Container -->
+    <div class="order-cards-container">
+      <table class="order-card table-card" data-index="1">
+        <thead>
+          <tr>
+            <th colspan="2">Enter Details of Pc No. 1</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><label for="card1-length">Length (mm)</label></td>
+            <td><input type="number" id="card1-length" class="card-cut-length" min="100" max="3000" placeholder="e.g. 1000" /></td>
+          </tr>
+          <tr>
+            <td><label for="card1-tap">M5 Tap</label></td>
+            <td>
+              <select id="card1-tap" class="card-tap-side">
+                <option value="none">No Tapping</option>
+                <option value="one">One Side</option>
+                <option value="both">Both Sides</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><label for="card1-cb">Counter Bore Holes</label></td>
+            <td><input type="number" id="card1-cb" class="card-cb-holes" min="0" max="20" value="0" /></td>
+          </tr>
+          <tr>
+            <td><label for="card1-pcs">No. of Pcs</label></td>
+            <td><input type="number" id="card1-pcs" class="card-num-pcs" min="1" placeholder="e.g. 2" /></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2">
+              <button type="button" class="remove-card-btn">Remove this piece</button>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
   </div>
   <div class="order-panel">
 
@@ -919,6 +927,117 @@ $(function() {
   $('#readMoreLink').on('click', function(e) {
     e.preventDefault();
     $('#wasteDetails').slideToggle(200);
+  });
+
+  // MOBILE CARD LOGIC (steps 1–3)
+
+  // Helper to update all card headers based on data-index
+  function refreshCardHeaders() {
+    $('.mobile-order-cards .order-card').each(function(i) {
+      const idx = i + 1;
+      $(this).attr('data-index', idx);
+      $(this).find('thead th').text(`Enter Details of Pc No. ${idx}`);
+      // Update input IDs and corresponding labels
+      $(this).find('input, select').each(function() {
+        // Find the class that starts with card-
+        const fieldMatch = this.className.match(/card-[a-z-]+/);
+        if (!fieldMatch) return;
+        const field = fieldMatch[0]; // e.g. card-cut-length
+        const newId = `card${idx}-${field}`;
+        $(this).attr('id', newId);
+        $(this).prev('label').attr('for', newId);
+      });
+    });
+  }
+
+  // Add another card
+  $('#addCardBtn').on('click', function() {
+    const $first = $('.mobile-order-cards .order-card').first();
+    const $clone = $first.clone(true, true); // copy events
+    $clone.appendTo('.mobile-order-cards');
+    refreshCardHeaders();
+  });
+
+  // Remove a card and update the piece count input
+  $('.mobile-order-cards').on('click', '.remove-card-btn', function() {
+    const $cards = $('.mobile-order-cards .order-card');
+    const currentCount = $cards.length;
+    // Remove this card
+    $(this).closest('.order-card').remove();
+    // Update piece count input
+    $('#pieceCountInput').val(currentCount - 1);
+    refreshCardHeaders();
+    if (typeof updateMobileTotals === 'function') updateMobileTotals();
+  });
+
+  // Update button handler for piece count
+  $('#updatePiecesBtn').on('click', function() {
+    const $cardsContainer = $('.order-cards-container');
+    const currentCount = $cardsContainer.find('.order-card').length;
+    let desiredCount = parseInt($('#pieceCountInput').val(), 10) || 0;
+    if (desiredCount < 1) {
+      alert('Please enter at least 1 piece.');
+      $('#pieceCountInput').val(currentCount);
+      return;
+    }
+    if (desiredCount > currentCount) {
+      // Append new cards
+      const $first = $cardsContainer.find('.order-card').first();
+      for (let i = currentCount + 1; i <= desiredCount; i++) {
+        const $clone = $first.clone(true, true);
+        $cardsContainer.append($clone);
+      }
+      refreshCardHeaders();
+      if (typeof updateMobileTotals === 'function') updateMobileTotals();
+    } else if (desiredCount < currentCount) {
+      // Confirm removal
+      if (confirm(`You are reducing from ${currentCount} to ${desiredCount} pieces. Any data in removed cards will be lost. Continue?`)) {
+        $cardsContainer.find('.order-card').slice(desiredCount).remove();
+        refreshCardHeaders();
+        if (typeof updateMobileTotals === 'function') updateMobileTotals();
+      } else {
+        // Revert input
+        $('#pieceCountInput').val(currentCount);
+      }
+    }
+  });
+
+  // Field validation: apply red border and show error message below field
+  $('.mobile-order-cards').on('input change', 'input, select', function() {
+    const $field = $(this);
+    const val = $field.val();
+    let valid = true;
+    // Basic validation rules
+    if ($field.is('.card-cut-length')) {
+      const num = parseFloat(val);
+      valid = !isNaN(num) && num >= 100 && num <= 3000;
+    } else if ($field.is('.card-cb-holes')) {
+      const num = parseInt(val, 10);
+      valid = !isNaN(num) && num >= 0;
+    } else if ($field.is('.card-num-pcs')) {
+      const num = parseInt(val, 10);
+      valid = !isNaN(num) && num >= 1;
+    } // taps select always valid
+
+    // Remove existing error message
+    $field.removeClass('error');
+    $field.next('.field-error').remove();
+
+    if (!valid) {
+      // Mark field invalid
+      $field.addClass('error');
+      // Append error message
+      const msg = $field.is('.card-cut-length')
+        ? 'Enter length between 100 and 3000'
+        : $field.is('.card-num-pcs')
+          ? 'Enter at least 1 piece'
+          : 'Invalid value';
+      $('<div class="field-error" style="color:#e53935; font-size:0.9rem; margin-top:0.25rem;">')
+        .text(msg)
+        .insertAfter($field);
+    }
+    // Later: call updateMobileTotals() if totals logic is implemented
+    if (typeof updateMobileTotals === 'function') updateMobileTotals();
   });
 });
 </script>
