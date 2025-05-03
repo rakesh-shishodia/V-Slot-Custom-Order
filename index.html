@@ -323,15 +323,16 @@ EcwidData.fetchAll()
 
   // Handle change event for mobile dropdown
   $('#mobileExtrusionSelect').on('change', function() {
-    const id = $(this).val();
+    const $sel = $(this);
+    const id = $sel.val();
     if (!id) return;
     // Find the corresponding extrusion box and trigger its click handler
     const $box = $('.extrusion-box[data-id="' + id + '"]');
     if ($box.length) {
       $box.trigger('click');
     }
-    // Reset select to placeholder (optional)
-    $(this).val('');
+    // Ensure the dropdown keeps the selected option
+    $sel.val(id);
   });
     
   // Calculate and display a single row’s total length
