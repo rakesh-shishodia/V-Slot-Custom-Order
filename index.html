@@ -98,6 +98,49 @@
       <!-- Product description (supports HTML formatting) -->
     </div>
   </div>
+  <!-- Mobile card-style ordering interface -->
+  <div class="mobile-order-cards show-mobile hide-desktop">
+    <table class="order-card table-card" data-index="1">
+      <thead>
+        <tr>
+          <th colspan="2">Enter Details of 1st Pc</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><label for="card1-length">Length (mm)</label></td>
+          <td><input type="number" id="card1-length" class="card-cut-length" min="100" max="3000" placeholder="e.g. 1000" /></td>
+        </tr>
+        <tr>
+          <td><label for="card1-tap">M5 Tap</label></td>
+          <td>
+            <select id="card1-tap" class="card-tap-side">
+              <option value="none">No Tapping</option>
+              <option value="one">One Side</option>
+              <option value="both">Both Sides</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="card1-cb">Counter Bore Holes</label></td>
+          <td><input type="number" id="card1-cb" class="card-cb-holes" min="0" max="20" value="0" /></td>
+        </tr>
+        <tr>
+          <td><label for="card1-pcs">No. of Pcs</label></td>
+          <td><input type="number" id="card1-pcs" class="card-num-pcs" min="1" placeholder="e.g. 2" /></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2">
+            <button type="button" class="remove-card-btn">Remove this piece</button>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <button type="button" id="addCardBtn" class="add-card-btn">+ Add another piece</button>
+  </div>
   <div class="order-panel">
 
     <!-- Custom Ordering Table -->

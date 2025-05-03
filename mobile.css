@@ -129,4 +129,18 @@
 @media (min-width: 769px) {
   .hide-desktop { display: none !important; }
   .show-desktop { display: block !important; }
+
+  /* Ensure card inputs and dropdown are uniform */
+  .mobile-order-cards .order-card input.card-cut-length,
+  .mobile-order-cards .order-card input.card-cb-holes,
+  .mobile-order-cards .order-card input.card-num-pcs,
+  .mobile-order-cards .order-card select.card-tap-side {
+    width: 100% !important;
+    padding: 0.75rem !important;
+    font-size: 1rem !important;
+    min-height: 2.5rem !important;
+    line-height: 1.4 !important;
+    box-sizing: border-box !important;
+    appearance: none !important;
+  }
 }
