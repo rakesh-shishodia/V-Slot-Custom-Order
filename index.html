@@ -114,9 +114,6 @@
         <span class="zoom-icon">🔍</span>
       </div>
     </div>
-    <div class="video-grid" id="videoGrid">
-      <!-- Video iframes will be inserted here -->
-    </div>
     <div class="description-container">
       <!-- Product description (supports HTML formatting) -->
     </div>
@@ -389,20 +386,6 @@ EcwidData.fetchAll()
         });
         // Insert description HTML from Ecwid data
         $('.description-container').html(item.descriptionHtml);
-        // Insert video iframes (up to 4), stacked vertically
-        const $videoGrid = $('#videoGrid').empty();
-        const videoUrls = (item.videos || []).slice(0, 4);
-        videoUrls.forEach(url => {
-        const embedUrl = url.replace("watch?v=", "embed/");
-        const $iframe = $(`
-        <iframe width="100%" height="315" 
-            src="${embedUrl}" 
-            title="YouTube video player" 
-            frameborder="0" allowfullscreen loading="lazy">
-        </iframe>
-  `);
-  $videoGrid.append($iframe);
-});
         // Recalculate aggregate totals when extrusion selection changes.
         updateTotals();
         // Also update mobile aggregate totals immediately
