@@ -122,13 +122,7 @@
           </tr>
           <tr>
             <td><label for="card1-tap">M5 Tap</label></td>
-            <td>
-              <select id="card1-tap" class="card-tap-side">
-                <option value="none">No Tapping</option>
-                <option value="one">One Side</option>
-                <option value="both">Both Sides</option>
-              </select>
-            </td>
+            <td><input type="number" id="card1-tap" class="card-tap-side" placeholder="0–2" min="0" max="2" step="1" required /></td>
           </tr>
           <tr>
             <td><label for="card1-cb">Counter Bore Holes</label></td>
@@ -162,7 +156,7 @@
               (min 100mm, max 3000mm)
             </th>
             <th>
-              M5 Tap
+              M5 Tap <br> (0 = none, 1 = one side, 2 = both sides)
               <span class="info-icon" data-info="For V Slot - M5x15mm, For 3030 T Slot - M8X15mm, For others please check drawing">
                 <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="8" cy="8" r="7" fill="#006064"/>
@@ -421,12 +415,8 @@ EcwidData.fetchAll()
     $('#tableBody tr').each(function() {
       const rowTotal = parseFloat($(this).find('.row-total-length').text()) || 0;
       totalOrdered += rowTotal;
-  
-      const tapChoice = $(this).find('.tap-side').val();
+      const sides = parseInt($(this).find('.tap-side').val(), 10) || 0;
       const pcsValue = parseFloat($(this).find('.num-pcs').val()) || 0;
-      let sides = 0;
-      if (tapChoice === 'one') sides = 1;
-      else if (tapChoice === 'both') sides = 2;
       const holesPerSide = selectedExtrusion.holesPerSide || 0;
       totalM5Count += sides * holesPerSide * pcsValue;
   
@@ -524,9 +514,9 @@ EcwidData.fetchAll()
     $('#tableBody tr').each(function() {
       const cutLength = $(this).find('.cut-length').val();
       const numPcs = $(this).find('.num-pcs').val();
-      const tapChoice = $(this).find('.tap-side').val();
+      // Determine tapped sides from numeric input
+      const sides = parseInt($(this).find('.tap-side').val(), 10) || 0;
       const holesPerSide = selectedExtrusion.holesPerSide || 0;
-      const sides = tapChoice === 'both' ? 2 : (tapChoice === 'one' ? 1 : 0);
       const m5 = sides * holesPerSide;
       const cb = $(this).find('.cb-holes').val();
       if (cutLength && numPcs) {
@@ -752,11 +742,7 @@ return;
       return `
         <tr>
           <td><input type="number" class="cut-length" placeholder="Precisely Cut" min="${settings.minLen}" max="${settings.maxLen}" required /></td>
-          <td><select class="tap-side" required>
-            <option value="none">No Tapping</option>
-            <option value="one">One Side</option>
-            <option value="both">Both Sides</option>
-          </select></td>
+          <td><input type="number" class="tap-side" placeholder="0,1 or 2" min="0" max="2" step="1" required /></</td>
           <td class="cb-holes-cell">
             <input type="number" class="cb-holes" value="0" min="0" max="20" required />
             <span class="cb-holes-suffix">holes</span>
@@ -826,6 +812,38 @@ return;
         $row.remove();
         updateTotals();
       });
+      // Clamp tap-side input to 0–2
+      $row.find('.tap-side').on('input', function() {
+        let v = parseInt(this.value.replace(/\D/g, ''), 10);
+        if (isNaN(v)) v = '';
+        else if (v < 0) v = 0;
+        else if (v > 2) v = 2;
+        this.value = v;
+      });
+      // Validate tap-side on blur: blank → 0, enforce 0–2 range
+      $row.find('.tap-side').on('blur', function() {
+        const $f = $(this);
+        let v = parseInt($f.val().replace(/\D/g, ''), 10);
+        // Treat blank as 0
+        if (isNaN(v)) v = 0;
+        // If out of range, mark error
+        if (v < 0 || v > 2) {
+          $f.addClass('error');
+          // Remove any existing message
+          $f.next('.field-error').remove();
+          // Add inline error message
+          $('<div class="field-error" style="color:#e53935; font-size:0.9rem; margin-top:0.25rem;">')
+            .text('Enter 0, 1 or 2 only')
+            .insertAfter($f);
+          // Reset to blank so user re-enters
+          $f.val('');
+        } else {
+          // Valid: clear error styling and message, update value
+          $f.removeClass('error');
+          $f.next('.field-error').remove();
+          $f.val(v);
+        }
+      });
     },
     init: function() {
       // Delegate all row-specific events to table container
@@ -872,6 +890,24 @@ return;
             $('#formError')
               .text("Please enter at least 1 piece for each specified cut length.")
               .show();
+          }
+        })
+        // Add delegated blur handler for .tap-side
+        .on('blur', '.tap-side', function() {
+          const $f = $(this);
+          let v = parseInt($f.val().replace(/\D/g, ''), 10);
+          if (isNaN(v)) v = 0;
+          if (v < 0 || v > 2) {
+            $f.addClass('error');
+            $f.next('.field-error').remove();
+            $('<div class="field-error" style="color:#e53935; font-size:0.9rem; margin-top:0.25rem;">')
+              .text('Enter 0, 1 or 2 only')
+              .insertAfter($f);
+            $f.val('');
+          } else {
+            $f.removeClass('error');
+            $f.next('.field-error').remove();
+            $f.val(v);
           }
         })
         .on('click', '.reset-row-btn', function() {
@@ -1038,6 +1074,36 @@ $(function() {
     }
     // Later: call updateMobileTotals() if totals logic is implemented
     if (typeof updateMobileTotals === 'function') updateMobileTotals();
+  });
+
+  // Clamp tap-side input on mobile to digits only and enforce 0–2 range
+  $('.mobile-order-cards').on('input', '.card-tap-side', function() {
+    let v = parseInt(this.value.replace(/\D/g, ''), 10);
+    if (isNaN(v)) v = '';
+    else if (v < 0) v = 0;
+    else if (v > 2) v = 2;
+    this.value = v;
+  });
+
+  // Validate tap-side on blur: blank → 0, enforce 0–2 range with error UI
+  $('.mobile-order-cards').on('blur', '.card-tap-side', function() {
+    const $f = $(this);
+    let v = parseInt($f.val().replace(/\D/g, ''), 10);
+    if (isNaN(v)) v = 0;
+    // Remove existing error UI
+    $f.removeClass('error');
+    $f.next('.field-error').remove();
+    if (v < 0 || v > 2) {
+      // Invalid: show error
+      $f.addClass('error');
+      $('<div class="field-error" style="color:#e53935; font-size:0.9rem; margin-top:0.25rem;">')
+        .text('Enter 0, 1 or 2 only')
+        .insertAfter($f);
+      $f.val('');
+    } else {
+      // Valid: set normalized value
+      $f.val(v);
+    }
   });
 });
 </script>
