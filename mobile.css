@@ -123,6 +123,56 @@
     padding: 0 0.5rem !important;
     box-sizing: border-box !important;
   } */
+
+  /* Style mobile aggregate card */
+  .mobile-layout-aggregate-card {
+    margin: 1rem 0;
+  }
+  .mobile-layout-aggregate-card .aggregate-card {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    border-collapse: collapse;
+  }
+  .mobile-layout-aggregate-card .aggregate-card th {
+    background-color: #f0f0f0;
+    padding: 0.75rem;
+    text-align: center;
+    font-weight: 600;
+  }
+  .mobile-layout-aggregate-card .aggregate-card td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    word-break: break-word;
+  }
+  .mobile-layout-aggregate-card .aggregate-card tr + tr td {
+    border-top: 1px solid #eee;
+  }
+  .mobile-layout-aggregate-card .aggregate-card tbody tr:last-child td {
+    font-weight: 600;
+  }
+
+  /* Two-column 40/60 split for order and aggregate tables */
+  .mobile-order-cards .table-card td:first-child,
+  .mobile-layout-aggregate-card .aggregate-card td:first-child {
+    width: 60% !important;
+  }
+  .mobile-order-cards .table-card td:last-child,
+  .mobile-layout-aggregate-card .aggregate-card td:last-child {
+    width: 40% !important;
+  }
+
+  /* Left-align order card table content */
+  .mobile-order-cards .table-card th {
+    text-align: center; /* keep header centered */
+  }
+  .mobile-order-cards .table-card td {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+  }
+  .mobile-order-cards .table-card tr + tr td {
+    border-top: 1px solid #eee; /* optional divider for card rows */
+  }
 }
 
 /* Desktop-only / Mobile-only toggles (viewport ≥ 769px) */
@@ -142,32 +192,5 @@
     line-height: 1.4 !important;
     box-sizing: border-box !important;
     appearance: none !important;
-  }
-  /* Style mobile aggregate card */
-  .mobile-layout-aggregate-card {
-    margin: 1rem 0; 
-  }
-  .mobile-layout-aggregate-card .aggregate-card {
-    width: 100%;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    border-collapse: collapse;
-  }
-  .mobile-layout-aggregate-card .aggregate-card th {
-    background-color: #f0f0f0;
-    padding: 0.75rem;
-    text-align: center;
-    font-weight: 600;
-  }
-  .mobile-layout-aggregate-card .aggregate-card td {
-    padding: 0.5rem 0.75rem;
-    text-align: left;  /* left-align labels and values */
-    word-break: break-word;
-  }
-  .mobile-layout-aggregate-card .aggregate-card tr + tr td {
-    border-top: 1px solid #eee;  /* divider between rows */
-  }
-  .mobile-layout-aggregate-card .aggregate-card tbody tr:last-child td {
-    font-weight: 600;  /* emphasize grand total */
   }
 }

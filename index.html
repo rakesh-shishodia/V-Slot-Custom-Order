@@ -1044,6 +1044,7 @@ $(function() {
     const $clone = $first.clone(true, true); // copy events
     $clone.appendTo('.mobile-order-cards');
     refreshCardHeaders();
+    if (typeof updateMobileTotals === 'function') updateMobileTotals();
   });
 
   // Remove a card and update the piece count input
@@ -1130,8 +1131,7 @@ $(function() {
         .text(msg)
         .insertAfter($field);
     }
-    // Later: call updateMobileTotals() if totals logic is implemented
-    if (typeof updateMobileTotals === 'function') updateMobileTotals();
+    updateMobileTotals();
   });
 
   // Clamp tap-side input on mobile to digits only and enforce 0–2 range
@@ -1141,6 +1141,7 @@ $(function() {
     else if (v < 0) v = 0;
     else if (v > 2) v = 2;
     this.value = v;
+    updateMobileTotals();
   });
 
   // Validate tap-side on blur: blank → 0, enforce 0–2 range with error UI
@@ -1162,7 +1163,65 @@ $(function() {
       // Valid: set normalized value
       $f.val(v);
     }
+    updateMobileTotals();
   });
+
+  // --- MOBILE AGGREGATE CARD LOGIC ---
+  // 1. Define updateMobileTotals function
+  function updateMobileTotals() {
+    const holesPerSide = selectedExtrusion?.holesPerSide || 0;
+    let totalOrderedLength = 0;
+    let totalM5Count = 0;
+    let totalCBCount = 0;
+
+    $('.order-cards-container .order-card').each(function() {
+      const $card = $(this);
+      const length = parseFloat($card.find('.card-cut-length').val()) || 0;
+      const pcs = parseInt($card.find('.card-num-pcs').val(), 10) || 0;
+      const sides = parseInt($card.find('.card-tap-side').val(), 10) || 0;
+      const cb = parseInt($card.find('.card-cb-holes').val(), 10) || 0;
+
+      totalOrderedLength += length * pcs;
+      totalM5Count += sides * holesPerSide * pcs;
+      totalCBCount += cb * pcs;
+    });
+
+    // Rounding logic: find next standard length
+    let roundedLength = 0;
+    if (totalOrderedLength > 0 && selectedExtrusion) {
+      roundedLength = config.standardLengths.find(len => len >= totalOrderedLength)
+                      || config.standardLengths[config.standardLengths.length - 1];
+    }
+
+    const costExtrusions = roundedLength * (selectedExtrusion?.baseCostPerMm || 0);
+    const totalM5Cost = totalM5Count * additionalCosts.m5Tapping;
+    const totalCBCost = totalCBCount * additionalCosts.counterBore;
+    const subtotal = costExtrusions + totalM5Cost + totalCBCost;
+    const gst = subtotal * 0.18;
+    const grandTotal = subtotal + gst;
+
+    // Update DOM
+    $('#mobileTotalOrdered').text(totalOrderedLength.toFixed(0));
+    $('#mobileRoundedLength').text(roundedLength.toFixed(0));
+    $('#mobileCostExtrusions').text(costExtrusions.toFixed(2));
+    $('#mobileTotalM5Count').text(totalM5Count.toFixed(0));
+    $('#mobileTotalM5Cost').text(totalM5Cost.toFixed(2));
+    $('#mobileTotalCBCount').text(totalCBCount.toFixed(0));
+    $('#mobileTotalCBCost').text(totalCBCost.toFixed(2));
+    $('#mobileSubtotal').text(subtotal.toFixed(2));
+    $('#mobileGST').text(gst.toFixed(2));
+    $('#mobileTotal').text(grandTotal.toFixed(2));
+
+    // Enable/disable mobile Add to Cart
+    if (roundedLength === 0 || !selectedExtrusion?.inStock) {
+      $('#addToCartBtnMobile').prop('disabled', true);
+    } else {
+      $('#addToCartBtnMobile').prop('disabled', false);
+    }
+  }
+
+  // 2. Call updateMobileTotals after validation handlers (at end of $(function() {...}))
+  updateMobileTotals();
 });
 </script>
 <script>
