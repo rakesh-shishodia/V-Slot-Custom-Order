@@ -526,7 +526,7 @@ EcwidData.fetchAll()
     let orderDetails = [];
     let totalPcs = 0;
 
-    if ($('.order-cards-container .order-card').length > 0) {
+    if ($('.mobile-order-cards').is(':visible')) {
       // Mobile: read from card-based inputs
       const holesPerSide = selectedExtrusion.holesPerSide || 0;
       $('.order-cards-container .order-card').each(function() {
@@ -562,7 +562,7 @@ EcwidData.fetchAll()
   
     // Retrieve aggregated totals from the totals table (desktop) or from mobile aggregate card
     let totalM5Count, totalCBCount, roundedLengthValue;
-    if ($('.order-cards-container .order-card').length > 0) {
+    if ($('.mobile-order-cards').is(':visible')) {
       // Mobile
       totalM5Count = parseInt($('#mobileTotalM5Count').text(), 10) || 0;
       totalCBCount = parseInt($('#mobileTotalCBCount').text(), 10) || 0;
