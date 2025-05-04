@@ -143,4 +143,31 @@
     box-sizing: border-box !important;
     appearance: none !important;
   }
+  /* Style mobile aggregate card */
+  .mobile-layout-aggregate-card {
+    margin: 1rem 0; 
+  }
+  .mobile-layout-aggregate-card .aggregate-card {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    border-collapse: collapse;
+  }
+  .mobile-layout-aggregate-card .aggregate-card th {
+    background-color: #f0f0f0;
+    padding: 0.75rem;
+    text-align: center;
+    font-weight: 600;
+  }
+  .mobile-layout-aggregate-card .aggregate-card td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;  /* left-align labels and values */
+    word-break: break-word;
+  }
+  .mobile-layout-aggregate-card .aggregate-card tr + tr td {
+    border-top: 1px solid #eee;  /* divider between rows */
+  }
+  .mobile-layout-aggregate-card .aggregate-card tbody tr:last-child td {
+    font-weight: 600;  /* emphasize grand total */
+  }
 }
