@@ -708,26 +708,33 @@ return;
   $('#previewClose').on('click', () => { $('#orderPreviewModal').hide(); });
   $('#amendOrderBtn').on('click', () => { $('#orderPreviewModal').hide(); });
   $('#proceedOrderBtn').on('click', () => {
-    console.log('Proceed clicked')
+    console.log('Proceed clicked');
     $('#orderPreviewModal').hide();
     Ecwid.Cart.addProduct({
       id: selectedExtrusion.id,
       quantity: 1,
-      options: pendingProductOptions
-    }, function(success) {
-      console.log('🛒 addProduct callback, success:', success);
-      if (success) {
-        VSlot.table.init();
-        updateTotals();
-        // Show cut details in the success modal
-        const detailsText = pendingProductOptions && pendingProductOptions["Cut Details"]
-                          ? pendingProductOptions["Cut Details"]
-                          : 'Added to cart successfully.';
-        $('#modalDetails').text(detailsText);
-        pendingProductOptions = null;
-        $('#successModal').show();
-      } else {
-        console.error('Add to cart failed.');
+      options: pendingProductOptions,
+      callback: function(success, product, cart) {
+        console.log('🛒 addProduct callback:', { success, product, cart });
+        if (success) {
+          VSlot.table.init();
+          updateTotals();
+          // Reset mobile card UI to single card and reset piece count input
+          $('#pieceCountInput').val(1);
+          const $firstCard = $('.order-cards-container .order-card').first().clone(true, true);
+          $('.order-cards-container').empty().append($firstCard);
+          if (typeof refreshCardHeaders === 'function') refreshCardHeaders();
+          if (typeof updateMobileTotals === 'function') updateMobileTotals();
+          const detailsText = pendingProductOptions && pendingProductOptions["Cut Details"]
+            ? pendingProductOptions["Cut Details"]
+            : 'Added to cart successfully.';
+          $('#modalDetails').text(detailsText);
+          pendingProductOptions = null;
+          $('#successModal').show();
+          $('#modalClose').focus();
+        } else {
+          console.error('Add to cart failed for', product, cart);
+        }
       }
     });
   });
