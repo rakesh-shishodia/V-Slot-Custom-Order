@@ -24,6 +24,29 @@
 </head>
 <body>
 
+  <!-- Waste Policy Template -->
+  <template id="wastePolicyTemplate">
+    <div class="waste-policy-content">
+      <p>
+        <strong>Billing is rounded up to the nearest 500 mm; any off-cut over 100 mm is shipped to you.</strong><br>
+        <strong>Example</strong> – You order <strong>2 pcs of 1000 mm</strong> and <strong>1 pc of 1200 mm</strong> (total 3200 mm), so we bill for <strong>3500 mm</strong>. You’ll receive your <strong>2 pcs of 1000 mm</strong>, <strong>1 pc of 1200 mm</strong> plus a <strong>300 mm off-cut</strong>.<br>
+        <a href="#" class="read-more-link">[Read More]</a>
+      </p>
+      <div class="waste-details" style="display: none;">
+        <strong>Material &amp; Waste Policy</strong><br><br>
+        We cut orders in 500 mm increments to reduce material wastage, keep our prices low and our operations efficient, and <strong>those savings go straight into your final per-metre rate</strong>.<br><br>
+        <strong>How it works:</strong><br>
+        1. Rounding: Every order is rounded up to the next 500 mm increment and accordingly billed for.<br>
+        2. Clean-offs: Rather than discard leftovers, we ship you any piece longer than 100 mm.<br><br>
+        <strong>Real-world example:</strong><br>
+        • You specify: 2 pcs of 1000 mm and 1 pc of 1200 mm (total 3200 mm).<br>
+        • We round up and bill 3500 mm at your per-metre rate.<br>
+        • You receive 2 pcs of 1000 mm and 1 pc of 1200 mm plus a 300 mm off-cut which you can use for jigs, fixtures, or future tweaks.<br><br>
+        This policy keeps our material costs predictable and our prices competitive—while ensuring you never Total for wasted material.
+      </div>
+    </div>
+  </template>
+
 <!-- Tool Header -->
 <header class="tool-header">
   <div class="header-left">3DPrintronics</div>
@@ -275,48 +298,12 @@
       </table>
       <!-- Desktop Add to Cart button and waste policy (hide on mobile) -->
       <button type="button" id="addToCartBtn" class="hide-mobile">Add to Cart</button>
-      <div class="waste-policy hide-mobile" style="margin: 15px 0; font-size: 14px; color: #333;">
-        <p>
-          <strong>Billing is rounded up to the nearest 500 mm; any off-cut over 100 mm is shipped to you.</strong><br>
-          <strong>Example</strong> – You order <strong>2 pcs of 1000 mm</strong> and <strong>1 pc of 1200 mm</strong> (total 3200 mm), so we bill for <strong>3500 mm</strong>. You’ll receive your <strong>2 pcs of 1000 mm</strong>, <strong>1 pc of 1200 mm</strong> plus a <strong>300 mm off-cut</strong>.<br>
-          <a href="#" id="readMoreLink" style="text-decoration: underline; cursor: pointer;">[Read More]</a>
-        </p>
-        <div id="wasteDetails" style="display:none; margin-top:10px; padding-left:10px; border-left: 3px solid #ff9800;">
-          <strong>Material &amp; Waste Policy</strong><br><br>
-          We cut orders in 500 mm increments to reduce material wastage, keep our prices low and our operations efficient, and <strong>those savings go straight into your final per-metre rate</strong>.<br><br>
-          <strong>How it works:</strong><br>
-          1. Rounding: Every order is rounded up to the next 500 mm increment and accordingly billed for.<br>
-          2. Clean-offs: Rather than discard leftovers, we ship you any piece longer than 100 mm.<br><br>
-          <strong>Real-world example:</strong><br>
-          • You specify: 2 pcs of 1000 mm and 1 pc of 1200 mm (total 3200 mm).<br>
-          • We round up and bill 3500 mm at your per-metre rate.<br>
-          • You receive 2 pcs of 1000 mm and 1 pc of 1200 mm plus a 300 mm off-cut which you can use for jigs, fixtures, or future tweaks.<br><br>
-          This policy keeps our material costs predictable and our prices competitive—while ensuring you never Total for wasted material.
-        </div>
-      </div>
+      <div class="waste-policy hide-mobile" id="wastePolicyDesktop"></div>
     </form>
   </div> <!-- .order-panel -->
 
   <button type="button" id="addToCartBtnMobile" class="show-mobile hide-desktop">Add to Cart</button>
-  <div class="waste-policy show-mobile hide-desktop" style="margin: 15px 0; font-size: 14px; color: #333;">
-    <p>
-      <strong>Billing is rounded up to the nearest 500 mm; any off-cut over 100 mm is shipped to you.</strong><br>
-      <strong>Example</strong> – You order <strong>2 pcs of 1000 mm</strong> and <strong>1 pc of 1200 mm</strong> (total 3200 mm), so we bill for <strong>3500 mm</strong>. You’ll receive your <strong>2 pcs of 1000 mm</strong>, <strong>1 pc of 1200 mm</strong> plus a <strong>300 mm off-cut</strong>.<br>
-      <a href="#" id="readMoreLinkMobile" style="text-decoration: underline; cursor: pointer;">[Read More]</a>
-    </p>
-    <div id="wasteDetailsMobile" style="display:none; margin-top:10px; padding-left:10px; border-left: 3px solid #ff9800;">
-      <strong>Material &amp; Waste Policy</strong><br><br>
-      We cut orders in 500 mm increments to reduce material wastage, keep our prices low and our operations efficient, and <strong>those savings go straight into your final per-metre rate</strong>.<br><br>
-      <strong>How it works:</strong><br>
-      1. Rounding: Every order is rounded up to the next 500 mm increment and accordingly billed for.<br>
-      2. Clean-offs: Rather than discard leftovers, we ship you any piece longer than 100 mm.<br><br>
-      <strong>Real-world example:</strong><br>
-      • You specify: 2 pcs of 1000 mm and 1 pc of 1200 mm (total 3200 mm).<br>
-      • We round up and bill 3500 mm at your per-metre rate.<br>
-      • You receive 2 pcs of 1000 mm and 1 pc of 1200 mm plus a 300 mm off-cut which you can use for jigs, fixtures, or future tweaks.<br><br>
-      This policy keeps our material costs predictable and our prices competitive—while ensuring you never Total for wasted material.
-    </div>
-  </div>
+  <div class="waste-policy show-mobile hide-desktop" id="wastePolicyMobile"></div>
 </div> <!-- .flex-container -->
 
 <script>
@@ -1030,11 +1017,17 @@ $(function() {
   // Initialize ordering table
   VSlot.table.init();
 
-  // Initialize Ecwid cart and waste-policy toggle
+  // Initialize Ecwid cart
   Ecwid.init();
-  $('#readMoreLink').on('click', function(e) {
+
+  // Populate waste policy content for desktop and mobile
+  const wasteTpl = document.getElementById('wastePolicyTemplate').content;
+  document.getElementById('wastePolicyDesktop').appendChild(wasteTpl.cloneNode(true));
+  document.getElementById('wastePolicyMobile').appendChild(wasteTpl.cloneNode(true));
+  // Bind toggle for both instances
+  $('.read-more-link').off('click').on('click', function(e) {
     e.preventDefault();
-    $('#wasteDetails').slideToggle(200);
+    $(this).closest('.waste-policy-content').find('.waste-details').slideToggle(200);
   });
 
   // MOBILE CARD LOGIC (steps 1–3)
