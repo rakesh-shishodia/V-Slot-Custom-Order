@@ -193,4 +193,21 @@
     box-sizing: border-box !important;
     appearance: none !important;
   }
+  /* Responsive Preview Modal */
+  #orderPreviewModal .modal-content {
+    width: 90vw !important;
+    max-width: 400px !important;
+    max-height: 90vh !important;
+    margin: 1rem auto !important;
+    padding: 1rem !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+  }
+
+  /* Ensure modal action buttons are full-width and always visible */
+  #orderPreviewModal .modal-content button {
+    width: 100% !important;
+    margin-top: 0.75rem !important;
+    font-size: 1rem !important;
+  }
 }

@@ -551,28 +551,59 @@ EcwidData.fetchAll()
       alert("Please select an extrusion type.");
       return;
     }
-  
-    // Build detailed order string from table rows in the format "cutLength-numPcs pc-M5Tap{m5}-CBHole{cb}"
+
+    // Determine order details and total pieces based on desktop or mobile view
     let orderDetails = [];
-    $('#tableBody tr').each(function() {
-      const cutLength = $(this).find('.cut-length').val();
-      const numPcs = $(this).find('.num-pcs').val();
-      // Determine tapped sides from numeric input
-      const sides = parseInt($(this).find('.tap-side').val(), 10) || 0;
+    let totalPcs = 0;
+
+    if ($('.order-cards-container .order-card').length > 0) {
+      // Mobile: read from card-based inputs
       const holesPerSide = selectedExtrusion.holesPerSide || 0;
-      const m5 = sides * holesPerSide;
-      const cb = $(this).find('.cb-holes').val();
-      if (cutLength && numPcs) {
-        orderDetails.push(`${cutLength}-${numPcs}pc-M5Tap${m5 || 0}-CBHole${cb || 0}`);
-      }
-    });
+      $('.order-cards-container .order-card').each(function() {
+        const $card = $(this);
+        const length = $card.find('.card-cut-length').val().trim();
+        const pcs = parseInt($card.find('.card-num-pcs').val(), 10) || 0;
+        const sides = parseInt($card.find('.card-tap-side').val(), 10) || 0;
+        const cb = $card.find('.card-cb-holes').val().trim() || '0';
+
+        if (length && pcs) {
+          const m5Count = sides * holesPerSide;
+          orderDetails.push(`${length}-${pcs}pc-M5Tap${m5Count}-CBHole${cb}`);
+          totalPcs += pcs;
+        }
+      });
+    } else {
+      // Desktop: read from table rows
+      $('#tableBody tr').each(function() {
+        const cutLength = $(this).find('.cut-length').val();
+        const numPcs = $(this).find('.num-pcs').val();
+        const sides = parseInt($(this).find('.tap-side').val(), 10) || 0;
+        const holesPerSide = selectedExtrusion.holesPerSide || 0;
+        const m5 = sides * holesPerSide;
+        const cb = $(this).find('.cb-holes').val();
+        if (cutLength && numPcs) {
+          orderDetails.push(`${cutLength}-${numPcs}pc-M5Tap${m5}-CBHole${cb}`);
+          totalPcs += parseInt(numPcs, 10) || 0;
+        }
+      });
+    }
+
     const detailsString = orderDetails.join('; ');
   
-    // Retrieve aggregated totals from the totals table.
-    const totalM5Count = parseInt($('#totalM5Count').text(), 10) || 0;
-    const totalCBCount = parseInt($('#totalCBCount').text(), 10) || 0;
-    const roundedLengthValue = parseInt($('#roundedLength').text(), 10) || 0;
-  
+    // Retrieve aggregated totals from the totals table (desktop) or from mobile aggregate card
+    let totalM5Count, totalCBCount, roundedLengthValue;
+    if ($('.order-cards-container .order-card').length > 0) {
+      // Mobile
+      totalM5Count = parseInt($('#mobileTotalM5Count').text(), 10) || 0;
+      totalCBCount = parseInt($('#mobileTotalCBCount').text(), 10) || 0;
+      roundedLengthValue = parseInt($('#mobileRoundedLength').text(), 10) || 0;
+    } else {
+      // Desktop
+      totalM5Count = parseInt($('#totalM5Count').text(), 10) || 0;
+      totalCBCount = parseInt($('#totalCBCount').text(), 10) || 0;
+      roundedLengthValue = parseInt($('#roundedLength').text(), 10) || 0;
+    }
+
     // Build the same semicolon-separated Cut Details for Ecwid
     const previewLines = orderDetails.map(detail => {
       const [length, pcsPart, tapPart, cbPart] = detail.split('-');
@@ -601,7 +632,7 @@ EcwidData.fetchAll()
     // Build human-readable preview lines in desired format
     $('#previewTitle').text(`Your Order for ${selectedExtrusion.name}`);
     $('#previewList').empty();
-    let totalPcs = 0;
+    // totalPcs already computed above for both modes
     orderDetails.forEach(detail => {
       const [length, pcsPart, tapPart, cbPart] = detail.split('-');
       const count = parseInt(pcsPart, 10) || 0;
@@ -619,7 +650,6 @@ EcwidData.fetchAll()
         : `${pcsLabel} of ${length} mm`;
 
       $('#previewList').append(`<li>${line}</li>`);
-      totalPcs += count;
     });
     // Check for lengths > 1000mm and show a warning message
     const hasLongExtrusion = orderDetails.some(detail => {
