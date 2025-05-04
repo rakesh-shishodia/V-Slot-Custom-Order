@@ -418,6 +418,10 @@ EcwidData.fetchAll()
 });
         // Recalculate aggregate totals when extrusion selection changes.
         updateTotals();
+        // Also update mobile aggregate totals immediately
+        if (typeof updateMobileTotals === 'function') {
+          updateMobileTotals();
+        }
       });
       container.append(box);
     });
