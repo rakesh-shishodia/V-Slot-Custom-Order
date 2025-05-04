@@ -449,6 +449,10 @@ EcwidData.fetchAll()
     }
     // Ensure the dropdown keeps the selected option
     $sel.val(id);
+    // Update mobile aggregate totals immediately on extrusion change
+    if (typeof updateMobileTotals === 'function') {
+      updateMobileTotals();
+    }
   });
     
   // Calculate and display a single row’s total length
