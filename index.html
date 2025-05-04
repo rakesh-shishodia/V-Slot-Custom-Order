@@ -441,23 +441,6 @@ EcwidData.fetchAll()
     });
   }
 
-  // Handle change event for mobile dropdown
-  $('#mobileExtrusionSelect').on('change', function() {
-    const $sel = $(this);
-    const id = $sel.val();
-    if (!id) return;
-    // Find the corresponding extrusion box and trigger its click handler
-    const $box = $('.extrusion-box[data-id="' + id + '"]');
-    if ($box.length) {
-      $box.trigger('click');
-    }
-    // Ensure the dropdown keeps the selected option
-    $sel.val(id);
-    // Update mobile aggregate totals immediately on extrusion change
-    if (typeof updateMobileTotals === 'function') {
-      updateMobileTotals();
-    }
-  });
     
   // Calculate and display a single row’s total length
   function updateRow($row) {
@@ -1230,6 +1213,19 @@ $(function() {
 
   // 2. Call updateMobileTotals after validation handlers (at end of $(function() {...}))
   updateMobileTotals();
+
+  // Mobile dropdown change: select extrusion and update aggregates
+  $('#mobileExtrusionSelect').on('change', function() {
+    const $sel = $(this);
+    const id = $sel.val();
+    if (!id) return;
+    const $box = $('.extrusion-box[data-id="' + id + '"]');
+    if ($box.length) {
+      $box.trigger('click');
+    }
+    $sel.val(id);
+    updateMobileTotals();
+  });
 });
 </script>
 <script>
