@@ -636,17 +636,6 @@ EcwidData.fetchAll()
       $('#previewShippingNote').empty();
     }
     $('#previewTotal').text(`Total Pcs – ${totalPcs}`);
-// Populate preview aggregate fields
-$('#previewTotalOrdered').text($('#mobileTotalOrdered').text());
-$('#previewRoundedLength').text($('#mobileRoundedLength').text());
-$('#previewCostExtrusions').text($('#mobileCostExtrusions').text());
-$('#previewTotalM5Count').text($('#mobileTotalM5Count').text());
-$('#previewTotalM5Cost').text($('#mobileTotalM5Cost').text());
-$('#previewTotalCBCount').text($('#mobileTotalCBCount').text());
-$('#previewTotalCBCost').text($('#mobileTotalCBCost').text());
-$('#previewSubtotal').text($('#mobileSubtotal').text());
-$('#previewGST').text($('#mobileGST').text());
-$('#previewGrandTotal').text($('#mobileTotal').text());
 // Show preview modal and halt actual add-to-cart
 $('#orderPreviewModal').show();
 return;
@@ -679,20 +668,6 @@ return;
     <h2 id="previewTitle">Your Order for </h2>
     <ul id="previewList" style="text-align:left; margin:10px 0;"></ul>
     <div id="previewShippingNote"></div>
-    <!-- Mobile Preview Aggregate Summary -->
-  <div id="previewAggregate" style="text-align:left; margin:1rem 0;">
-  <h3>Order Summary</h3>
-  <p>Total Ordered Length: <span id="previewTotalOrdered">0</span> mm</p>
-  <p>Rounded Length: <span id="previewRoundedLength">0</span> mm</p>
-  <p>Cost of Extrusion: ₹<span id="previewCostExtrusions">0.00</span></p>
-  <p>Total M5 Taps: <span id="previewTotalM5Count">0</span> holes</p>
-  <p>Cost of M5 Taps: ₹<span id="previewTotalM5Cost">0.00</span></p>
-  <p>Total CB Holes: <span id="previewTotalCBCount">0</span> holes</p>
-  <p>Cost of CB Holes: ₹<span id="previewTotalCBCost">0.00</span></p>
-  <p>Subtotal: ₹<span id="previewSubtotal">0.00</span></p>
-  <p>GST (18%): ₹<span id="previewGST">0.00</span></p>
-  <p><strong>Grand Total: ₹<span id="previewGrandTotal">0.00</span></strong></p>
-  </div>
     <p id="previewTotal" style="font-weight:bold;"></p>
     <button type="button" id="amendOrderBtn">Amend Order</button>
     <button type="button" id="proceedOrderBtn">Proceed to Add to Cart</button>
