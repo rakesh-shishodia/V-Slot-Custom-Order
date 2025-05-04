@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Custom Cut and Machined Aluminium Extrusion Orders in India</title>
   <meta name="description" content="Order custom-cut V-Slot, C-Beam & T-Slot aluminium extrusions with M5/M6/M8 tapping and counterbores. Free shipping. Next-day dispatch from India.">
   <link rel="stylesheet" href="styles.css">  
+  <link rel="stylesheet" href="mobile.css">
   <!-- Include jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- Ecwid data loader (our new module) -->
@@ -32,6 +34,11 @@
       <div class="ec-cart-widget"></div>
   </div>
 </header>
+
+<!-- Mobile-only extrusion dropdown -->
+<select id="mobileExtrusionSelect" class="show-mobile hide-desktop">
+  <option value="">Select extrusion</option>
+</select>
 
 <!-- Filter Controls and Product Boxes Side-by-Side -->
 <div class="filter-product-container">
@@ -91,109 +98,225 @@
       <!-- Product description (supports HTML formatting) -->
     </div>
   </div>
+  <!-- Mobile card-style ordering interface -->
+  <div class="mobile-order-cards show-mobile hide-desktop">
+    <!-- Piece Count Control -->
+    <div class="pieces-control">
+      <label for="pieceCountInput">Enter number of pieces you want to order</label>
+      <input type="number" id="pieceCountInput" min="1" value="1" />
+      <button type="button" id="updatePiecesBtn">Update</button>
+    </div>
+
+    <!-- Order Cards Container -->
+    <div class="order-cards-container">
+      <table class="order-card table-card" data-index="1">
+        <thead>
+          <tr>
+            <th colspan="2">Enter Details of Pc No. 1</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><label for="card1-length">Length (mm)</label></td>
+            <td><input type="number" id="card1-length" class="card-cut-length" min="100" max="3000" placeholder="e.g. 1000" /></td>
+          </tr>
+          <tr>
+            <td><label for="card1-tap">M5 Tap<br>(0 = none, 1 = one side, <br>2 = both sides)</label></td>
+            <td><input type="number" id="card1-tap" class="card-tap-side" placeholder="0–2" min="0" max="2" step="1" required /></td>
+          </tr>
+          <tr>
+            <td><label for="card1-cb">Counter Bore Holes</label></td>
+            <td><input type="number" id="card1-cb" class="card-cb-holes" min="0" max="20" value="0" /></td>
+          </tr>
+          <tr>
+            <td><label for="card1-pcs">No. of Pcs</label></td>
+            <td><input type="number" id="card1-pcs" class="card-num-pcs" min="1" placeholder="e.g. 2" /></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2">
+              <button type="button" class="remove-card-btn">Remove this piece</button>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <!-- Mobile Aggregate Card -->
+    <div class="mobile-layout-aggregate-card show-mobile hide-desktop">
+      <table class="aggregate-card">
+        <thead>
+          <tr>
+            <th colspan="2">Order Summary</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Total Ordered Length</td>
+            <td id="mobileTotalOrdered">0</td>
+          </tr>
+          <tr>
+            <td>Rounded Length</td>
+            <td id="mobileRoundedLength">0</td>
+          </tr>
+          <tr>
+            <td>Cost of Extrusion</td>
+            <td id="mobileCostExtrusions">0.00</td>
+          </tr>
+          <tr>
+            <td>Total M5 Taps</td>
+            <td id="mobileTotalM5Count">0</td>
+          </tr>
+          <tr>
+            <td>Cost of M5 Taps</td>
+            <td id="mobileTotalM5Cost">0.00</td>
+          </tr>
+          <tr>
+            <td>Total CB Holes</td>
+            <td id="mobileTotalCBCount">0</td>
+          </tr>
+          <tr>
+            <td>Cost of CB Holes</td>
+            <td id="mobileTotalCBCost">0.00</td>
+          </tr>
+          <tr>
+            <td>Subtotal</td>
+            <td id="mobileSubtotal">0.00</td>
+          </tr>
+          <tr>
+            <td>GST (18%)</td>
+            <td id="mobileGST">0.00</td>
+          </tr>
+          <tr>
+            <td><strong>Grand Total</strong></td>
+            <td id="mobileTotal">0.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
   <div class="order-panel">
 
-<!-- Custom Ordering Table -->
-<div id="formError" class="error-banner" style="display:none;"></div>
-<form id="extrusionForm">
-  <table id="orderTable">
-    <thead>
-      <tr>
-        <th>
-          Enter Cut Length in mm<br>
-          (min 100mm, max 3000mm)
-        </th>
-        <th>
-          M5 Tap
-          <span class="info-icon" data-info="For V Slot - M5x15mm, For 3030 T Slot - M8X15mm, For others please check drawing">
-            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="8" cy="8" r="7" fill="#006064"/>
-              <text x="8" y="12" font-size="10" text-anchor="middle" fill="#fff">i</text>
-            </svg>
-          </span>
-        </th>
-        <th>
-          Counter Bore
-          <span class="info-icon" data-info="For V Slot: ID 5mm, OD 10mm; For 3030: ID 8mm, OD 15mm; For others, check drawing">
-            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="8" cy="8" r="7" fill="#006064"/>
-              <text x="8" y="12" font-size="10" text-anchor="middle" fill="#fff">i</text>
-            </svg>
-          </span>
-        </th>
-        <th>No. of Pcs</th>
-        <th>Row Total <br>
-          Length</th>
-        <th>Reset or <br>
-          Delete Row</th>
-      </tr>
-    </thead>
-    <tbody id="tableBody">
-      <!-- 6 rows will be inserted dynamically -->
-    </tbody>
-  </table>
-  
-  <button type="button" id="addRowBtn">Add More Rows</button>
-  <button type="button" id="resetAllBtn">Reset All</button>
-  
-  <!-- Aggregate Totals Table -->
-  <table class="totals-table">
-    <thead>
-      <tr>
-        <th>Total Length <br> Ordered</th>
-        <th>Rounded Off Length <br> (to nearest 500mm)</th>
-        <th>Cost of Rounded Off Length</th>
-        <!-- <th>Discount (2.5-4m:5%, 4.5-8m:10%, Above 8.5m:15%)</th> -->
-        <th>Total <br>M5 Taps</th>
-        <th>Cost M5 Taps <br>(₹30/hole)</th>
-        <th>Total <br>CB Holes</th>
-        <th>Cost CB Holes<br>(₹70/hole)</th>
-        <th>Subtotal</th>
-        <th>GST<br>@18%</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="totalOrdered">0</td>
-        <td id="roundedLength">0</td>
-        <td id="costExtrusions">0</td>
-        <!-- <td id="discount">0</td> -->
-        <td id="totalM5Count">0</td>
-        <td id="totalM5Cost">0</td>
-        <td id="totalCBCount">0</td>
-        <td id="totalCBCost">0</td>
-        <td id="subtotal">0</td>
-        <td id="GST">0</td>
-        <td id="Total">0</td>
-      </tr>
-    </tbody>
-  </table>
-  
-  <button type="button" id="addToCartBtn">Add to Cart</button>
-</form>
-
-    <!-- Material & Waste Policy Notice -->
-    <div class="waste-policy" style="margin: 15px 0; font-size: 14px; color: #333;">
-      <p>
-        <strong>Billing is rounded up to the nearest 500 mm; any off-cut over 100 mm is shipped to you.</strong><br>
-        <strong>Example</strong> – You order <strong>2 pcs of 1000 mm</strong> and <strong>1 pc of 1200 mm</strong> (total 3200 mm), so we bill for <strong>3500 mm</strong>. You’ll receive your <strong>2 pcs of 1000 mm</strong>, <strong>1 pc of 1200 mm</strong> plus a <strong>300 mm off-cut</strong>.<br>
-        <a href="#" id="readMoreLink" style="text-decoration: underline; cursor: pointer;">[Read More]</a>
-      </p>
-      <div id="wasteDetails" style="display:none; margin-top:10px; padding-left:10px; border-left: 3px solid #ff9800;">
-        <strong>Material &amp; Waste Policy</strong><br><br>
-        We cut orders in 500 mm increments to reduce material wastage, keep our prices low and our operations efficient, and <strong>those savings go straight into your final per-metre rate</strong>.<br><br>
-        <strong>How it works:</strong><br>
-        1. Rounding: Every order is rounded up to the next 500 mm increment and accordingly billed for.<br>
-        2. Clean-offs: Rather than discard leftovers, we ship you any piece longer than 100 mm.<br><br>
-        <strong>Real-world example:</strong><br>
-        • You specify: 2 pcs of 1000 mm and 1 pc of 1200 mm (total 3200 mm).<br>
-        • We round up and bill 3500 mm at your per-metre rate.<br>
-        • You receive 2 pcs of 1000 mm and 1 pc of 1200 mm plus a 300 mm off-cut which you can use for jigs, fixtures, or future tweaks.<br><br>
-        This policy keeps our material costs predictable and our prices competitive—while ensuring you never Total for wasted material.
+    <!-- Custom Ordering Table -->
+    <div id="formError" class="error-banner" style="display:none;"></div>
+    <form id="extrusionForm">
+      <table id="orderTable">
+        <thead>
+          <tr>
+            <th>
+              Enter Cut Length in mm<br>
+              (min 100mm, max 3000mm)
+            </th>
+            <th>
+              M5 Tap <br> (0 = none, 1 = one side, 2 = both sides)
+              <span class="info-icon" data-info="For V Slot - M5x15mm, For 3030 T Slot - M8X15mm, For others please check drawing">
+                <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="8" cy="8" r="7" fill="#006064"/>
+                  <text x="8" y="12" font-size="10" text-anchor="middle" fill="#fff">i</text>
+                </svg>
+              </span>
+            </th>
+            <th>
+              Counter Bore
+              <span class="info-icon" data-info="For V Slot: ID 5mm, OD 10mm; For 3030: ID 8mm, OD 15mm; For others, check drawing">
+                <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="8" cy="8" r="7" fill="#006064"/>
+                  <text x="8" y="12" font-size="10" text-anchor="middle" fill="#fff">i</text>
+                </svg>
+              </span>
+            </th>
+            <th>No. of Pcs</th>
+            <th>Row Total <br>
+              Length</th>
+            <th>Reset or <br>
+              Delete Row</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- 6 rows will be inserted dynamically -->
+        </tbody>
+      </table>
+      
+      <button type="button" id="addRowBtn">Add More Rows</button>
+      <button type="button" id="resetAllBtn">Reset All</button>
+      
+      <!-- Aggregate Totals Table -->
+      <table class="totals-table">
+        <thead>
+          <tr>
+            <th>Total Length <br> Ordered</th>
+            <th>Rounded Off Length <br> (to nearest 500mm)</th>
+            <th>Cost of Rounded Off Length</th>
+            <!-- <th>Discount (2.5-4m:5%, 4.5-8m:10%, Above 8.5m:15%)</th> -->
+            <th>Total <br>M5 Taps</th>
+            <th>Cost M5 Taps <br>(₹30/hole)</th>
+            <th>Total <br>CB Holes</th>
+            <th>Cost CB Holes<br>(₹70/hole)</th>
+            <th>Subtotal</th>
+            <th>GST<br>@18%</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="totalOrdered">0</td>
+            <td id="roundedLength">0</td>
+            <td id="costExtrusions">0</td>
+            <!-- <td id="discount">0</td> -->
+            <td id="totalM5Count">0</td>
+            <td id="totalM5Cost">0</td>
+            <td id="totalCBCount">0</td>
+            <td id="totalCBCost">0</td>
+            <td id="subtotal">0</td>
+            <td id="GST">0</td>
+            <td id="Total">0</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Desktop Add to Cart button and waste policy (hide on mobile) -->
+      <button type="button" id="addToCartBtn" class="hide-mobile">Add to Cart</button>
+      <div class="waste-policy hide-mobile" style="margin: 15px 0; font-size: 14px; color: #333;">
+        <p>
+          <strong>Billing is rounded up to the nearest 500 mm; any off-cut over 100 mm is shipped to you.</strong><br>
+          <strong>Example</strong> – You order <strong>2 pcs of 1000 mm</strong> and <strong>1 pc of 1200 mm</strong> (total 3200 mm), so we bill for <strong>3500 mm</strong>. You’ll receive your <strong>2 pcs of 1000 mm</strong>, <strong>1 pc of 1200 mm</strong> plus a <strong>300 mm off-cut</strong>.<br>
+          <a href="#" id="readMoreLink" style="text-decoration: underline; cursor: pointer;">[Read More]</a>
+        </p>
+        <div id="wasteDetails" style="display:none; margin-top:10px; padding-left:10px; border-left: 3px solid #ff9800;">
+          <strong>Material &amp; Waste Policy</strong><br><br>
+          We cut orders in 500 mm increments to reduce material wastage, keep our prices low and our operations efficient, and <strong>those savings go straight into your final per-metre rate</strong>.<br><br>
+          <strong>How it works:</strong><br>
+          1. Rounding: Every order is rounded up to the next 500 mm increment and accordingly billed for.<br>
+          2. Clean-offs: Rather than discard leftovers, we ship you any piece longer than 100 mm.<br><br>
+          <strong>Real-world example:</strong><br>
+          • You specify: 2 pcs of 1000 mm and 1 pc of 1200 mm (total 3200 mm).<br>
+          • We round up and bill 3500 mm at your per-metre rate.<br>
+          • You receive 2 pcs of 1000 mm and 1 pc of 1200 mm plus a 300 mm off-cut which you can use for jigs, fixtures, or future tweaks.<br><br>
+          This policy keeps our material costs predictable and our prices competitive—while ensuring you never Total for wasted material.
+        </div>
       </div>
-    </div>
+    </form>
   </div> <!-- .order-panel -->
+
+  <button type="button" id="addToCartBtnMobile" class="show-mobile hide-desktop">Add to Cart</button>
+  <div class="waste-policy show-mobile hide-desktop" style="margin: 15px 0; font-size: 14px; color: #333;">
+    <p>
+      <strong>Billing is rounded up to the nearest 500 mm; any off-cut over 100 mm is shipped to you.</strong><br>
+      <strong>Example</strong> – You order <strong>2 pcs of 1000 mm</strong> and <strong>1 pc of 1200 mm</strong> (total 3200 mm), so we bill for <strong>3500 mm</strong>. You’ll receive your <strong>2 pcs of 1000 mm</strong>, <strong>1 pc of 1200 mm</strong> plus a <strong>300 mm off-cut</strong>.<br>
+      <a href="#" id="readMoreLinkMobile" style="text-decoration: underline; cursor: pointer;">[Read More]</a>
+    </p>
+    <div id="wasteDetailsMobile" style="display:none; margin-top:10px; padding-left:10px; border-left: 3px solid #ff9800;">
+      <strong>Material &amp; Waste Policy</strong><br><br>
+      We cut orders in 500 mm increments to reduce material wastage, keep our prices low and our operations efficient, and <strong>those savings go straight into your final per-metre rate</strong>.<br><br>
+      <strong>How it works:</strong><br>
+      1. Rounding: Every order is rounded up to the next 500 mm increment and accordingly billed for.<br>
+      2. Clean-offs: Rather than discard leftovers, we ship you any piece longer than 100 mm.<br><br>
+      <strong>Real-world example:</strong><br>
+      • You specify: 2 pcs of 1000 mm and 1 pc of 1200 mm (total 3200 mm).<br>
+      • We round up and bill 3500 mm at your per-metre rate.<br>
+      • You receive 2 pcs of 1000 mm and 1 pc of 1200 mm plus a 300 mm off-cut which you can use for jigs, fixtures, or future tweaks.<br><br>
+      This policy keeps our material costs predictable and our prices competitive—while ensuring you never Total for wasted material.
+    </div>
+  </div>
 </div> <!-- .flex-container -->
 
 <script>
@@ -213,6 +336,8 @@ EcwidData.fetchAll()
     VSlot.filters.init(config.extrusions);
     // Populate selector and update totals
     populateExtrusionBoxes(config.extrusions);
+    // Populate mobile dropdown after extrusion boxes
+    populateMobileDropdown(config.extrusions);
     // Auto-select first extrusion on page load
     const $firstBox = $('#extrusionSelector .extrusion-box').first();
     if ($firstBox.length) {
@@ -293,10 +418,29 @@ EcwidData.fetchAll()
 });
         // Recalculate aggregate totals when extrusion selection changes.
         updateTotals();
+        // Also update mobile aggregate totals immediately
+        if (typeof updateMobileTotals === 'function') {
+          updateMobileTotals();
+        }
       });
       container.append(box);
     });
   }
+
+  // Populate the mobile dropdown with extrusion options
+  function populateMobileDropdown(items) {
+    const $select = $('#mobileExtrusionSelect');
+    // Remove all options except the placeholder (value="")
+    $select.find('option:not([value=""])').remove();
+    (items || []).forEach(function(item) {
+      $('<option>')
+        .val(item.id)
+        .text(item.name + ' (₹' + (item.baseCostPerMm*1000).toFixed(0) + '/m)')
+        .prop('disabled', !item.inStock)
+        .appendTo($select);
+    });
+  }
+
     
   // Calculate and display a single row’s total length
   function updateRow($row) {
@@ -314,12 +458,8 @@ EcwidData.fetchAll()
     $('#tableBody tr').each(function() {
       const rowTotal = parseFloat($(this).find('.row-total-length').text()) || 0;
       totalOrdered += rowTotal;
-  
-      const tapChoice = $(this).find('.tap-side').val();
+      const sides = parseInt($(this).find('.tap-side').val(), 10) || 0;
       const pcsValue = parseFloat($(this).find('.num-pcs').val()) || 0;
-      let sides = 0;
-      if (tapChoice === 'one') sides = 1;
-      else if (tapChoice === 'both') sides = 2;
       const holesPerSide = selectedExtrusion.holesPerSide || 0;
       totalM5Count += sides * holesPerSide * pcsValue;
   
@@ -382,7 +522,7 @@ EcwidData.fetchAll()
   // (Removed: Event listener moved to end of script)
   
   // Handle "Add to Cart" button clicks: build options and call Ecwid API
-  $('#addToCartBtn').on('click', function() {
+  $('#addToCartBtn, #addToCartBtnMobile').on('click', function() {
     console.log('Add to Cart clicked, selectedExtrusion:', selectedExtrusion);
     // Clear previous errors
     $('#formError').hide();
@@ -411,28 +551,59 @@ EcwidData.fetchAll()
       alert("Please select an extrusion type.");
       return;
     }
-  
-    // Build detailed order string from table rows in the format "cutLength-numPcs pc-M5Tap{m5}-CBHole{cb}"
+
+    // Determine order details and total pieces based on desktop or mobile view
     let orderDetails = [];
-    $('#tableBody tr').each(function() {
-      const cutLength = $(this).find('.cut-length').val();
-      const numPcs = $(this).find('.num-pcs').val();
-      const tapChoice = $(this).find('.tap-side').val();
+    let totalPcs = 0;
+
+    if ($('.order-cards-container .order-card').length > 0) {
+      // Mobile: read from card-based inputs
       const holesPerSide = selectedExtrusion.holesPerSide || 0;
-      const sides = tapChoice === 'both' ? 2 : (tapChoice === 'one' ? 1 : 0);
-      const m5 = sides * holesPerSide;
-      const cb = $(this).find('.cb-holes').val();
-      if (cutLength && numPcs) {
-        orderDetails.push(`${cutLength}-${numPcs}pc-M5Tap${m5 || 0}-CBHole${cb || 0}`);
-      }
-    });
+      $('.order-cards-container .order-card').each(function() {
+        const $card = $(this);
+        const length = $card.find('.card-cut-length').val().trim();
+        const pcs = parseInt($card.find('.card-num-pcs').val(), 10) || 0;
+        const sides = parseInt($card.find('.card-tap-side').val(), 10) || 0;
+        const cb = $card.find('.card-cb-holes').val().trim() || '0';
+
+        if (length && pcs) {
+          const m5Count = sides * holesPerSide;
+          orderDetails.push(`${length}-${pcs}pc-M5Tap${m5Count}-CBHole${cb}`);
+          totalPcs += pcs;
+        }
+      });
+    } else {
+      // Desktop: read from table rows
+      $('#tableBody tr').each(function() {
+        const cutLength = $(this).find('.cut-length').val();
+        const numPcs = $(this).find('.num-pcs').val();
+        const sides = parseInt($(this).find('.tap-side').val(), 10) || 0;
+        const holesPerSide = selectedExtrusion.holesPerSide || 0;
+        const m5 = sides * holesPerSide;
+        const cb = $(this).find('.cb-holes').val();
+        if (cutLength && numPcs) {
+          orderDetails.push(`${cutLength}-${numPcs}pc-M5Tap${m5}-CBHole${cb}`);
+          totalPcs += parseInt(numPcs, 10) || 0;
+        }
+      });
+    }
+
     const detailsString = orderDetails.join('; ');
   
-    // Retrieve aggregated totals from the totals table.
-    const totalM5Count = parseInt($('#totalM5Count').text(), 10) || 0;
-    const totalCBCount = parseInt($('#totalCBCount').text(), 10) || 0;
-    const roundedLengthValue = parseInt($('#roundedLength').text(), 10) || 0;
-  
+    // Retrieve aggregated totals from the totals table (desktop) or from mobile aggregate card
+    let totalM5Count, totalCBCount, roundedLengthValue;
+    if ($('.order-cards-container .order-card').length > 0) {
+      // Mobile
+      totalM5Count = parseInt($('#mobileTotalM5Count').text(), 10) || 0;
+      totalCBCount = parseInt($('#mobileTotalCBCount').text(), 10) || 0;
+      roundedLengthValue = parseInt($('#mobileRoundedLength').text(), 10) || 0;
+    } else {
+      // Desktop
+      totalM5Count = parseInt($('#totalM5Count').text(), 10) || 0;
+      totalCBCount = parseInt($('#totalCBCount').text(), 10) || 0;
+      roundedLengthValue = parseInt($('#roundedLength').text(), 10) || 0;
+    }
+
     // Build the same semicolon-separated Cut Details for Ecwid
     const previewLines = orderDetails.map(detail => {
       const [length, pcsPart, tapPart, cbPart] = detail.split('-');
@@ -461,7 +632,7 @@ EcwidData.fetchAll()
     // Build human-readable preview lines in desired format
     $('#previewTitle').text(`Your Order for ${selectedExtrusion.name}`);
     $('#previewList').empty();
-    let totalPcs = 0;
+    // totalPcs already computed above for both modes
     orderDetails.forEach(detail => {
       const [length, pcsPart, tapPart, cbPart] = detail.split('-');
       const count = parseInt(pcsPart, 10) || 0;
@@ -479,7 +650,6 @@ EcwidData.fetchAll()
         : `${pcsLabel} of ${length} mm`;
 
       $('#previewList').append(`<li>${line}</li>`);
-      totalPcs += count;
     });
     // Check for lengths > 1000mm and show a warning message
     const hasLongExtrusion = orderDetails.some(detail => {
@@ -518,7 +688,6 @@ return;
       console.error('Add to Cart error callback, error:', error);
     });
   });
-</script>
 </script>
 
 <!-- Order Preview Modal -->
@@ -645,11 +814,7 @@ return;
       return `
         <tr>
           <td><input type="number" class="cut-length" placeholder="Precisely Cut" min="${settings.minLen}" max="${settings.maxLen}" required /></td>
-          <td><select class="tap-side" required>
-            <option value="none">No Tapping</option>
-            <option value="one">One Side</option>
-            <option value="both">Both Sides</option>
-          </select></td>
+          <td><input type="number" class="tap-side" placeholder="0,1 or 2" min="0" max="2" step="1" required /></</td>
           <td class="cb-holes-cell">
             <input type="number" class="cb-holes" value="0" min="0" max="20" required />
             <span class="cb-holes-suffix">holes</span>
@@ -719,6 +884,38 @@ return;
         $row.remove();
         updateTotals();
       });
+      // Clamp tap-side input to 0–2
+      $row.find('.tap-side').on('input', function() {
+        let v = parseInt(this.value.replace(/\D/g, ''), 10);
+        if (isNaN(v)) v = '';
+        else if (v < 0) v = 0;
+        else if (v > 2) v = 2;
+        this.value = v;
+      });
+      // Validate tap-side on blur: blank → 0, enforce 0–2 range
+      $row.find('.tap-side').on('blur', function() {
+        const $f = $(this);
+        let v = parseInt($f.val().replace(/\D/g, ''), 10);
+        // Treat blank as 0
+        if (isNaN(v)) v = 0;
+        // If out of range, mark error
+        if (v < 0 || v > 2) {
+          $f.addClass('error');
+          // Remove any existing message
+          $f.next('.field-error').remove();
+          // Add inline error message
+          $('<div class="field-error" style="color:#e53935; font-size:0.9rem; margin-top:0.25rem;">')
+            .text('Enter 0, 1 or 2 only')
+            .insertAfter($f);
+          // Reset to blank so user re-enters
+          $f.val('');
+        } else {
+          // Valid: clear error styling and message, update value
+          $f.removeClass('error');
+          $f.next('.field-error').remove();
+          $f.val(v);
+        }
+      });
     },
     init: function() {
       // Delegate all row-specific events to table container
@@ -765,6 +962,24 @@ return;
             $('#formError')
               .text("Please enter at least 1 piece for each specified cut length.")
               .show();
+          }
+        })
+        // Add delegated blur handler for .tap-side
+        .on('blur', '.tap-side', function() {
+          const $f = $(this);
+          let v = parseInt($f.val().replace(/\D/g, ''), 10);
+          if (isNaN(v)) v = 0;
+          if (v < 0 || v > 2) {
+            $f.addClass('error');
+            $f.next('.field-error').remove();
+            $('<div class="field-error" style="color:#e53935; font-size:0.9rem; margin-top:0.25rem;">')
+              .text('Enter 0, 1 or 2 only')
+              .insertAfter($f);
+            $f.val('');
+          } else {
+            $f.removeClass('error');
+            $f.next('.field-error').remove();
+            $f.val(v);
           }
         })
         .on('click', '.reset-row-btn', function() {
@@ -820,6 +1035,225 @@ $(function() {
   $('#readMoreLink').on('click', function(e) {
     e.preventDefault();
     $('#wasteDetails').slideToggle(200);
+  });
+
+  // MOBILE CARD LOGIC (steps 1–3)
+
+  // Helper to update all card headers based on data-index
+  function refreshCardHeaders() {
+    $('.mobile-order-cards .order-card').each(function(i) {
+      const idx = i + 1;
+      $(this).attr('data-index', idx);
+      $(this).find('thead th').text(`Enter Details of Pc No. ${idx}`);
+      // Update input IDs and corresponding labels
+      $(this).find('input, select').each(function() {
+        // Find the class that starts with card-
+        const fieldMatch = this.className.match(/card-[a-z-]+/);
+        if (!fieldMatch) return;
+        const field = fieldMatch[0]; // e.g. card-cut-length
+        const newId = `card${idx}-${field}`;
+        $(this).attr('id', newId);
+        $(this).prev('label').attr('for', newId);
+      });
+    });
+  }
+
+  // Add another card
+  $('#addCardBtn').on('click', function() {
+    const $first = $('.mobile-order-cards .order-card').first();
+    const $clone = $first.clone(true, true); // copy events
+    $clone.appendTo('.mobile-order-cards');
+    refreshCardHeaders();
+    if (typeof updateMobileTotals === 'function') updateMobileTotals();
+  });
+
+  // Remove a card and update the piece count input
+  $('.mobile-order-cards').on('click', '.remove-card-btn', function() {
+    const $cards = $('.mobile-order-cards .order-card');
+    const currentCount = $cards.length;
+    // Remove this card
+    $(this).closest('.order-card').remove();
+    // Update piece count input
+    $('#pieceCountInput').val(currentCount - 1);
+    refreshCardHeaders();
+    if (typeof updateMobileTotals === 'function') updateMobileTotals();
+  });
+
+  // Update button handler for piece count
+  $('#updatePiecesBtn').on('click', function() {
+    const $cardsContainer = $('.order-cards-container');
+    const currentCount = $cardsContainer.find('.order-card').length;
+    let desiredCount = parseInt($('#pieceCountInput').val(), 10) || 0;
+    if (desiredCount < 1) {
+      alert('Please enter at least 1 piece.');
+      $('#pieceCountInput').val(currentCount);
+      return;
+    }
+    if (desiredCount > currentCount) {
+      // Append new cards
+      const $first = $cardsContainer.find('.order-card').first();
+      for (let i = currentCount + 1; i <= desiredCount; i++) {
+        const $clone = $first.clone(true, true);
+        // Clear all input values and remove any error UI
+        $clone.find('input').each(function() {
+          $(this).val('');
+          $(this).removeClass('error');
+        });
+        $clone.find('.field-error').remove();
+        $cardsContainer.append($clone);
+      }
+      refreshCardHeaders();
+      if (typeof updateMobileTotals === 'function') updateMobileTotals();
+    } else if (desiredCount < currentCount) {
+      // Confirm removal
+      if (confirm(`You are reducing from ${currentCount} to ${desiredCount} pieces. Any data in removed cards will be lost. Continue?`)) {
+        $cardsContainer.find('.order-card').slice(desiredCount).remove();
+        refreshCardHeaders();
+        if (typeof updateMobileTotals === 'function') updateMobileTotals();
+      } else {
+        // Revert input
+        $('#pieceCountInput').val(currentCount);
+      }
+    }
+  });
+
+  // Field validation: apply red border and show error message below field
+  $('.mobile-order-cards').on('input change', 'input, select', function() {
+    const $field = $(this);
+    const val = $field.val();
+    let valid = true;
+    // Basic validation rules
+    if ($field.is('.card-cut-length')) {
+      const num = parseFloat(val);
+      valid = !isNaN(num) && num >= 100 && num <= 3000;
+    } else if ($field.is('.card-cb-holes')) {
+      const num = parseInt(val, 10);
+      valid = !isNaN(num) && num >= 0;
+    } else if ($field.is('.card-num-pcs')) {
+      const num = parseInt(val, 10);
+      valid = !isNaN(num) && num >= 1;
+    } // taps select always valid
+
+    // Remove existing error message
+    $field.removeClass('error');
+    $field.next('.field-error').remove();
+
+    if (!valid) {
+      // Mark field invalid
+      $field.addClass('error');
+      // Append error message
+      const msg = $field.is('.card-cut-length')
+        ? 'Enter length between 100 and 3000'
+        : $field.is('.card-num-pcs')
+          ? 'Enter at least 1 piece'
+          : 'Invalid value';
+      $('<div class="field-error" style="color:#e53935; font-size:0.9rem; margin-top:0.25rem;">')
+        .text(msg)
+        .insertAfter($field);
+    }
+    updateMobileTotals();
+  });
+
+  // Clamp tap-side input on mobile to digits only and enforce 0–2 range
+  $('.mobile-order-cards').on('input', '.card-tap-side', function() {
+    let v = parseInt(this.value.replace(/\D/g, ''), 10);
+    if (isNaN(v)) v = '';
+    else if (v < 0) v = 0;
+    else if (v > 2) v = 2;
+    this.value = v;
+    updateMobileTotals();
+  });
+
+  // Validate tap-side on blur: blank → 0, enforce 0–2 range with error UI
+  $('.mobile-order-cards').on('blur', '.card-tap-side', function() {
+    const $f = $(this);
+    let v = parseInt($f.val().replace(/\D/g, ''), 10);
+    if (isNaN(v)) v = 0;
+    // Remove existing error UI
+    $f.removeClass('error');
+    $f.next('.field-error').remove();
+    if (v < 0 || v > 2) {
+      // Invalid: show error
+      $f.addClass('error');
+      $('<div class="field-error" style="color:#e53935; font-size:0.9rem; margin-top:0.25rem;">')
+        .text('Enter 0, 1 or 2 only')
+        .insertAfter($f);
+      $f.val('');
+    } else {
+      // Valid: set normalized value
+      $f.val(v);
+    }
+    updateMobileTotals();
+  });
+
+  // --- MOBILE AGGREGATE CARD LOGIC ---
+  // 1. Define updateMobileTotals function
+  function updateMobileTotals() {
+    const holesPerSide = selectedExtrusion?.holesPerSide || 0;
+    let totalOrderedLength = 0;
+    let totalM5Count = 0;
+    let totalCBCount = 0;
+
+    $('.order-cards-container .order-card').each(function() {
+      const $card = $(this);
+      const length = parseFloat($card.find('.card-cut-length').val()) || 0;
+      const pcs = parseInt($card.find('.card-num-pcs').val(), 10) || 0;
+      const sides = parseInt($card.find('.card-tap-side').val(), 10) || 0;
+      const cb = parseInt($card.find('.card-cb-holes').val(), 10) || 0;
+
+      totalOrderedLength += length * pcs;
+      totalM5Count += sides * holesPerSide * pcs;
+      totalCBCount += cb * pcs;
+    });
+
+    // Rounding logic: find next standard length
+    let roundedLength = 0;
+    if (totalOrderedLength > 0 && selectedExtrusion) {
+      roundedLength = config.standardLengths.find(len => len >= totalOrderedLength)
+                      || config.standardLengths[config.standardLengths.length - 1];
+    }
+
+    const costExtrusions = roundedLength * (selectedExtrusion?.baseCostPerMm || 0);
+    const totalM5Cost = totalM5Count * additionalCosts.m5Tapping;
+    const totalCBCost = totalCBCount * additionalCosts.counterBore;
+    const subtotal = costExtrusions + totalM5Cost + totalCBCost;
+    const gst = subtotal * 0.18;
+    const grandTotal = subtotal + gst;
+
+    // Update DOM
+    $('#mobileTotalOrdered').text(totalOrderedLength.toFixed(0));
+    $('#mobileRoundedLength').text(roundedLength.toFixed(0));
+    $('#mobileCostExtrusions').text(costExtrusions.toFixed(2));
+    $('#mobileTotalM5Count').text(totalM5Count.toFixed(0));
+    $('#mobileTotalM5Cost').text(totalM5Cost.toFixed(2));
+    $('#mobileTotalCBCount').text(totalCBCount.toFixed(0));
+    $('#mobileTotalCBCost').text(totalCBCost.toFixed(2));
+    $('#mobileSubtotal').text(subtotal.toFixed(2));
+    $('#mobileGST').text(gst.toFixed(2));
+    $('#mobileTotal').text(grandTotal.toFixed(2));
+
+    // Enable/disable mobile Add to Cart
+    if (roundedLength === 0 || !selectedExtrusion?.inStock) {
+      $('#addToCartBtnMobile').prop('disabled', true);
+    } else {
+      $('#addToCartBtnMobile').prop('disabled', false);
+    }
+  }
+
+  // 2. Call updateMobileTotals after validation handlers (at end of $(function() {...}))
+  updateMobileTotals();
+
+  // Mobile dropdown change: select extrusion and update aggregates
+  $('#mobileExtrusionSelect').on('change', function() {
+    const $sel = $(this);
+    const id = $sel.val();
+    if (!id) return;
+    const $box = $('.extrusion-box[data-id="' + id + '"]');
+    if ($box.length) {
+      $box.trigger('click');
+    }
+    $sel.val(id);
+    updateMobileTotals();
   });
 });
 </script>
