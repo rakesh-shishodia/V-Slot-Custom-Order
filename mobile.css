@@ -31,7 +31,7 @@
     width: 100%;
     margin: 1rem 0;               /* add top/bottom gap */
     padding: 0.75rem;
-    font-size: 1rem;
+    font-size: 18px;
     min-height: 2.5rem;           /* increase height */
     line-height: 1.4;             /* improve readability */
     white-space: normal;          /* allow text wrap */
@@ -172,6 +172,15 @@
   }
   .mobile-order-cards .table-card tr + tr td {
     border-top: 1px solid #eee; /* optional divider for card rows */
+  }
+
+  /* Increase font size and height of mobile order inputs */
+  .mobile-order-cards .order-card input,
+  .mobile-order-cards .order-card select {
+    font-size: 18px !important;
+    min-height: 3rem !important; /* ~48px height */
+    padding: 0.75rem !important;
+    box-sizing: border-box;
   }
 }
 
