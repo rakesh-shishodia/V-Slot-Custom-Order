@@ -121,7 +121,7 @@
             <td><input type="number" id="card1-length" class="card-cut-length" min="100" max="3000" placeholder="e.g. 1000" /></td>
           </tr>
           <tr>
-            <td><label for="card1-tap">M5 Tap</label></td>
+            <td><label for="card1-tap">M5 Tap<br>(0 = none, 1 = one side, <br>2 = both sides)</label></td>
             <td><input type="number" id="card1-tap" class="card-tap-side" placeholder="0–2" min="0" max="2" step="1" required /></td>
           </tr>
           <tr>
@@ -1021,6 +1021,12 @@ $(function() {
       const $first = $cardsContainer.find('.order-card').first();
       for (let i = currentCount + 1; i <= desiredCount; i++) {
         const $clone = $first.clone(true, true);
+        // Clear all input values and remove any error UI
+        $clone.find('input').each(function() {
+          $(this).val('');
+          $(this).removeClass('error');
+        });
+        $clone.find('.field-error').remove();
         $cardsContainer.append($clone);
       }
       refreshCardHeaders();
