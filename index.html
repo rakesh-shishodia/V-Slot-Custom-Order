@@ -311,25 +311,61 @@
   let selectedExtrusion = null;  // Currently selected extrusion object
   const additionalCosts = { m5Tapping: 30, counterBore: 70 };
 
-  // Load configuration from Ecwid instead of extrusions.json
-EcwidData.fetchAll()
-  .then(data => {
-    config.extrusions      = data;
-    config.standardLengths = EcwidData.standardLengths;
-    // Initialize filter module
-    VSlot.filters.init(config.extrusions);
-    // Populate selector and update totals
-    populateExtrusionBoxes(config.extrusions);
-    // Populate mobile dropdown after extrusion boxes
-    populateMobileDropdown(config.extrusions);
-    // Auto-select first extrusion on page load
-    const $firstBox = $('#extrusionSelector .extrusion-box').first();
-    if ($firstBox.length) {
-      $firstBox.addClass('selected').trigger('click');
+  // Shared handler for when an extrusion is selected
+  function onExtrusionChange(item, $box) {
+    // Mark selection
+    $('.extrusion-box').removeClass('selected');
+    $box.addClass('selected');
+    selectedExtrusion = item;
+    // Disable Add to Cart if out of stock
+    $('#addToCartBtn, #addToCartBtnMobile').prop('disabled', !item.inStock);
+    // Update images
+    const imgs = item.images || [];
+    $('.details-panel .image-grid .image-cell').each(function(idx) {
+      const url = imgs[idx] || '';
+      const $link = $(this).find('a');
+      const $img  = $link.find('img');
+      if (url) {
+        $link.attr('href', url);
+        $img.attr('src', url);
+      } else {
+        $link.removeAttr('href');
+        $img.attr('src', '');
+      }
+    });
+    // Reinitialize SimpleLightbox
+    if (detailLightbox && typeof detailLightbox.destroy === 'function') {
+      detailLightbox.destroy();
     }
+    detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
+      captions: false, nav: true, close: true, docClose: true,
+      enableKeyboard: true, showCounter: false
+    });
+    // Update description
+    $('.description-container').html(item.descriptionHtml || '');
+    // Always refresh totals
     updateTotals();
-  })
-  .catch(err => console.error('EcwidData.fetchAll() failed:', err));
+    if (typeof updateMobileTotals === 'function') updateMobileTotals();
+  }
+
+  // Load configuration from Ecwid instead of extrusions.json
+  EcwidData.fetchAll()
+    .then(data => {
+      config.extrusions      = data;
+      config.standardLengths = EcwidData.standardLengths;
+      // Initialize filter module
+      VSlot.filters.init(config.extrusions);
+      // Populate selector and update totals
+      populateExtrusionBoxes(config.extrusions);
+      // Populate mobile dropdown after extrusion boxes
+      populateMobileDropdown(config.extrusions);
+      // Auto-select first extrusion on page load
+      const $firstBox = $('#extrusionSelector .extrusion-box').first();
+      if ($firstBox.length) {
+        onExtrusionChange(config.extrusions[0], $firstBox);
+      }
+    })
+    .catch(err => console.error('EcwidData.fetchAll() failed:', err));
   // Dynamically build the extrusion selector buttons
   function populateExtrusionBoxes(items) {
     const list = items || config.extrusions;
@@ -347,52 +383,8 @@ EcwidData.fetchAll()
         </div>
       `);
       if (!item.inStock) {
-      box.find('.stock-pill').addClass('out-of-stock');
+        box.find('.stock-pill').addClass('out-of-stock');
       }
-      box.on('click', function() {
-        $('.extrusion-box').removeClass('selected');
-        $(this).addClass('selected');
-        selectedExtrusion = item;
-        // Disable Add to Cart if the selected extrusion is out of stock
-        if (!item.inStock) {
-          $('#addToCartBtn').prop('disabled', true);
-        }
-        // Populate all four detail images from Ecwid data
-        const imgs = item.images; 
-        const $cells = $('.details-panel .image-grid .image-cell');
-        $cells.each(function(idx) {
-          const url = imgs[idx] || '';
-          const $link = $(this).find('a');
-          const $img  = $link.find('img');
-          if (url) {
-            $link.attr('href', url);
-            $img.attr('src', url);
-          } else {
-            $link.removeAttr('href');
-            $img.attr('src', '');
-          }
-        });
-        // Reinitialize SimpleLightbox to include updated anchors
-        if (detailLightbox && typeof detailLightbox.destroy === 'function') {
-          detailLightbox.destroy();
-        }
-        detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
-          captions: false,
-          nav: true,
-          close: true,
-          docClose: true,
-          enableKeyboard: true,
-          showCounter: false
-        });
-        // Insert description HTML from Ecwid data
-        $('.description-container').html(item.descriptionHtml);
-        // Recalculate aggregate totals when extrusion selection changes.
-        updateTotals();
-        // Also update mobile aggregate totals immediately
-        if (typeof updateMobileTotals === 'function') {
-          updateMobileTotals();
-        }
-      });
       container.append(box);
     });
   }
@@ -994,6 +986,17 @@ return;
 </script>
 <script>
 $(function() {
+  // Delegated handler for extrusion-box clicks (survives DOM overlays)
+  $(document).on('click', '.extrusion-box', function() {
+    const id = $(this).data('id');
+    const item = config.extrusions.find(e => e.id == id);
+    onExtrusionChange(item, $(this));
+  });
+
+  // Remove any leftover Ecwid cart overlay mask when returning focus to the page
+  $(window).on('focus', function() {
+    $('.ecwid-shopping-cart-mask, .ecwid-cart-overlay').remove();
+  });
   // Initialize SimpleLightbox
   detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
     captions: false,
@@ -1233,10 +1236,9 @@ $(function() {
     if (!id) return;
     const $box = $('.extrusion-box[data-id="' + id + '"]');
     if ($box.length) {
-      $box.trigger('click');
+      onExtrusionChange(config.extrusions.find(e => e.id == id), $box);
     }
     $sel.val(id);
-    updateMobileTotals();
   });
 });
 </script>
