@@ -32,7 +32,7 @@
     margin: 1rem 0;               /* add top/bottom gap */
     padding: 0.75rem;
     font-size: 18px;
-    min-height: 2.5rem;           /* increase height */
+    min-height: 3rem !important;  /* match input height */
     line-height: 1.4;             /* improve readability */
     white-space: normal;          /* allow text wrap */
     appearance: none;              /* remove native styling */
@@ -54,6 +54,8 @@
     color: red !important;
     font-size: 18px !important;
     margin-bottom: 0.5rem;
+    text-align: center !important;
+    font-weight: bold !important;
   }
 
   /* Add horizontal padding to all stack blocks */
