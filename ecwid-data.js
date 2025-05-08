@@ -5,8 +5,8 @@
     const authToken = 'public_ZYgkrwhM5YFDC4jU3PmTuzqkRRXmbamH';
     // in the order you want them displayed
     const productIds = [
-      729803262, 743849525, 745113497, 745701420,
-      745719971, 745744298, 745719976, 745719977, 409974620
+      720289517, 720294005, 720294011, 721461094,
+      720294122, 720278992, 122128747, 382203788,
     ];
     // standard lengths formerly in extrusions.json
     const standardLengths = [
@@ -70,8 +70,8 @@
               images:           imgs.map(i => i.image400pxUrl || ''),
               thumbnailUrl:     imgs[0]?.image400pxUrl || '',
               secondaryImageUrl: imgs[1]?.image400pxUrl || '',
-              // Ecwid price is for 500 mm; convert to per-mm
-              baseCostPerMm:    item.price / 500,
+              // Ecwid price is for 1000 mm; convert to per-mm
+              baseCostPerMm:    item.price / 1000,
               holesPerSide:     Number(attrMap['holes-per-side'] || 0),
               // your filters
               attributes: {
