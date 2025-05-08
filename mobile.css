@@ -196,6 +196,14 @@
     padding: 0.75rem !important;
     box-sizing: border-box;
   }
+
+  /* Match piece-count input height and font to other mobile inputs */
+  #pieceCountInput {
+    font-size: 18px !important;
+    min-height: 3rem !important;   /* same as other inputs */
+    padding: 0.75rem !important;
+    box-sizing: border-box !important;
+  }
 }
 
 /* Desktop-only / Mobile-only toggles (viewport ≥ 769px) */
