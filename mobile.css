@@ -204,6 +204,24 @@
     padding: 0.75rem !important;
     box-sizing: border-box !important;
   }
+
+  /* Global mobile font settings (except header) */
+  #mobileExtrusionSelect,
+  .mobile-extrusion-label,
+  #pieceCountInput,
+  .mobile-order-cards, .mobile-order-cards *,
+  .mobile-layout-aggregate-card, .mobile-layout-aggregate-card *,
+  .order-panel-placeholder *, /* if any placeholder elements */
+  button, button * {
+    font-size: 18px !important;
+    font-family: sans-serif !important;
+  }
+
+  /* Revert header to default font-size and family */
+  .tool-header, .tool-header * {
+    font-size: initial !important;
+    font-family: initial !important;
+  }
 }
 
 /* Desktop-only / Mobile-only toggles (viewport ≥ 769px) */
