@@ -2,6 +2,21 @@
 
 /* Mobile-specific styles (viewport ≤ 768px) */
 @media (max-width: 768px) {
+  /* Mobile base font and family */
+  body {
+    font-size: 18px !important;
+    font-family: sans-serif !important;
+  }
+
+  /* Utility class for all mobile inputs/selects */
+  .mobile-input {
+    font-size: inherit !important;
+    font-family: inherit !important;
+    min-height: 3rem !important;
+    padding: 0.75rem !important;
+    box-sizing: border-box !important;
+  }
+
   /* Utility toggles */
   .hide-mobile { display: none !important; }
   .show-mobile { display: block !important; }
@@ -25,16 +40,20 @@
     display: none !important;
   }
 
+  /* Apply mobile-input to dropdown, piece count, and card fields */
+  #mobileExtrusionSelect,
+  #pieceCountInput,
+  .mobile-order-cards .order-card input,
+  .mobile-order-cards .order-card select {
+    /* Remove any explicit font-size, font-family, min-height, padding here */
+    /* and instead rely on the .mobile-input class */
+  }
+
   /* Mobile extrusion dropdown: show and style */
   #mobileExtrusionSelect {
     display: block !important;
     width: 100%;
     margin: 1rem 0;               /* add top/bottom gap */
-    padding: 0.75rem;
-    font-size: 18px;
-    min-height: 3rem !important;  /* match input height */
-    line-height: 1.4;             /* improve readability */
-    white-space: normal;          /* allow text wrap */
     appearance: none;              /* remove native styling */
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -53,6 +72,7 @@
     display: block;
     color: red !important;
     font-size: 18px !important;
+    font-family: sans-serif !important;
     margin-bottom: 0.5rem;
     text-align: center !important;
     font-weight: bold !important;
@@ -189,21 +209,10 @@
   }
 
   /* Increase font size and height of mobile order inputs */
-  .mobile-order-cards .order-card input,
-  .mobile-order-cards .order-card select {
-    font-size: 18px !important;
-    min-height: 3rem !important; /* ~48px height */
-    padding: 0.75rem !important;
-    box-sizing: border-box;
-  }
+  /* Removed explicit styles, now handled by .mobile-input */
 
   /* Match piece-count input height and font to other mobile inputs */
-  #pieceCountInput {
-    font-size: 18px !important;
-    min-height: 3rem !important;   /* same as other inputs */
-    padding: 0.75rem !important;
-    box-sizing: border-box !important;
-  }
+  /* Removed explicit styles, now handled by .mobile-input */
 
   /* Global mobile font settings (except header) */
   #mobileExtrusionSelect,
