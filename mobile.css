@@ -52,7 +52,7 @@
   /* Mobile extrusion dropdown: show and style */
   #mobileExtrusionSelect {
     display: block !important;
-    width: 100%;
+    width: 100% !important;
     margin: 1rem 0;               /* add top/bottom gap */
     appearance: none;              /* remove native styling */
     -webkit-appearance: none;
@@ -66,6 +66,11 @@
     -webkit-appearance: menulist-button !important;
     -moz-appearance: menulist-button !important;
     background-image: none; /* allow browser default arrow */
+  }
+  /* Match piece-count input and update button width to the dropdown */
+  #pieceCountInput,
+  #updatePiecesBtn {
+    width: 100% !important;
   }
   /* Style for the Select Extrusion label */
   .mobile-extrusion-label {
