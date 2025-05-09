@@ -219,8 +219,8 @@
 
   /* Revert header to default font-size and family */
   .tool-header, .tool-header * {
-    font-size: initial !important;
-    font-family: initial !important;
+    font-size: 24px !important;
+    font-family: sans-serif !important;
   }
 }
 
