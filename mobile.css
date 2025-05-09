@@ -72,6 +72,11 @@
   #updatePiecesBtn {
     width: 100% !important;
   }
+
+  /* Ensure update button width accounts for padding */
+  #updatePiecesBtn {
+    box-sizing: border-box !important;
+  }
   /* Style for the Select Extrusion label */
   .mobile-extrusion-label {
     display: block;
