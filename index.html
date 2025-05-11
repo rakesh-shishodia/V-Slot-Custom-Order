@@ -63,6 +63,10 @@
 <select id="mobileExtrusionSelect" class="show-mobile hide-desktop">
   <option value="">Select extrusion</option>
 </select>
+<!-- Mobile image scroller -->
+<div class="mobile-image-scroller show-mobile hide-desktop">
+  <!-- Product images will be inserted here dynamically -->
+</div>
 
 <!-- Filter Controls and Product Boxes Side-by-Side -->
 <div class="filter-product-container">
@@ -987,6 +991,35 @@ return;
 </script>
 <script>
 $(function() {
+  // MOBILE IMAGE SCROLLER: populates and enables horizontal scrolling of up to 4 product images
+  (function() {
+    function renderMobileScroller(images) {
+      var container = document.querySelector('.mobile-image-scroller');
+      if (!container) return;
+      container.innerHTML = '';
+      images.slice(0, 4).forEach(function(url) {
+        var img = document.createElement('img');
+        img.src = url;
+        img.loading = 'lazy';
+        img.alt = 'Product image';
+        img.style.flex = '0 0 45%';
+        img.style.height = 'auto';
+        img.style.borderRadius = '4px';
+        img.style.marginRight = '0.5rem';
+        container.appendChild(img);
+      });
+    }
+    // Initial render on first load
+    if (selectedExtrusion && selectedExtrusion.images) {
+      renderMobileScroller(selectedExtrusion.images);
+    }
+    // Wrap existing onExtrusionChange to update scroller
+    var orig = window.onExtrusionChange;
+    window.onExtrusionChange = function(item, $box) {
+      orig(item, $box);
+      renderMobileScroller(item.images || []);
+    };
+  })();
   // Delegated handler for extrusion-box clicks (survives DOM overlays)
   $(document).on('click', '.extrusion-box', function() {
     const id = $(this).data('id');
