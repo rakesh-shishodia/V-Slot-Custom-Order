@@ -398,7 +398,7 @@
     (items || []).forEach(function(item) {
       $('<option>')
         .val(item.id)
-        .text(item.name + ' (₹' + (item.baseCostPerMm*1000).toFixed(0) + '/m)')
+        .html(item.name + '\n' + '₹' + (item.baseCostPerMm*1000).toFixed(0) + '/m')
         .prop('disabled', !item.inStock)
         .appendTo($select);
     });

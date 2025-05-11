@@ -66,13 +66,17 @@
     -webkit-appearance: menulist-button !important;
     -moz-appearance: menulist-button !important;
     background-image: none; /* allow browser default arrow */
-    min-height: 3rem !important;   /* input height match */
+    /* Dropdown height for two lines */
+    height: 2.4rem !important;
+    line-height: 1.2rem !important;
+    white-space: pre-line !important;
+    overflow-wrap: break-word !important;
     padding: 0.75rem !important;    /* input padding match */
     box-sizing: border-box !important;
   }
   /* Permit long option labels to wrap onto multiple lines */
   #mobileExtrusionSelect option {
-    white-space: normal !important;
+    white-space: pre-line !important;
     word-wrap: break-word !important;
   }
   /* Match piece-count input and update button width to the dropdown */
