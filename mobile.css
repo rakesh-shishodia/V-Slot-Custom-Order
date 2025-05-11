@@ -67,7 +67,7 @@
     -moz-appearance: menulist-button !important;
     background-image: none; /* allow browser default arrow */
     /* Dropdown height for two lines */
-    height: 2.4rem !important;
+    height: 3rem !important;
     line-height: 1.2rem !important;
     white-space: pre-line !important;
     overflow-wrap: break-word !important;
