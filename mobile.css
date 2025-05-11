@@ -66,6 +66,14 @@
     -webkit-appearance: menulist-button !important;
     -moz-appearance: menulist-button !important;
     background-image: none; /* allow browser default arrow */
+    min-height: 3rem !important;   /* input height match */
+    padding: 0.75rem !important;    /* input padding match */
+    box-sizing: border-box !important;
+  }
+  /* Permit long option labels to wrap onto multiple lines */
+  #mobileExtrusionSelect option {
+    white-space: normal !important;
+    word-wrap: break-word !important;
   }
   /* Match piece-count input and update button width to the dropdown */
   #pieceCountInput,
