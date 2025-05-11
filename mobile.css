@@ -67,11 +67,11 @@
     -moz-appearance: menulist-button !important;
     background-image: none; /* allow browser default arrow */
     /* Dropdown height for two lines */
-    height: 4rem !important;
+    height: 4.5rem !important;
     line-height: 1.2rem !important;
     white-space: pre-line !important;
     overflow-wrap: break-word !important;
-    padding: 0.75rem !important;    /* input padding match */
+    padding: 0.5rem !important;    /* input padding match */
     box-sizing: border-box !important;
   }
   /* Permit long option labels to wrap onto multiple lines */
