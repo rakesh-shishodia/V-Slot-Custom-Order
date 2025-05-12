@@ -392,13 +392,13 @@
     // Re-add selector title
     list.forEach(function(item) {
       const pricePerMeter = (item.baseCostPerMm * 1000).toFixed(0);
-      const box = $(`
+      const box = $((`
         <div class="extrusion-box" data-id="${item.id}">
           <div class="extrusion-name">${item.name}</div>
           <div class="price-per-meter">₹${pricePerMeter}/m</div>
            <div class="stock-pill">${ item.inStock ? 'In Stock' : 'Out of Stock' }</div>
         </div>
-      `);
+      `).trim());
       if (!item.inStock) {
         box.find('.stock-pill').addClass('out-of-stock');
       }
@@ -1100,7 +1100,45 @@ $(function() {
       const item = config.extrusions.find(e => e.id == id);
       onExtrusionChange(item, $(this));
     });
+    // Re-render and reapply filters to ensure filter pills and filtered boxes survive Ecwid rerender
+    console.log('🔄 Scheduling filter re-init after OnPageSwitch');
+    if (window.VSlot && VSlot.filters) {
+      setTimeout(function() {
+        try {
+          console.log('⏱️ Running delayed filter re-initialization');
+          VSlot.filters.init(config.extrusions);
+          console.log('🔍 (Delayed) repopulateExtrusionBoxes with', config.extrusions.length, 'items');
+          console.log('🔍 (Delayed) extrusionSelector exists:', $('#extrusionSelector').length);
+          populateExtrusionBoxes(config.extrusions);
+          // Ensure selector is visible after repopulation
+          $('#extrusionSelector, .extrusion-selector-wrapper').show();
+          console.log('🔍 (Delayed) now has children:', $('#extrusionSelector').children().length);
+          console.log('🔍 (Delayed) HTML preview:', $('#extrusionSelector').html().slice(0,200) + '…');
+        } catch(err) {
+          console.error('Error during delayed filter re-init', err);
+        }
+      }, 0);
+    }
   });
+
+  // MutationObserver: if #extrusionSelector ever loses all children, refill it
+  (function() {
+    const container = document.getElementById('extrusionSelector');
+    if (!container) return;
+    const observer = new MutationObserver(() => {
+      try {
+        if (container.children.length === 0) {
+          console.log('🔄 ExtrusionSelector emptied – repopulating');
+          // refill and ensure visible
+          populateExtrusionBoxes(config.extrusions);
+          $('#extrusionSelector, .extrusion-selector-wrapper').show();
+        }
+      } catch(err) {
+        console.error('Error in MutationObserver', err);
+      }
+    });
+    observer.observe(container, { childList: true });
+  })();
 
   // Populate waste policy content for desktop and mobile
   const wasteTpl = document.getElementById('wastePolicyTemplate').content;
@@ -1383,6 +1421,8 @@ $(function() {
         (this.selectedFilters.color.size === 0  || this.selectedFilters.color.has(e.attributes.color))
       );
       populateExtrusionBoxes(filtered);
+      // Ensure selector remains visible when filters change
+      $('#extrusionSelector, .extrusion-selector-wrapper').show();
     }
   };
 })(window.VSlot = window.VSlot || {}, jQuery);
