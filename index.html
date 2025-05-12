@@ -687,7 +687,9 @@ return;
   <div class="modal-content">
     <span id="modalClose" class="close">&times;</span>
     <h2>Successfully Added to Cart</h2>
-    <p id="modalDetails"></p>
+    <h3 id="successExtrusionName"></h3>
+    <ul id="modalDetails" style="text-align:left; margin:10px 0;"></ul>
+    <p id="modalInstruction">Continue to add other types of extrusions if you need and then checkout together.</p>
   </div>
 </div>
 
@@ -738,7 +740,24 @@ return;
           const detailsText = pendingProductOptions && pendingProductOptions["Cut Details"]
             ? pendingProductOptions["Cut Details"]
             : 'Added to cart successfully.';
-          $('#modalDetails').text(detailsText);
+          $('#successExtrusionName').text(selectedExtrusion.name);
+          // --- PATCH START ---
+          // Replace .text(detailsText) with appending each preview line as <li>
+          $('#modalDetails').empty();
+          var previewLines;
+          if (
+            typeof pendingProductOptions !== 'undefined' &&
+            pendingProductOptions &&
+            typeof pendingProductOptions["Cut Details"] === 'string'
+          ) {
+            previewLines = pendingProductOptions["Cut Details"].split('; ').filter(function(line) { return line.trim().length > 0; });
+          } else {
+            previewLines = [];
+          }
+          previewLines.forEach(function(line) {
+            $('#modalDetails').append('<li>' + line + '</li>');
+          });
+          // --- PATCH END ---
           pendingProductOptions = null;
           $('#successModal').show();
           $('#modalClose').focus();

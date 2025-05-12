@@ -602,3 +602,11 @@ box-sizing: border-box;
   /* optionally hide them entirely if you never need them: 
      display: none !important; */
 }
+
+/* Highlight the success modal call-to-action */
+#successModal #modalInstruction {
+  color: #ff5722;       /* Accent color for CTA */
+  font-weight: 600;     /* Semi-bold for emphasis */
+  margin-top: 1rem;     /* Space above the CTA */
+  font-size: 1rem;      /* Ensure comfortable readability */
+}
