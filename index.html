@@ -1327,6 +1327,7 @@ $(function() {
     const $box = $('.extrusion-box[data-id="' + id + '"]');
     if ($box.length) {
       onExtrusionChange(config.extrusions.find(e => e.id == id), $box);
+      updateMobileTotals();
     }
     $sel.val(id);
   });
