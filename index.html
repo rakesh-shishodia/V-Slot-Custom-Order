@@ -319,39 +319,50 @@
 
   // Shared handler for when an extrusion is selected
   function onExtrusionChange(item, $box) {
-    // Mark selection
-    $('.extrusion-box').removeClass('selected');
-    $box.addClass('selected');
-    selectedExtrusion = item;
-    // Disable Add to Cart if out of stock
-    $('#addToCartBtn, #addToCartBtnMobile').prop('disabled', !item.inStock);
-    // Update images
-    const imgs = item.images || [];
-    $('.details-panel .image-grid .image-cell').each(function(idx) {
-      const url = imgs[idx] || '';
-      const $link = $(this).find('a');
-      const $img  = $link.find('img');
-      if (url) {
-        $link.attr('href', url);
-        $img.attr('src', url);
-      } else {
-        $link.removeAttr('href');
-        $img.attr('src', '');
+    console.log('🚀 onExtrusionChange start', item);
+    try {
+      // Mark selection
+      $('.extrusion-box').removeClass('selected');
+      $box.addClass('selected');
+      selectedExtrusion = item;
+      $('#addToCartBtn, #addToCartBtnMobile').prop('disabled', !item.inStock);
+      // Update images
+      const imgs = item.images || [];
+      $('.details-panel .image-grid .image-cell').each(function(idx) {
+        const url = imgs[idx] || '';
+        const $link = $(this).find('a');
+        const $img  = $link.find('img');
+        if (url) {
+          $link.attr('href', url);
+          $img.attr('src', url);
+        } else {
+          $link.removeAttr('href');
+          $img.attr('src', '');
+        }
+      });
+      // Reinitialize SimpleLightbox with error isolation
+      try {
+        if (typeof detailLightbox !== 'undefined' && detailLightbox && typeof detailLightbox.destroy === 'function') {
+          detailLightbox.destroy();
+        }
+        detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
+          captions: false, nav: true, close: true, docClose: true,
+          enableKeyboard: true, showCounter: false
+        });
+      } catch (lightboxError) {
+        console.error('🔧 Lightbox re-init failed, continuing:', lightboxError);
       }
-    });
-    // Reinitialize SimpleLightbox
-    if (detailLightbox && typeof detailLightbox.destroy === 'function') {
-      detailLightbox.destroy();
+      console.log('🚀 about to call description update');
+      $('.description-container').html(item.descriptionHtml || '');
+      console.log('🚀 about to call updateTotals');
+      updateTotals();
+      if (typeof updateMobileTotals === 'function') {
+        console.log('🚀 about to call updateMobileTotals');
+        updateMobileTotals();
+      }
+    } catch (e) {
+      console.error('🔥 error inside onExtrusionChange', e);
     }
-    detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
-      captions: false, nav: true, close: true, docClose: true,
-      enableKeyboard: true, showCounter: false
-    });
-    // Update description
-    $('.description-container').html(item.descriptionHtml || '');
-    // Always refresh totals
-    updateTotals();
-    if (typeof updateMobileTotals === 'function') updateMobileTotals();
   }
 
   // Load configuration from Ecwid instead of extrusions.json
@@ -381,13 +392,13 @@
     // Re-add selector title
     list.forEach(function(item) {
       const pricePerMeter = (item.baseCostPerMm * 1000).toFixed(0);
-      const box = $(`
+      const box = $((`
         <div class="extrusion-box" data-id="${item.id}">
           <div class="extrusion-name">${item.name}</div>
           <div class="price-per-meter">₹${pricePerMeter}/m</div>
            <div class="stock-pill">${ item.inStock ? 'In Stock' : 'Out of Stock' }</div>
         </div>
-      `);
+      `).trim());
       if (!item.inStock) {
         box.find('.stock-pill').addClass('out-of-stock');
       }
@@ -420,6 +431,7 @@
   
   // Aggregate all rows, perform rounding and cost calculations, and update the totals table
   function updateTotals() {
+    console.log('🔢 updateTotals fired — selectedExtrusion:', selectedExtrusion, 'rows=', $('#tableBody tr').length);
     let totalOrdered = 0;
     let totalM5Count = 0;
     let totalCBCount = 0;
@@ -1028,9 +1040,26 @@ $(function() {
     onExtrusionChange(item, $(this));
   });
 
-  // Remove any leftover Ecwid cart overlay mask when returning focus to the page
+  // Remove any leftover Ecwid overlays/popups when returning focus to the page
   $(window).on('focus', function() {
-    $('.ecwid-shopping-cart-mask, .ecwid-cart-overlay').remove();
+    console.log('🔍 Window focus detected: cleaning up Ecwid overlay elements...');
+    var selectors = [
+      '.ecwid-shopping-cart-mask',
+      '.ecwid-cart-overlay',
+      '.ecwid-overlay',
+      '.ec-popup__overlay',
+      '.ec-popup',
+      '.ec-popup--m',
+      '.ecwid-popup.ecwid-ProductBrowserPopup',
+      '#ec-product-browser-popup-container'
+    ];
+    var $els = $(selectors.join(', '));
+    if ($els.length) {
+      console.log('  → Removing', $els.length, 'elements:', selectors.filter(s => $els.is(s)).join(', '));
+      $els.remove();
+    } else {
+      console.log('  → No Ecwid overlay elements found to remove.');
+    }
   });
   // Initialize SimpleLightbox
   detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
@@ -1047,6 +1076,69 @@ $(function() {
 
   // Initialize Ecwid cart
   Ecwid.init();
+  // Remove leftover Ecwid overlays on any Ecwid page switch (including cart open/close)
+  Ecwid.OnPageSwitch.add(function(page) {
+    console.log('🔄 Ecwid OnPageSwitch:', page);
+    var selectors = [
+      '.ecwid-overlay',
+      '.ec-popup__overlay',
+      '.ec-popup',
+      '.ec-popup--m',
+      '.ecwid-shopping-cart-mask',
+      '.ecwid-cart-overlay',
+      '.ecwid-popup.ecwid-ProductBrowserPopup',
+      '#ec-product-browser-popup-container'
+    ];
+    document.querySelectorAll(selectors.join(', ')).forEach(function(el) {
+      console.log(' 🗑️ Removing overlay via OnPageSwitch:', el);
+      el.remove();
+    });
+    // Rebind extrusion-box clicks after OnPageSwitch
+    console.log('🔄 Rebinding extrusion-box clicks after OnPageSwitch');
+    $('.extrusion-box').off('click').on('click', function() {
+      const id = $(this).data('id');
+      const item = config.extrusions.find(e => e.id == id);
+      onExtrusionChange(item, $(this));
+    });
+    // Re-render and reapply filters to ensure filter pills and filtered boxes survive Ecwid rerender
+    console.log('🔄 Scheduling filter re-init after OnPageSwitch');
+    if (window.VSlot && VSlot.filters) {
+      setTimeout(function() {
+        try {
+          console.log('⏱️ Running delayed filter re-initialization');
+          VSlot.filters.init(config.extrusions);
+          console.log('🔍 (Delayed) repopulateExtrusionBoxes with', config.extrusions.length, 'items');
+          console.log('🔍 (Delayed) extrusionSelector exists:', $('#extrusionSelector').length);
+          populateExtrusionBoxes(config.extrusions);
+          // Ensure selector is visible after repopulation
+          $('#extrusionSelector, .extrusion-selector-wrapper').show();
+          console.log('🔍 (Delayed) now has children:', $('#extrusionSelector').children().length);
+          console.log('🔍 (Delayed) HTML preview:', $('#extrusionSelector').html().slice(0,200) + '…');
+        } catch(err) {
+          console.error('Error during delayed filter re-init', err);
+        }
+      }, 0);
+    }
+  });
+
+  // MutationObserver: if #extrusionSelector ever loses all children, refill it
+  (function() {
+    const container = document.getElementById('extrusionSelector');
+    if (!container) return;
+    const observer = new MutationObserver(() => {
+      try {
+        if (container.children.length === 0) {
+          console.log('🔄 ExtrusionSelector emptied – repopulating');
+          // refill and ensure visible
+          populateExtrusionBoxes(config.extrusions);
+          $('#extrusionSelector, .extrusion-selector-wrapper').show();
+        }
+      } catch(err) {
+        console.error('Error in MutationObserver', err);
+      }
+    });
+    observer.observe(container, { childList: true });
+  })();
 
   // Populate waste policy content for desktop and mobile
   const wasteTpl = document.getElementById('wastePolicyTemplate').content;
@@ -1210,6 +1302,7 @@ $(function() {
   // --- MOBILE AGGREGATE CARD LOGIC ---
   // 1. Define updateMobileTotals function
   function updateMobileTotals() {
+    console.log('🔢 updateMobileTotals fired — cards=', $('.order-card').length, 'selectedExtrusion:', selectedExtrusion);
     const holesPerSide = selectedExtrusion?.holesPerSide || 0;
     let totalOrderedLength = 0;
     let totalM5Count = 0;
@@ -1272,6 +1365,7 @@ $(function() {
     const $box = $('.extrusion-box[data-id="' + id + '"]');
     if ($box.length) {
       onExtrusionChange(config.extrusions.find(e => e.id == id), $box);
+      updateMobileTotals();
     }
     $sel.val(id);
   });
@@ -1327,6 +1421,8 @@ $(function() {
         (this.selectedFilters.color.size === 0  || this.selectedFilters.color.has(e.attributes.color))
       );
       populateExtrusionBoxes(filtered);
+      // Ensure selector remains visible when filters change
+      $('#extrusionSelector, .extrusion-selector-wrapper').show();
     }
   };
 })(window.VSlot = window.VSlot || {}, jQuery);
