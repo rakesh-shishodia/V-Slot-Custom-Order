@@ -593,3 +593,12 @@ box-sizing: border-box;
   border-radius: 4px;
   background: #000;
 }
+
+/* Unblock clicks by disabling Ecwid popup overlays */
+.ec-popup__overlay,
+.ec-popup,
+.ec-popup--m {
+  pointer-events: none !important;
+  /* optionally hide them entirely if you never need them: 
+     display: none !important; */
+}
