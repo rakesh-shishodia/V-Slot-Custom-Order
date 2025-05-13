@@ -299,12 +299,12 @@
         </tbody>
       </table>
       <!-- Desktop Add to Cart button and waste policy (hide on mobile) -->
-      <button type="button" id="addToCartBtn" class="hide-mobile">Add to Cart</button>
+      <button type="button" id="addToCartBtn" class="hide-mobile js-add-to-cart">Add to Cart</button>
       <div class="waste-policy hide-mobile" id="wastePolicyDesktop"></div>
     </form>
   </div> <!-- .order-panel -->
 
-  <button type="button" id="addToCartBtnMobile" class="show-mobile hide-desktop">Add to Cart</button>
+  <button type="button" id="addToCartBtnMobile" class="show-mobile hide-desktop js-add-to-cart">Add to Cart</button>
   <div class="waste-policy show-mobile hide-desktop" id="wastePolicyMobile"></div>
 </div> <!-- .flex-container -->
 
@@ -324,7 +324,7 @@
       $('.extrusion-box').removeClass('selected');
       $box.addClass('selected');
       selectedExtrusion = item;
-      $('#addToCartBtn, #addToCartBtnMobile').prop('disabled', !item.inStock);
+      $('.js-add-to-cart').prop('disabled', !item.inStock);
       // Update images
       const imgs = item.images || [];
       $('.details-panel .image-grid .image-cell').each(function(idx) {
@@ -491,21 +491,20 @@
   
     // Disable Add to Cart if aggregate rounded length is 0.
     if (roundedLength === 0) {
-      $('#addToCartBtn').prop('disabled', true);
+      $('.js-add-to-cart').prop('disabled', true);
     } else {
-      $('#addToCartBtn').prop('disabled', false);
+      $('.js-add-to-cart').prop('disabled', false);
     }
-
     // Disable Add to Cart if item is out of stock.
     if (!selectedExtrusion.inStock) {
-    $('#addToCartBtn').prop('disabled', true);
+      $('.js-add-to-cart').prop('disabled', true);
     }
   }
   
   // (Removed: Event listener moved to end of script)
   
   // Handle "Add to Cart" button clicks: build options and call Ecwid API
-  $('#addToCartBtn, #addToCartBtnMobile').on('click', function() {
+  $('.js-add-to-cart').on('click', function() {
     console.log('Add to Cart clicked, selectedExtrusion:', selectedExtrusion);
     // Clear previous errors
     $('#formError').hide();
@@ -1355,9 +1354,9 @@ $(function() {
 
     // Enable/disable mobile Add to Cart
     if (roundedLength === 0 || !selectedExtrusion?.inStock) {
-      $('#addToCartBtnMobile').prop('disabled', true);
+      $('.js-add-to-cart').prop('disabled', true);
     } else {
-      $('#addToCartBtnMobile').prop('disabled', false);
+      $('.js-add-to-cart').prop('disabled', false);
     }
   }
 
