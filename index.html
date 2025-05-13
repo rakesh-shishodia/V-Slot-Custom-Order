@@ -1062,27 +1062,6 @@ $(function() {
     onExtrusionChange(item, $(this));
   });
 
-  <!--
-  // Remove any leftover Ecwid overlays/popups when returning focus to the page
-  $(window).on('focus', function() {
-    console.log('🔍 Window focus detected: cleaning up Ecwid overlay elements...');
-    var selectors = [
-      '.ecwid-overlay',
-      '.ec-popup__overlay',
-      '.ec-popup',
-      '.ec-popup--m',
-      '.ecwid-popup.ecwid-ProductBrowserPopup',
-      '#ec-product-browser-popup-container'
-    ];
-    var $els = $(selectors.join(', '));
-    if ($els.length) {
-      console.log('  → Removing', $els.length, 'elements:', selectors.filter(s => $els.is(s)).join(', '));
-      $els.remove();
-    } else {
-      console.log('  → No Ecwid overlay elements found to remove.');
-    }
-  });
-  -->
   // Initialize SimpleLightbox
   if (typeof $.fn.simpleLightbox === 'function') {
     detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
