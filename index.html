@@ -339,15 +339,19 @@
           $img.attr('src', '');
         }
       });
-      // Reinitialize SimpleLightbox with error isolation
+      // Reinitialize SimpleLightbox with error isolation and plugin guard
       try {
-        if (typeof detailLightbox !== 'undefined' && detailLightbox && typeof detailLightbox.destroy === 'function') {
-          detailLightbox.destroy();
+        if (typeof $.fn.simpleLightbox === 'function') {
+          if (typeof detailLightbox !== 'undefined' && detailLightbox && typeof detailLightbox.destroy === 'function') {
+            detailLightbox.destroy();
+          }
+          detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
+            captions: false, nav: true, close: true, docClose: true,
+            enableKeyboard: true, showCounter: false
+          });
+        } else {
+          console.warn('🔧 SimpleLightbox plugin not loaded; skipping lightbox init');
         }
-        detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
-          captions: false, nav: true, close: true, docClose: true,
-          enableKeyboard: true, showCounter: false
-        });
       } catch (lightboxError) {
         console.error('🔧 Lightbox re-init failed, continuing:', lightboxError);
       }
@@ -1080,14 +1084,18 @@ $(function() {
   });
   -->
   // Initialize SimpleLightbox
-  detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
-    captions: false,
-    nav: true,
-    close: true,
-    docClose: true,
-    enableKeyboard: true,
-    showCounter: false
-  });
+  if (typeof $.fn.simpleLightbox === 'function') {
+    detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
+      captions: false,
+      nav: true,
+      close: true,
+      docClose: true,
+      enableKeyboard: true,
+      showCounter: false
+    });
+  } else {
+    console.warn('🔧 SimpleLightbox plugin not available on page load');
+  }
 
   // Initialize ordering table
   VSlot.table.init();
