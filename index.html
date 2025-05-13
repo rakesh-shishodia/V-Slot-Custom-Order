@@ -1058,12 +1058,11 @@ $(function() {
     onExtrusionChange(item, $(this));
   });
 
+  <!--
   // Remove any leftover Ecwid overlays/popups when returning focus to the page
   $(window).on('focus', function() {
     console.log('🔍 Window focus detected: cleaning up Ecwid overlay elements...');
     var selectors = [
-      '.ecwid-shopping-cart-mask',
-      '.ecwid-cart-overlay',
       '.ecwid-overlay',
       '.ec-popup__overlay',
       '.ec-popup',
@@ -1079,6 +1078,7 @@ $(function() {
       console.log('  → No Ecwid overlay elements found to remove.');
     }
   });
+  -->
   // Initialize SimpleLightbox
   detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
     captions: false,
@@ -1096,14 +1096,16 @@ $(function() {
   Ecwid.init();
   // Remove leftover Ecwid overlays on any Ecwid page switch (including cart open/close)
   Ecwid.OnPageSwitch.add(function(page) {
+    // Guard: only run cleanup on PRODUCT or CATEGORY pages
+    if (page.type !== 'PRODUCT' && page.type !== 'CATEGORY') {
+      return;
+    }
     console.log('🔄 Ecwid OnPageSwitch:', page);
     var selectors = [
       '.ecwid-overlay',
       '.ec-popup__overlay',
       '.ec-popup',
       '.ec-popup--m',
-      '.ecwid-shopping-cart-mask',
-      '.ecwid-cart-overlay',
       '.ecwid-popup.ecwid-ProductBrowserPopup',
       '#ec-product-browser-popup-container'
     ];
