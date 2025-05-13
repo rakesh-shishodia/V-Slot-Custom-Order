@@ -533,11 +533,9 @@
       alert("Please select an extrusion type.");
       return;
     }
-
     // Determine order details and total pieces based on desktop or mobile view
     let orderDetails = [];
     let totalPcs = 0;
-
     if ($('.mobile-order-cards').is(':visible')) {
       // Mobile: read from card-based inputs
       const holesPerSide = selectedExtrusion.holesPerSide || 0;
@@ -547,7 +545,6 @@
         const pcs = parseInt($card.find('.card-num-pcs').val(), 10) || 0;
         const sides = parseInt($card.find('.card-tap-side').val(), 10) || 0;
         const cb = $card.find('.card-cb-holes').val().trim() || '0';
-
         if (length && pcs) {
           const m5Count = sides * holesPerSide;
           orderDetails.push(`${length}-${pcs}pc-M5Tap${m5Count}-CBHole${cb}`);
@@ -569,9 +566,7 @@
         }
       });
     }
-
     const detailsString = orderDetails.join('; ');
-  
     // Retrieve aggregated totals from the totals table (desktop) or from mobile aggregate card
     let totalM5Count, totalCBCount, roundedLengthValue;
     if ($('.mobile-order-cards').is(':visible')) {
@@ -585,7 +580,6 @@
       totalCBCount = parseInt($('#totalCBCount').text(), 10) || 0;
       roundedLengthValue = parseInt($('#roundedLength').text(), 10) || 0;
     }
-
     // Build the same semicolon-separated Cut Details for Ecwid
     const previewLines = orderDetails.map(detail => {
       const [length, pcsPart, tapPart, cbPart] = detail.split('-');
@@ -593,12 +587,10 @@
       const pcsLabel = count === 1 ? '1 pc' : `${count} pcs`;
       const tapCount = parseInt(tapPart.replace('M5Tap', ''), 10) || 0;
       const cbCount = parseInt(cbPart.replace('CBHole', ''), 10) || 0;
-
       const machining = [];
       if (tapCount === 1) machining.push('One Side M5 Tapped');
       else if (tapCount > 1) machining.push('Both Sides M5 Tapped');
       if (cbCount > 0) machining.push(`${cbCount} CB Holes in each`);
-
       return machining.length > 0
         ? `${pcsLabel} of ${length} mm – ${machining.join(', ')}`
         : `${pcsLabel} of ${length} mm`;
@@ -610,7 +602,6 @@
       "Counter Bore Holes": totalCBCount.toString(),
       "Cut Details": previewLines.join('; ')
     };
-
     // Build human-readable preview lines in desired format
     $('#previewTitle').text(`Your Order for ${selectedExtrusion.name}`);
     $('#previewList').empty();
@@ -621,16 +612,13 @@
       const pcsLabel = count === 1 ? '1 pc' : `${count} pcs`;
       const tapCount = parseInt(tapPart.replace('M5Tap', ''), 10) || 0;
       const cbCount = parseInt(cbPart.replace('CBHole', ''), 10) || 0;
-
       const machining = [];
       if (tapCount === 1) machining.push('One Side M5 Tapped');
       else if (tapCount > 1) machining.push('Both Sides M5 Tapped');
       if (cbCount > 0) machining.push(`${cbCount} CB Holes in each`);
-
       const line = machining.length > 0
         ? `${pcsLabel} of ${length} mm – ${machining.join(', ')}`
         : `${pcsLabel} of ${length} mm`;
-
       $('#previewList').append(`<li>${line}</li>`);
     });
     // Check for lengths > 1000mm and show a warning message
@@ -648,27 +636,8 @@
       $('#previewShippingNote').empty();
     }
     $('#previewTotal').text(`Total Pcs – ${totalPcs}`);
-// Show preview modal and halt actual add-to-cart
-$('#orderPreviewModal').show();
-return;
-  
-    // Optionally, log the product options before adding to cart.
-    console.log('Adding product with options:', pendingProductOptions);
-    
-    Ecwid.Cart.addProduct({
-      id: selectedExtrusion.id,
-      quantity: 1,
-      options: pendingProductOptions
-    },
-    function(order) {
-      console.log('Add to Cart success callback, order:', order);
-      // Populate and show success modal with order details
-      document.getElementById('modalDetails').textContent = detailsString;
-      document.getElementById('successModal').style.display = 'block';
-    },
-    function(error) {
-      console.error('Add to Cart error callback, error:', error);
-    });
+    // Show preview modal and halt actual add-to-cart
+    $('#orderPreviewModal').show();
   });
 </script>
 
