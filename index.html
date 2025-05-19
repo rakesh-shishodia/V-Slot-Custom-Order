@@ -576,18 +576,23 @@
     }
     const detailsString = orderDetails.join('; ');
     // Retrieve aggregated totals from the totals table (desktop) or from mobile aggregate card
-    let totalM5Count, totalCBCount, roundedLengthValue;
+    let totalM5Count, totalCBCount, roundedLengthValue, totalOrdered;
     if ($('.mobile-order-cards').is(':visible')) {
       // Mobile
       totalM5Count = parseInt($('#mobileTotalM5Count').text(), 10) || 0;
       totalCBCount = parseInt($('#mobileTotalCBCount').text(), 10) || 0;
       roundedLengthValue = parseInt($('#mobileRoundedLength').text(), 10) || 0;
+      totalOrdered = parseInt($('#mobileTotalOrdered').text(), 10) || 0;
     } else {
       // Desktop
       totalM5Count = parseInt($('#totalM5Count').text(), 10) || 0;
       totalCBCount = parseInt($('#totalCBCount').text(), 10) || 0;
       roundedLengthValue = parseInt($('#roundedLength').text(), 10) || 0;
+      totalOrdered = parseInt($('#totalOrdered').text(), 10) || 0;
     }
+    // --- PATCH: Compute offcut ---
+    const offcutLength = roundedLengthValue - totalOrdered;
+    const offcutNote = (offcutLength > 100) ? `Incl off-cut pc of ${offcutLength} mm` : '';
     // Build the same semicolon-separated Cut Details for Ecwid
     const previewLines = orderDetails.map(detail => {
       const [length, pcsPart, tapPart, cbPart] = detail.split('-');
@@ -608,7 +613,7 @@
       "Length": roundedLengthValue.toString(),
       "M5 Tap Holes": totalM5Count.toString(),
       "Counter Bore Holes": totalCBCount.toString(),
-      "Cut Details": previewLines.join('; ')
+      "Cut Details": offcutNote ? previewLines.join('; ') + '; ' + offcutNote : previewLines.join('; ')
     };
     // Build human-readable preview lines in desired format
     $('#previewTitle').text(`Your Order for ${selectedExtrusion.name}`);
@@ -629,6 +634,10 @@
         : `${pcsLabel} of ${length} mm`;
       $('#previewList').append(`<li>${line}</li>`);
     });
+    // PATCH: append offcut line in preview modal if exists
+    if (offcutNote) {
+      $('#previewList').append(`<li>${offcutNote}</li>`);
+    }
     // Check for lengths > 1000mm and show a warning message
     const hasLongExtrusion = orderDetails.some(detail => {
       const [length] = detail.split('-');
@@ -643,7 +652,8 @@
     } else {
       $('#previewShippingNote').empty();
     }
-    $('#previewTotal').text(`Total Pcs – ${totalPcs}`);
+    const totalText = offcutNote ? `Total Pcs – ${totalPcs} + off-cut pc` : `Total Pcs – ${totalPcs}`;
+    $('#previewTotal').text(totalText);
     // Show preview modal and halt actual add-to-cart
     $('#orderPreviewModal').show();
   });
@@ -736,7 +746,29 @@
           previewLines.forEach(function(line) {
             $('#modalDetails').append('<li>' + line + '</li>');
           });
-          // --- PATCH END ---
+          // --- PATCH: Append new total line, including off-cut if applicable ---
+          var offcutLength = 0, totalOrdered = 0, roundedLengthValue = 0, totalPcs = 0;
+          if ($('.mobile-order-cards').is(':visible')) {
+            roundedLengthValue = parseInt($('#mobileRoundedLength').text(), 10) || 0;
+            totalOrdered = parseInt($('#mobileTotalOrdered').text(), 10) || 0;
+          } else {
+            roundedLengthValue = parseInt($('#roundedLength').text(), 10) || 0;
+            totalOrdered = parseInt($('#totalOrdered').text(), 10) || 0;
+          }
+          // Compute totalPcs using previewLines for consistency
+          if (Array.isArray(previewLines)) {
+            previewLines.forEach(function(line) {
+              const match = line.match(/^(\d+)\s+pcs?/);
+              if (match) {
+                totalPcs += parseInt(match[1], 10);
+              }
+            });
+          }
+          offcutLength = roundedLengthValue - totalOrdered;
+          var offcutNote = (offcutLength > 100) ? `Incl off-cut pc of ${offcutLength} mm` : '';
+          const modalTotalText = offcutNote ? `Total Pcs – ${totalPcs} + off-cut pc` : `Total Pcs – ${totalPcs}`;
+          $('#modalDetails').append(`<li style="font-weight:bold;">${modalTotalText}</li>`);
+          // --- END PATCH ---
           pendingProductOptions = null;
           $('#successModal').show();
           $('#modalClose').focus();
