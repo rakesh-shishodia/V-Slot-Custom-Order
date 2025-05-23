@@ -414,6 +414,14 @@
         box.find('.stock-pill').addClass('out-of-stock');
       }
       container.append(box);
+      // --- Analytics: Track click on extrusion box ---
+      box.on('click', function() {
+        gtag('event', 'extrusion_click', {
+          'event_category': 'Extrusion',
+          'event_label': item.name,
+          'value': 1
+        });
+      });
     });
   }
 
