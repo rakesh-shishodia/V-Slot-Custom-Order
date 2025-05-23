@@ -747,15 +747,8 @@
             $('#modalDetails').append('<li>' + line + '</li>');
           });
           // --- PATCH: Append new total line, including off-cut if applicable ---
-          var offcutLength = 0, totalOrdered = 0, roundedLengthValue = 0, totalPcs = 0;
-          if ($('.mobile-order-cards').is(':visible')) {
-            roundedLengthValue = parseInt($('#mobileRoundedLength').text(), 10) || 0;
-            totalOrdered = parseInt($('#mobileTotalOrdered').text(), 10) || 0;
-          } else {
-            roundedLengthValue = parseInt($('#roundedLength').text(), 10) || 0;
-            totalOrdered = parseInt($('#totalOrdered').text(), 10) || 0;
-          }
-          // Compute totalPcs using previewLines for consistency
+          // --- PATCH: Derive totalPcs and off-cut presence from previewLines for consistency ---
+          var totalPcs = 0;
           if (Array.isArray(previewLines)) {
             previewLines.forEach(function(line) {
               const match = line.match(/^(\d+)\s+pcs?/);
@@ -764,9 +757,8 @@
               }
             });
           }
-          offcutLength = roundedLengthValue - totalOrdered;
-          var offcutNote = (offcutLength > 100) ? `Incl off-cut pc of ${offcutLength} mm` : '';
-          const modalTotalText = offcutNote ? `Total Pcs – ${totalPcs} + off-cut pc` : `Total Pcs – ${totalPcs}`;
+          const hasOffcut = previewLines.some(line => line.includes('Incl off-cut pc'));
+          const modalTotalText = hasOffcut ? `Total Pcs – ${totalPcs} + off-cut pc` : `Total Pcs – ${totalPcs}`;
           $('#modalDetails').append(`<li style="font-weight:bold;">${modalTotalText}</li>`);
           // --- END PATCH ---
           pendingProductOptions = null;
