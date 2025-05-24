@@ -241,8 +241,8 @@
               (min 100mm, max 3000mm)
             </th>
             <th>
-              M5 Tap <br> (0 = none, 1 = one side, 2 = both sides)
-              <span class="info-icon" data-info="For V Slot end tapping is M5 up to 15mm depth, For 3030 T Slot, end tapping is M8 up to 15mm depth, For others please check drawing">
+              End Tap <br> (0 = none, 1 = one side, 2 = both sides)
+              <span class="info-icon" data-info="V Slot – M5x15mm, 3030 T Slot – M8x15mm. Check drawings for others.">
                 <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="8" cy="8" r="7" fill="#006064"/>
                   <text x="8" y="12" font-size="10" text-anchor="middle" fill="#fff">i</text>
@@ -414,14 +414,6 @@
         box.find('.stock-pill').addClass('out-of-stock');
       }
       container.append(box);
-      // --- Analytics: Track click on extrusion box ---
-      box.on('click', function() {
-        gtag('event', 'extrusion_click', {
-          'event_category': 'Extrusion',
-          'event_label': item.name,
-          'value': 1
-        });
-      });
     });
   }
 
@@ -609,8 +601,8 @@
       const tapCount = parseInt(tapPart.replace('M5Tap', ''), 10) || 0;
       const cbCount = parseInt(cbPart.replace('CBHole', ''), 10) || 0;
       const machining = [];
-      if (tapCount === 1) machining.push('One Side M5 Tapped');
-      else if (tapCount > 1) machining.push('Both Sides M5 Tapped');
+      if (tapCount === 1) machining.push('with one end tapped');
+      else if (tapCount > 1) machining.push('with both ends tapped');
       if (cbCount > 0) machining.push(`${cbCount} CB Holes in each`);
       return machining.length > 0
         ? `${pcsLabel} of ${length} mm – ${machining.join(', ')}`
@@ -634,8 +626,8 @@
       const tapCount = parseInt(tapPart.replace('M5Tap', ''), 10) || 0;
       const cbCount = parseInt(cbPart.replace('CBHole', ''), 10) || 0;
       const machining = [];
-      if (tapCount === 1) machining.push('One Side M5 Tapped');
-      else if (tapCount > 1) machining.push('Both Sides M5 Tapped');
+      if (tapCount === 1) machining.push('with one end tapped');
+      else if (tapCount > 1) machining.push('with both ends tapped');
       if (cbCount > 0) machining.push(`${cbCount} CB Holes in each`);
       const line = machining.length > 0
         ? `${pcsLabel} of ${length} mm – ${machining.join(', ')}`
