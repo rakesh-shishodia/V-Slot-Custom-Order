@@ -39,7 +39,7 @@
         <strong>Example</strong> – You order <strong>2 pcs of 1000 mm</strong> and <strong>1 pc of 1200 mm</strong> (total 3200 mm), so we bill for <strong>3500 mm</strong>. You’ll receive your <strong>2 pcs of 1000 mm</strong>, <strong>1 pc of 1200 mm</strong> plus a <strong>300 mm off-cut</strong>.<br>
         <a href="#" class="read-more-link">[Read More]</a>
       </p>
-      <div class="waste-details" style="display: none;">
+      <div class="waste-details hidden">
         <strong>Material &amp; Waste Policy</strong><br><br>
         We cut orders in 500 mm increments to reduce material wastage, keep our prices low and our operations efficient, and <strong>those savings go straight into your final per-metre rate</strong>.<br><br>
         <strong>How it works:</strong><br>
@@ -645,7 +645,7 @@
     });
     if (hasLongExtrusion) {
       $('#previewShippingNote').html(
-        `<div style="margin-top:10px; padding:10px; background:#fff3cd; border-left:5px solid #ff9800;">
+        `<div class="shipping-note">
           <strong>Note:</strong> We offer free shipping up to 1000mm length pcs. One or more extrusions are more than 1000mm in length and thus we will have to charge applicable shipping. For your order, please checkout using <strong>'Wire Transfer'</strong> as payment option. We will update shipping costs and then seek your payment through UPI or payment link. You will get an email and call from us for this.
         </div>`
       );
@@ -664,7 +664,7 @@
   <div class="modal-content">
     <span class="close" id="previewClose" aria-label="Close preview">&times;</span>
     <h2 id="previewTitle">Your Order for </h2>
-    <ul id="previewList" style="text-align:left; margin:10px 0;"></ul>
+    <ul id="previewList" class="preview-list"></ul>
     <div id="previewShippingNote"></div>
     <p id="previewTotal" style="font-weight:bold;"></p>
     <button type="button" id="amendOrderBtn">Amend Order</button>
@@ -759,7 +759,7 @@
           }
           const hasOffcut = previewLines.some(line => line.includes('Incl off-cut pc'));
           const modalTotalText = hasOffcut ? `Total Pcs – ${totalPcs} + off-cut pc` : `Total Pcs – ${totalPcs}`;
-          $('#modalDetails').append(`<li style="font-weight:bold;">${modalTotalText}</li>`);
+          $('#modalDetails').append(`<li class="bold-total">${modalTotalText}</li>`);
           // --- END PATCH ---
           pendingProductOptions = null;
           $('#successModal').show();
