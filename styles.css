@@ -128,26 +128,6 @@ button:hover {
   background-color: #fff;
 }
 /* Modal styles */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 10001;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.5);
-}
-.modal-content {
-  background-color: #fff;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  max-width: 400px;
-  text-align: center;
-}
 .close {
   color: #aaa;
   float: right;
@@ -633,4 +613,28 @@ box-sizing: border-box;
 /* Bold text styling for totals */
 .bold-total {
   font-weight: bold;
+}
+
+/* Shared modal styles for all modals */
+.vslot-modal {
+  position: fixed;
+  display: none;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4); /* translucent backdrop */
+}
+
+.vslot-modal .modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 6px;
+  max-width: 600px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  position: relative;
+  text-align: center;
 }
