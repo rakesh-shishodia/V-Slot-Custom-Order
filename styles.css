@@ -154,7 +154,7 @@ display: flex;
 gap: 20px;
 align-items: flex-start;
 }
-. /* Maintain minimum dimensions to ensure consistent layout */
+/* Maintain minimum dimensions to ensure consistent layout */
 .details-panel {
   flex: 1;
   max-width: 40%;
@@ -244,10 +244,14 @@ background: #ffecec !important; /* optional: light red bg for clarity */
 }
 
 /* Price per meter under each extrusion box */
-.extrusion-box .price-per-meter {
-  font-size: 14px;
-  color: #555;
-  margin-top: 4px;
+.price-per-meter {
+  display: inline-block;
+  font-size: 16px;
+  color: #006064;
+  background-color: #e0f7fa;
+  padding: 4px 8px;
+  border-radius: 12px;
+  margin: 4px 0 0 0;
 }
 /* Stock status pill next to price per m pill in each extrusion boxe */
 .extrusion-box .stock-pill {
@@ -293,15 +297,6 @@ gap: 8px;
 font-size: 16px;
 color: #000; /* same as heading */
 display: block;
-}
-.price-per-meter {
-display: inline-block;
-font-size: 16px;
-color: #006064;             /* accent text color */
-background-color: #e0f7fa;  /* soft background */
-padding: 4px 8px;           /* vertical & horizontal spacing */
-border-radius: 12px;        /* pill shape */
-margin: 4px 0 0 0;          /* top margin only, no left margin */
 }
 /* Highlight price pill on selected box */
 .extrusion-box.selected .price-per-meter {
