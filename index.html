@@ -29,7 +29,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/simplelightbox@2.14.1/dist/simple-lightbox.jquery.min.js"></script>
   
 </head>
-<body>
+<body class="loading">
 
   <!-- Waste Policy Template -->
   <template id="wastePolicyTemplate">
@@ -660,9 +660,9 @@
 </script>
 
 <!-- Order Preview Modal -->
-<div id="orderPreviewModal" class="modal vslot-modal">
+<div id="orderPreviewModal" class="modal vslot-modal hidden">
   <div class="modal-content">
-    <span class="close" id="previewClose" aria-label="Close preview">&times;</span>
+    <span class="close modal-close hidden" id="previewClose" aria-label="Close preview">&times;</span>
     <h2 id="previewTitle">Your Order for </h2>
     <ul id="previewList" class="preview-list"></ul>
     <div id="previewShippingNote"></div>
@@ -672,9 +672,9 @@
   </div>
 </div>
 <!-- Success Modal -->
-<div id="successModal" class="modal vslot-modal">
+<div id="successModal" class="modal vslot-modal hidden">
   <div class="modal-content">
-    <span id="modalClose" class="close">&times;</span>
+    <span id="modalClose" class="close modal-close hidden">&times;</span>
     <h2>Successfully Added to Cart</h2>
     <h3 id="successExtrusionName"></h3>
     <ul id="modalDetails" style="text-align:left; margin:10px 0;"></ul>
@@ -683,9 +683,9 @@
 </div>
 
 <!-- Info-icon modal (singleton!) -->
-<div id="infoModal" class="modal vslot-modal">
+<div id="infoModal" class="modal vslot-modal hidden">
   <div class="modal-content">
-    <span id="infoModalClose" class="close" aria-label="Close info">&times;</span>
+    <span id="infoModalClose" class="close modal-close hidden" aria-label="Close info">&times;</span>
     <div id="infoModalText"></div>
   </div>
 </div>
@@ -792,6 +792,12 @@
       if (e.target === modal) modal.style.display = 'none';
     });
   })();
+  </script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.remove('loading');
+      document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
+    });
   </script>
 </body>
 <script>
