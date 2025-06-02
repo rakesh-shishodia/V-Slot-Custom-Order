@@ -679,6 +679,7 @@
     <h3 id="successExtrusionName"></h3>
     <ul id="modalDetails" style="text-align:left; margin:10px 0;"></ul>
     <p id="modalInstruction">Continue to add other types of extrusions if you need and then checkout together.</p>
+    <button id="successModalCloseBtn" class="modal-close-btn">Close</button>
   </div>
 </div>
 
@@ -687,6 +688,13 @@
   <div class="modal-content">
     <span id="infoModalClose" class="close modal-close hidden" aria-label="Close info">&times;</span>
     <div id="infoModalText"></div>
+  </div>
+</div>
+
+<!-- Loading Modal -->
+<div id="loadingModal" style="display:none;" class="modal-overlay">
+  <div class="modal-content">
+    <p>Adding to Cart...</p>
   </div>
 </div>
 
@@ -711,11 +719,17 @@
   $('#proceedOrderBtn').on('click', () => {
     console.log('Proceed clicked');
     $('#orderPreviewModal').hide();
+    // Show loading modal before Ecwid API call
+    document.getElementById('loadingModal').style.display = 'flex';
+    console.log('Loading modal shown');
     Ecwid.Cart.addProduct({
       id: selectedExtrusion.id,
       quantity: 1,
       options: pendingProductOptions,
       callback: function(success, product, cart) {
+        // Hide loading modal after Ecwid API call
+        document.getElementById('loadingModal').style.display = 'none';
+        console.log('Loading modal hidden');
         console.log('🛒 addProduct callback:', { success, product, cart });
         if (success) {
           VSlot.table.init();
@@ -771,6 +785,18 @@
     });
   });
 </script>
+  <script>
+    document.getElementById('successModalCloseBtn').addEventListener('click', function () {
+      document.getElementById('successModal').style.display = 'none';
+    });
+
+    document.getElementById('successModal').addEventListener('click', function (e) {
+      if (e.target === document.getElementById('successModal')) {
+        // Do nothing; prevent modal from closing
+        e.stopPropagation();
+      }
+    });
+  </script>
   <!-- Code for Inline Info Icon -->
 <script>
   (function() {
