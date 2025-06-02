@@ -597,16 +597,15 @@ box-sizing: border-box;
 /* Loading modal styles */
 #loadingModal {
   position: fixed;
-  z-index: 100001;
-  left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent backdrop */
+  left: 0;
+  height: 100vh;
+  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: rgba(0, 0, 0, 0.5); /* if needed */
+  z-index: 100001;
 }
 
 #loadingModal .modal-content {
