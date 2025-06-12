@@ -2,6 +2,21 @@
 
 /* Mobile-specific styles (viewport ≤ 768px) */
 @media (max-width: 768px) {
+  .image-wrapper {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: 100px !important; /* matches the image height attribute */
+    margin-bottom: 0.5rem !important;
+    box-sizing: border-box !important;
+  }
+
+  .image-wrapper img {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+  }
   /* Mobile base font and family */
   body {
     font-size: 18px !important;
