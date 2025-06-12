@@ -40,10 +40,13 @@
   .tool-header {
     min-height: 64px;
     display: flex !important;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 0.5rem;
-    box-sizing: border-box;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.75rem 0.5rem !important;
+    gap: 0.5rem !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
   }
   .cart-icon-wrapper {
     min-width: 32px;
