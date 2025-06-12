@@ -50,7 +50,7 @@
   }
   .cart-icon-wrapper {
     min-width: 32px;
-    min-height: 32px;
+    min-height: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
