@@ -266,7 +266,8 @@
   .mobile-image-scroller img {
     flex: 0 0 45% !important;      /* two images per view */
     max-width: 45% !important;
-    height: auto !important;
+    height: 160px !important;
+    object-fit: contain !important;
     border-radius: 4px !important;
     scroll-snap-align: start !important;
   }
@@ -283,7 +284,8 @@
   .show-mobile .mobile-image-scroller img {
     flex: 0 0 45% !important;
     max-width: 45% !important;
-    height: auto !important;
+    height: 160px !important;
+    object-fit: contain !important;
     border-radius: 4px !important;
     scroll-snap-align: start !important;
   }
