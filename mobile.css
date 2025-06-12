@@ -38,14 +38,19 @@
 
   /* Layout stacking: full-bleed blocks with vertical spacing */
   .tool-header {
-    display: block !important;
-    width: 100%;
+    min-height: 64px;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
   }
-  .tool-header > * {
-    display: block;
-    width: 100%;
-    text-align: center;
-    margin-bottom: 1rem;
+  .cart-icon-wrapper {
+    min-width: 32px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   /* Hide desktop-only components */
