@@ -2,6 +2,26 @@
 
 /* Mobile-specific styles (viewport ≤ 768px) */
 @media (max-width: 768px) {
+  .qty-update-row {
+    display: flex !important;
+    gap: 0.5rem !important;
+    width: 100% !important;
+    margin-top: 0.75rem !important;
+  }
+
+  .qty-update-row input,
+  .qty-update-row button {
+    flex: 1 1 50% !important;
+    box-sizing: border-box !important;
+    height: 3rem !important;
+    line-height: 3rem !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 0 !important;
+  }
   .image-wrapper {
     display: flex !important;
     justify-content: center !important;

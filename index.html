@@ -142,10 +142,12 @@
   <div class="mobile-order-cards show-mobile hide-desktop">
     <!-- Piece Count Control -->
     <div class="pieces-control">
-      <label for="pieceCountInput">Enter the number of distinct lengths you need, then click “Update”.
-       For example, if you need 2 pieces of 310 mm, 4 pieces of 500 mm, and 2 pieces of 617 mm, enter 3 below.</label>
-      <input type="number" id="pieceCountInput" min="1" value="1" />
-      <button type="button" id="updatePiecesBtn">Update</button>
+      <label for="pieceCountInput">Enter the number of distinct lengths you need, then click “Add”.
+       For example, if you need X pcs of 310mm, Y pcs of 500mm, and Z pcs of 617mm, enter 3 below and click "Add".</label>
+      <div class="qty-update-row">
+        <input type="number" id="pieceCountInput" class="extrusion-qty-input" min="1" value="1" />
+        <button type="button" id="updatePiecesBtn" class="update-lengths-btn">Add</button>
+      </div>
     </div>
 
     <!-- Order Cards Container -->
