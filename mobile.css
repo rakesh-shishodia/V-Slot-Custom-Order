@@ -127,6 +127,9 @@
   #updatePiecesBtn {
     width: 100% !important;
   }
+  #pieceCountInput {
+    padding: 0.5rem 0.75rem !important;
+  }
 
   /* Ensure update button width accounts for padding */
   #updatePiecesBtn {
