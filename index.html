@@ -66,9 +66,9 @@
 </header>
 
 <!-- Mobile-only extrusion dropdown -->
-<label for="mobileExtrusionSelect" class="mobile-extrusion-label show-mobile hide-desktop">Select Extrusion</label>
+<label for="mobileExtrusionSelect" class="mobile-extrusion-label show-mobile hide-desktop">Select Extrusion From Drop Down</label>
 <select id="mobileExtrusionSelect" class="show-mobile hide-desktop">
-  <option value="">Select extrusion</option>
+  <option value="">Click to select extrusion</option>
 </select>
 <!-- Mobile image scroller -->
 <div class="mobile-image-scroller show-mobile hide-desktop">
@@ -102,26 +102,34 @@
     <div class="image-grid">
       <div class="image-cell">
         <a href="" class="detail-thumb-link">
-          <img src="" alt="Thumbnail" class="detail-thumb" />
+          <div class="image-wrapper">
+            <img src="" alt="Thumbnail" class="detail-thumb" width="100" height="100" />
+          </div>
         </a>
         <span class="zoom-icon">🔍</span>
       </div>
       <div class="image-cell">
         <!-- Top-right image placeholder; will be dynamically set -->
         <a href="">
-          <img src="" alt="Secondary image" />
+          <div class="image-wrapper">
+            <img src="" alt="Secondary image" width="100" height="100" />
+          </div>
         </a>
         <span class="zoom-icon">🔍</span>
       </div>
       <div class="image-cell">
         <a href="" class="detail-image-link">
-          <img src="" alt="" />
+          <div class="image-wrapper">
+            <img src="" alt="" width="100" height="100" />
+          </div>
         </a>
         <span class="zoom-icon">🔍</span>
       </div>
       <div class="image-cell">
         <a href="" class="detail-image-link">
-          <img src="" alt="" />
+          <div class="image-wrapper">
+            <img src="" alt="" width="100" height="100" />
+          </div>
         </a>
         <span class="zoom-icon">🔍</span>
       </div>
@@ -134,10 +142,12 @@
   <div class="mobile-order-cards show-mobile hide-desktop">
     <!-- Piece Count Control -->
     <div class="pieces-control">
-      <label for="pieceCountInput">Enter the number of distinct lengths you need, then click “Update”.
-       For example, if you need 2 pieces of 310 mm, 4 pieces of 500 mm, and 2 pieces of 617 mm, enter 3 below.</label>
-      <input type="number" id="pieceCountInput" min="1" value="1" />
-      <button type="button" id="updatePiecesBtn">Update</button>
+      <label for="pieceCountInput">Enter the number of distinct lengths you need, then click “Add”.
+       For example, if you need X pcs of 310mm, Y pcs of 500mm, and Z pcs of 617mm, enter 3 below and click "Add".</label>
+      <div class="qty-update-row">
+        <input type="number" id="pieceCountInput" class="extrusion-qty-input" min="1" value="1" />
+        <button type="button" id="updatePiecesBtn" class="update-lengths-btn">Add</button>
+      </div>
     </div>
 
     <!-- Order Cards Container -->
