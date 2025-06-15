@@ -225,7 +225,7 @@
   <div class="order-panel">
 
     <!-- Custom Ordering Table -->
-    <div id="formError" class="error-banner" style="display:none;"></div>
+    <div id="formError" style="display:none;" class="field-error"></div>
     <form id="extrusionForm">
       <table id="orderTable">
         <thead>
@@ -953,7 +953,7 @@
           // Remove any existing message
           $f.next('.field-error').remove();
           // Add inline error message
-          $('<div class="field-error" style="color:#e53935; font-size:0.9rem; margin-top:0.25rem;">')
+          $('<div class="field-error">')
             .text(VSlotMessages.errors.invalidTapValue)
             .insertAfter($f);
           // Reset to blank so user re-enters
@@ -1021,7 +1021,7 @@
           if (v < 0 || v > 2) {
             $f.addClass('error');
             $f.next('.field-error').remove();
-            $('<div class="field-error" style="color:#e53935; font-size:0.9rem; margin-top:0.25rem;">')
+            $('<span class="field-error">')
               .text(VSlotMessages.errors.invalidTapValue)
               .insertAfter($f);
             $f.val('');
@@ -1273,7 +1273,7 @@ $(function() {
     const currentCount = $cardsContainer.find('.order-card').length;
     let desiredCount = parseInt($('#pieceCountInput').val(), 10) || 0;
     if (desiredCount < 1) {
-      alert('Please enter at least 1 piece.');
+      alert('Please enter at least 1 piece for each specified cut length.');
       $('#pieceCountInput').val(currentCount);
       return;
     }
@@ -1335,7 +1335,7 @@ $(function() {
         : $field.is('.card-num-pcs')
           ? VSlotMessages.errors.invalidPieceCount
           : VSlotMessages.errors.generic;
-      $('<div class="field-error" style="color:#e53935; font-size:0.9rem; margin-top:0.25rem;">')
+      $('<div class="field-error">')
         .text(msg)
         .insertAfter($field);
     }
@@ -1363,7 +1363,7 @@ $(function() {
     if (v < 0 || v > 2) {
       // Invalid: show error
       $f.addClass('error');
-      $('<div class="field-error" style="color:#e53935; font-size:0.9rem; margin-top:0.25rem;">')
+      $('<div class="field-error">')
         .text(VSlotMessages.errors.invalidTapValue)
         .insertAfter($f);
       $f.val('');
