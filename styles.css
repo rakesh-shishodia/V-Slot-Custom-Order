@@ -2,6 +2,17 @@
 :root {
   --color-error-highlight: #d32f2f;
   --color-warning-outofstock-bg: #fcbbc2;
+  --select-bg-default: #ffffff;
+  --select-border-default: #cccccc;
+  --select-text-default: #000000;
+  --select-bg-hover: #e0e0e0;
+  --select-border-hover: #cccccc;
+  --select-bg-selected: rgba(59, 130, 246, 0.5);
+  --select-border-selected: #2563eb;
+  --select-text-selected: #ffffff;
+
+  /* Universal font color */
+  --font-color-base: #000000;
 }
 /* Basic styling for layout */
 body {
