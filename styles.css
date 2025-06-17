@@ -1,17 +1,14 @@
 <style>
 :root {
+--color-text-default: #000000;
   --color-error-highlight: #d32f2f;
   --color-warning-outofstock-bg: #fcbbc2;
-  --select-bg-default: #ffffff;
-  --select-border-default: #cccccc;
-  --select-text-default: #000000;
-  --select-bg-hover: #e0e0e0;
-  --select-border-hover: #cccccc;
-  --select-bg-selected: rgba(59, 130, 246, 0.5);
-  --select-border-selected: #2563eb;
-  --select-text-selected: #ffffff;
-
-  /* Universal font color */
+  --color-boxes-default: #f9f9f9;
+  --color-border-boxes-default: #c6c6c6;
+  --color-boxes-shadow: 0 0 0 rgba(0,0,0,0);
+  --color-boxes-selected: rgba(59, 130, 246, 0.5);
+  --color-boxes-border-selected: #2563eb;
+  --color-text-for-selected-boxes: #ffffff;
   --font-color-base: #000000;
 }
 /* Basic styling for layout */
