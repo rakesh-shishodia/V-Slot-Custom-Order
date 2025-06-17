@@ -1,16 +1,4 @@
 <style>
-:root {
-  --color-text-default: #000000;
-  --color-error-highlight: #d32f2f;
-  --color-warning-outofstock-bg: #fcbbc2;
-  --color-boxes-default: #f9f9f9;
-  --color-border-boxes-default: #c6c6c6;
-  --color-boxes-shadow: 0 0 0 rgba(0,0,0,0);
-  --color-boxes-selected: rgba(59, 130, 246, 0.5);
-  --color-boxes-border-selected: #2563eb;
-  --color-text-for-selected-boxes: #ffffff;
-  --font-color-base: #000000;
-}
 /* Basic styling for layout */
 body {
   font-family: sans-serif;
@@ -27,8 +15,8 @@ h1 {
   padding: 10px;
   height: 88px;
   margin: 5px;
-  background-color: #F9F9F9;
-  border: 1px solid #CCCCCC;
+  background-color: var(--color-boxes-default);
+  border: 1px solid var(--color-border-boxes-default);
   cursor: pointer;
   border-radius: 4px;
   box-sizing: border-box;
@@ -39,9 +27,9 @@ h1 {
   box-shadow: 0 4px 8px rgba(0,96,100,0.1);
 }
 .extrusion-box.selected {
-  background-color: #E0F7FA;
-  color: #006064;
-  border-color: #006064;
+  background-color: var(--color-boxes-selected);
+  color: var(--color-text-for-selected-boxes);
+  border-color: var(--color-boxes-border-selected);
 }
 /* Styling for the ordering message */
 #selectedMessage {
@@ -315,9 +303,9 @@ display: block;
 }
 /* Highlight price pill on selected box */
 .extrusion-box.selected .price-per-meter {
-  background-color: #FFFFFF;        /* white background */
-  border: 1px solid #006064;       /* accent-colored border */
-  color: #006064;                  /* accent text color */
+  background-color: #ffffff;
+  border: 1px solid var(--color-boxes-border-selected);
+  color: var(--color-boxes-border-selected);
 }
 /* 2×2 image grid */
 .image-grid {
@@ -385,7 +373,7 @@ display: block;
   font-size: 14px;
 }
 .filter-pill.selected {
-  background-color: #006064;
+  background-color: var(--color-boxes-selected);
   color: #F3F3F3;
 }
 #clearFiltersBtn {
