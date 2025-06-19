@@ -26,9 +26,9 @@ h1 {
   border-color: #006064;
   box-shadow: 0 4px 8px rgba(0,96,100,0.1);
 }
-.extrusion-box.selected {
+.extrusion-box.selected,.extrusion-box.selected .extrusion-name  {
   background-color: var(--color-boxes-selected);
-  color: var(--color-text-for-selected-boxes);
+  color: var(--color-text-for-selected-boxes) !important;
   border-color: var(--color-boxes-border-selected);
 }
 /* Styling for the ordering message */
@@ -276,7 +276,7 @@ padding: 6px 4px !important;     /* more comfortable click/tap area */
 .stock-pill.out-of-stock {
   background-color: var(--color-warning-outofstock-bg);    /* soft red */
   color: var(--color-error-highlight);
-  border: 5px solid var(--color-warning-outofstock-bg);
+  border: 1px solid var(--color-warning-outofstock-bg);
 }
 /* Align price and review widget inline and unify their font */
 .price-widget-group {
@@ -374,7 +374,7 @@ display: block;
 }
 .filter-pill.selected {
   background-color: var(--color-boxes-selected);
-  color: #F3F3F3;
+  color: var(--color-text-for-selected-boxes);
 }
 #clearFiltersBtn {
   padding: 6px 12px;
