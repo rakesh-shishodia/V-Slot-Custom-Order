@@ -28,7 +28,7 @@ window.VSlotMessages = {
     `  
  },
   shipping: {
-    longNote: "Note: We offer free shipping up to 1000mm length pcs. One or more extrusions are more than 1000mm in length and thus we will have to charge applicable shipping. For your order, please checkout using 'Wire Transfer' as payment option. We will update shipping costs and then seek your payment through UPI or payment link. You will get an email and call from us for this."
+    longNote: "We offer free shipping up to 1000mm length pcs. One or more extrusions are more than 1000mm in length and thus we will have to charge applicable shipping. For your order, please checkout using 'Wire Transfer' as payment option. We will update shipping costs and then seek your payment through UPI or payment link. You will get an email and call from us for this."
   },
   preview: {
     withTapOne: "with one end tapped",
