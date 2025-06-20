@@ -1,4 +1,5 @@
 <style>
+/* 1. Global basics (body, typography, general inputs, buttons) */
 /* Basic styling for layout */
 body {
   font-family: sans-serif;
@@ -9,53 +10,6 @@ h1 {
   font-family: Arial, sans-serif;
   font-size: 24px;
 }
-.extrusion-box {
-  display: inline-block;
-  width: 220px;
-  padding: 10px;
-  height: 88px;
-  margin: 5px;
-  background-color: var(--color-boxes-default);
-  border: 1px solid var(--color-border-boxes-default);
-  cursor: pointer;
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-family: sans-serif;
-}
-.extrusion-box:hover {
-  border-color: var(--color-border-pills-boxes-tableborders);
-  box-shadow: 0 4px 8px rgba(0,96,100,0.1);
-}
-.extrusion-box.selected,.extrusion-box.selected .extrusion-name  {
-  background-color: var(--color-boxes-selected);
-  color: var(--color-text-for-selected-boxes) !important;
-  border-color: var(--color-boxes-border-selected);
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  word-wrap: break-word;
-}
-th, td {
-  border: 1px solid var(--color-border-pills-boxes-tableborders);
-  padding: 6px;
-  text-align: center;
-  color: var(--color-text-default);
-  font-size: 16px;
-  font-family: sans-serif;
-}
-th {
-  background-color: #f2f2f2;
-}
-/* Column headings with wrapped text */
-th:nth-child(1) { width: 180px; }  /* Enter Cut Length in mm (min 100mm, max 3000mm) */
-th:nth-child(2) { width: 120px; }  /* M5 Tapping */
-th:nth-child(3) { width: 100px; }  /* No. of Counter Bore Holes */
-th:nth-child(4) { width: 60px; }  /* No. of Pcs */
-th:nth-child(5) { width: 80px; }  /* Row Total Length */
-th:nth-child(6) { width: 100px; }  /* Reset Row */
 /* Remove spinner controls and normalize appearance on number inputs */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button,
@@ -82,21 +36,20 @@ button {
   color: #fff;
 }
 #addToCartBtn:hover {
-  background-color: rgb(17,85,204);
+  background-color: var(--color-website-primary);
   color: #fff;
 }
 button:hover {
   background-color: #e0e0e0;
 }
-.totals-table th, .totals-table td {
-  padding: 6px 10px;
-}
+
+/* 2. Header bar (.tool-header, .header-left, .header-right, .ec-cart-widget) */
 /* Tool header bar */
 .tool-header {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  background-color: #ff8a00;
+  background-color: var(--color-website-primary);
   padding: 4px 20px;
   box-sizing: border-box;
   min-height: 72px;
@@ -110,7 +63,7 @@ button:hover {
 /* Position the cart icon inside header */
 .header-right .ec-cart-widget {
   width: auto !important;
-  background: #ff8a00;
+  background: var(--color-website-primary);
   padding: 4px;
   border-radius: 0px;
 }
@@ -118,30 +71,8 @@ button:hover {
   min-width: 100px;
   background-color: #fff;
 }
-/* Modal styles */
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-}
-.close:hover,
-.close:focus {
-  color: black;
-}
-/* Error highlighting for cut-length inputs */
-.error {
-  border: 2px solid var(--color-text-error-highlight) !important;
-}
-.field-error {
-  color: var(--color-text-error-highlight) !important;
-  font-size: 14px;
-  font-weight: bold;
-  margin-top: 4px;
-  display: block;
-  font-family: Helvetica, Arial, sans-serif !important;
-}
+
+/* 3. Main layout containers (.flex-container, .details-panel, .order-panel, media queries) */
 /* Split-screen layout */
 .flex-container {
 display: flex;
@@ -170,71 +101,67 @@ max-width: none;
 min-width: auto;
 }
 }
-/* Keep reset/delete buttons on one line and slim their padding */
-td:nth-child(6) {
-white-space: nowrap;
-}
-.reset-row-btn,
-.delete-row-btn {
-padding: 4px 8px;
-margin: 0 2px;
-font-size: 14px;
-}
-/* Suffix for Counter Bore holes input */
-.cb-holes-cell {
-  text-align: center;
-}
-.cb-holes-cell .cb-holes {
-width: 50px; /* adjust as needed */
-}
-.cb-holes-suffix {
-margin-left: 4px;
-white-space: nowrap;
-font-size: 16px !important;
-padding: 6px 4px !important;
-vertical-align: middle;
-}
-/* Make table inputs and selects blend into the cell grid */
-#orderTable input,
-#orderTable select {
-border: none !important;
-background: transparent !important;
-box-shadow: none !important;
-font-size: 16px !important;     /* larger, matching page text */
-padding: 6px 4px !important;     /* more comfortable click/tap area */
-}
-/* Re-enable red border for invalid inputs */
-#orderTable input.error {
-  border: 2px solid var(--color-text-error-highlight) !important;
-  background: #ffecec !important; /* optional: light red bg for clarity */
-}
-/* Aggregate totals table column widths */
-.totals-table th:nth-child(1) { width: 200px; }  /* Total Length Ordered */
-.totals-table th:nth-child(2) { width: 200px; }  /* Rounded Off Length */
-.totals-table th:nth-child(3) { width: 160px; }  /* Cost of Rounded Off Length */
-.totals-table th:nth-child(4) { width: 80px; }  /* Total No. of M5 Tapping */
-.totals-table th:nth-child(5) { width: 80px; }  /* Total Cost M5 Tapping */
-.totals-table th:nth-child(6) { width: 80px; }  /* Total No. of CB Holes */
-.totals-table th:nth-child(7) { width: 80px; }  /* Total Cost CB Holes */
-.totals-table th:nth-child(8) { width: 140px; }  /* Subtotal */
-.totals-table th:nth-child(9) { width: 140px; }  /* GST */
-.totals-table th:nth-child(10) { width: 160px; }  /* Total */
-.totals-table th {
-  background-color: #ffd099;
-  color: var(--color-text-default);
-  font-family: sans-serif;
-  font-weight: bold;
-  border-width: 1px;
-  border-color: var(--color-border-pills-boxes-tableborders);
+
+/* 4. Extrusion selector and boxes (.selector-panel, .extrusion-selector, .extrusion-box, .price-per-meter, .stock-pill, .product-header, .extrusion-name) */
+/* Wrapper to center the selector title above the grid */
+.selector-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.totals-table td {
-  background-color: #e0f2f1;
-  color: var(--color-text-default);
-  font-family: sans-serif;
+.selector-panel .selector-title {
+  margin: 5px;
+  text-align: center;
+  font-size: 16px;
+  color: var(--color-text-error-highlight);
+  font-family: Helvetica, Arial, sans-serif !important;
   font-weight: bold;
-  border-width: 1px;
+}
+
+.extrusion-selector {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 220px);
+  grid-template-rows: repeat(2, 88px);
+  grid-auto-rows: 88px;
+  gap: 10px;
+  border: 0px solid #CCCCCC;
+  padding-top: 0px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  box-sizing: border-box;
+  margin-right: 10px;
+  margin-top: 0px;
+  height: auto;              /* let the wrapper set the height */
+  max-height: 100%;          /* fill the wrapper vertically */
+  overflow-y: auto;          /* scroll if more than two rows */
+  overflow-x: hidden;
+  justify-content: center;
+}
+
+.extrusion-box {
+  display: inline-block;
+  width: 220px;
+  padding: 10px;
+  height: 88px;
+  margin: 5px;
+  background-color: var(--color-boxes-default);
+  border: 1px solid var(--color-border-boxes-default);
+  cursor: pointer;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+.extrusion-box:hover {
   border-color: var(--color-border-pills-boxes-tableborders);
+  box-shadow: 0 4px 8px rgba(0,96,100,0.1);
+}
+.extrusion-box.selected,.extrusion-box.selected .extrusion-name  {
+  background-color: var(--color-boxes-selected);
+  color: var(--color-text-for-selected-boxes) !important;
+  border-color: var(--color-boxes-border-selected);
 }
 
 /* Price per meter under each extrusion box */
@@ -280,55 +207,146 @@ font-size: 16px;
 color: #000; /* same as heading */
 display: block;
 }
-/* 2×2 image grid */
-.image-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 10px;                   /* symmetric spacing */
+
+/* 5. Tables (#orderTable, table, th, td, .totals-table, input/select styles inside table) */
+#orderTable {
+  /* ensure table area reserves space */
+  min-width: 970px;
 }
-.image-cell {
-  border: 1px solid #ccc;
-  min-width: 236px;
-  min-height: 236px;
-  overflow: hidden;
-}
-.image-cell img {
+
+table {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-/* Description area below images */
-.description-container {
-  border: 1px solid #ccc;      /* match image-cell border */
-  padding: 8px;
+  border-collapse: collapse;
   margin-top: 10px;
+  margin-bottom: 10px;
+  word-wrap: break-word;
+}
+th, td {
+  border: 1px solid var(--color-border-pills-boxes-tableborders);
+  padding: 6px;
+  text-align: center;
+  color: var(--color-text-default);
+  font-size: 16px;
+  font-family: sans-serif;
+}
+th {
+  background-color: #f2f2f2;
+}
+/* Column headings with wrapped text */
+th:nth-child(1) { width: 180px; }  /* Enter Cut Length in mm (min 100mm, max 3000mm) */
+th:nth-child(2) { width: 120px; }  /* M5 Tapping */
+th:nth-child(3) { width: 100px; }  /* No. of Counter Bore Holes */
+th:nth-child(4) { width: 60px; }  /* No. of Pcs */
+th:nth-child(5) { width: 80px; }  /* Row Total Length */
+th:nth-child(6) { width: 100px; }  /* Reset Row */
+/* Keep reset/delete buttons on one line and slim their padding */
+td:nth-child(6) {
+white-space: nowrap;
+}
+.reset-row-btn,
+.delete-row-btn {
+padding: 4px 8px;
+margin: 0 2px;
+font-size: 14px;
+}
+/* Suffix for Counter Bore holes input */
+.cb-holes-cell {
+  text-align: center;
+}
+.cb-holes-cell .cb-holes {
+width: 50px; /* adjust as needed */
+}
+.cb-holes-suffix {
+margin-left: 4px;
+white-space: nowrap;
+font-size: 16px !important;
+padding: 6px 4px !important;
+vertical-align: middle;
+}
+/* Make table inputs and selects blend into the cell grid */
+#orderTable input,
+#orderTable select {
+border: none !important;
+background: transparent !important;
+box-shadow: none !important;
+font-size: 16px !important;     /* larger, matching page text */
+padding: 6px 4px !important;     /* more comfortable click/tap area */
+}
+/* Re-enable red border for invalid inputs */
+#orderTable input.error {
+  border: 2px solid var(--color-text-error-highlight) !important;
+  background: #ffecec !important; /* optional: light red bg for clarity */
+}
+
+/* Aggregate totals table column widths */
+.totals-table {
+  /* prevent aggregate table from collapsing */
+  min-width: 600px;
+  min-height: 80px;
+}
+.totals-table th:nth-child(1) { width: 200px; }  /* Total Length Ordered */
+.totals-table th:nth-child(2) { width: 200px; }  /* Rounded Off Length */
+.totals-table th:nth-child(3) { width: 160px; }  /* Cost of Rounded Off Length */
+.totals-table th:nth-child(4) { width: 80px; }  /* Total No. of M5 Tapping */
+.totals-table th:nth-child(5) { width: 80px; }  /* Total Cost M5 Tapping */
+.totals-table th:nth-child(6) { width: 80px; }  /* Total No. of CB Holes */
+.totals-table th:nth-child(7) { width: 80px; }  /* Total Cost CB Holes */
+.totals-table th:nth-child(8) { width: 140px; }  /* Subtotal */
+.totals-table th:nth-child(9) { width: 140px; }  /* GST */
+.totals-table th:nth-child(10) { width: 160px; }  /* Total */
+.totals-table th {
+  background-color: #ffd099;
+  color: var(--color-text-default);
+  font-family: sans-serif;
+  font-weight: bold;
+  border-width: 1px;
+  border-color: var(--color-border-pills-boxes-tableborders);
+}
+
+.totals-table td {
+  background-color: #e0f2f1;
+  color: var(--color-text-default);
+  font-family: sans-serif;
+  font-weight: bold;
+  border-width: 1px;
+  border-color: var(--color-border-pills-boxes-tableborders);
+}
+
+/* 6. Filter controls (#filterControls, .filter-panel, .filter-pill, #clearFiltersBtn) */
+#filterControls {
+  flex: 1;
+  max-width: 350px;
+  min-height: 220px;    /* exactly the final height you know it will become */
+  min-width: 350px;     /* same as the populated state */
+  border: 1px solid #CCCCCC;
+  padding: 5px;
   box-sizing: border-box;
-  width: 100%;                 /* full width of details-panel */
+  align-self: stretch;
+  max-height: 220px;
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
-/* Zoom icon overlay on image hover */
-.image-cell {
-  position: relative;
+.filter-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.image-cell .zoom-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 24px;
-  color: rgba(255, 255, 255, 0.8);
-  display: none;
-  pointer-events: none;
+
+.filter-panel .filter-title {
+  margin: 5px;
+  text-align: center;
+  font-size: 16px;
+  color: var(--color-text-error-highlight);
+  font-family: Helvetica, Arial, sans-serif !important;
+  font-weight: bold;
 }
-.image-cell:hover img {
-  opacity: 0.6;
-  transition: opacity 0.3s;
+
+/* Make sure the individual filter groups still align flush left under the centered title */
+#filterControls .filter-group {
+  width: 100%;
+  text-align: left;
 }
-.image-cell:hover .zoom-icon {
-  display: block;
-}
-/* Filter pills */
+
 #filterControls { margin-bottom: 15px; }
 .filter-group { margin-bottom: 8px; }
 .filter-group strong { margin-right: 8px; color: #333; }
@@ -366,169 +384,8 @@ display: block;
   gap: 10px;
   margin-bottom: 0px;
 }
-/* Shared panel styling */
-.panel {
-border: 1px solid #ccc;
-padding: 10px;
-box-sizing: border-box;
-}
-#filterControls {
-  flex: 1;
-  max-width: 350px;
-  min-height: 220px;    /* exactly the final height you know it will become */
-  min-width: 350px;     /* same as the populated state */
-  border: 1px solid #CCCCCC;
-  padding: 5px;
-  box-sizing: border-box;
-  align-self: stretch;
-  max-height: 220px;
-  margin-bottom: 0px;
-  margin-top: 0px;
-}
-.extrusion-selector {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(4, 220px);
-  grid-template-rows: repeat(2, 88px);
-  grid-auto-rows: 88px;
-  gap: 10px;
-  border: 0px solid #CCCCCC;
-  padding-top: 0px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  box-sizing: border-box;
-  margin-right: 10px;
-  margin-top: 0px;
-  height: auto;              /* let the wrapper set the height */
-  max-height: 100%;          /* fill the wrapper vertically */
-  overflow-y: auto;          /* scroll if more than two rows */
-  overflow-x: hidden;
-  justify-content: center;
-}
-.extrusion-selector-wrapper {
-  display: flex;
-  align-items: center;       /* vertical centering of the grid */
-  justify-content: center;   /* horizontal centering */
-  width: 950px;              /* fill the parent so centering works */
-  height: 220px;             /* exactly two rows × 88px + gaps */
-  margin: 0 auto;            /* center the wrapper in its container */
-  border: 1px solid #CCCCCC;
-  box-sizing: border-box;
-}
-/* Ensure lightbox overlay and close button are on top and clickable */
-.sl-overlay {
-  z-index: 99999 !important;
-  pointer-events: auto !important;
-}
-.sl-wrapper {
-  z-index: 100000 !important;
-}
-.sl-close {
-  z-index: 100001 !important;
-  pointer-events: auto !important;
-}
 
-/* Utility classes for toggling visibility */
-.hidden { display: none; }
-
-/* Wrapper to center the selector title above the grid */
-.selector-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.selector-panel .selector-title {
-  margin: 5px;
-  text-align: center;
-  font-size: 16px;
-  color: var(--color-text-error-highlight);
-  font-family: Helvetica, Arial, sans-serif !important;
-  font-weight: bold;
-}
-/* Center the Filter title above its controls */
-.filter-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.filter-panel .filter-title {
-  margin: 5px;
-  text-align: center;
-  font-size: 16px;
-  color: var(--color-text-error-highlight);
-  font-family: Helvetica, Arial, sans-serif !important;
-  font-weight: bold;
-}
-
-/* Make sure the individual filter groups still align flush left under the centered title */
-#filterControls .filter-group {
-  width: 100%;
-  text-align: left;
-}
-
-/* Maintain minimum dimensions to ensure consistent layout */
-
-#orderTable {
-  /* ensure table area reserves space */
-  min-width: 970px;
-}
-
-.totals-table {
-  /* prevent aggregate table from collapsing */
-  min-width: 600px;
-  min-height: 80px;
-}
-/* —— Info-icon & modal styles —— */
-.info-icon {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  margin-left: 4px;
-  vertical-align: middle;
-  cursor: pointer;
-  color: #006064;
-}
-
-
-
-
-/* Unblock clicks by disabling Ecwid popup overlays */
-.ec-popup__overlay,
-.ec-popup,
-.ec-popup--m {
-  pointer-events: none !important;
-}
-
-/* Highlight the success modal call-to-action */
-#successModal #modalInstruction {
-  color: #ff5722;       /* Accent color for CTA */
-  font-weight: 600;     /* Semi-bold for emphasis */
-  margin-top: 1rem;     /* Space above the CTA */
-  font-size: 1rem;      /* Ensure comfortable readability */
-}
-
-/* Replaces inline shipping note styling */
-.shipping-note {
-  margin-top: 10px;
-  padding: 10px;
-  background: var(--color-warning-outofstock-bg);
-  border-left: 5px solid #ff9800;
-}
-
-/* Replaces inline styling for preview list container */
-.preview-list {
-  text-align: left;
-  margin: 10px 0;
-}
-
-/* Bold text styling for totals */
-.bold-total {
-  font-weight: bold;
-}
-
+/* 7. Modals (.vslot-modal, #successModal, #loadingModal, #infoModal, .close) */
 /* Shared modal styles for all modals */
 .vslot-modal {
   display: none; /* Ensure all modals are hidden initially */
@@ -601,5 +458,158 @@ box-sizing: border-box;
   max-width: 400px;        /* narrower box */
   padding: 16px;           /* slightly smaller padding */
   text-align: left;        /* align text to the left */
+}
+
+/* Modal styles */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.close:hover,
+.close:focus {
+  color: black;
+}
+
+/* 8. Utility classes (.error, .field-error, .hidden, .bold-total, .info-icon, .shipping-note, .preview-list) */
+/* Error highlighting for cut-length inputs */
+.error {
+  border: 2px solid var(--color-text-error-highlight) !important;
+}
+.field-error {
+  color: var(--color-text-error-highlight) !important;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 4px;
+  display: block;
+  font-family: Helvetica, Arial, sans-serif !important;
+}
+
+/* Utility classes for toggling visibility */
+.hidden { display: none; }
+
+/* Bold text styling for totals */
+.bold-total {
+  font-weight: bold;
+}
+
+/* Info icon */
+.info-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-left: 4px;
+  vertical-align: middle;
+  cursor: pointer;
+  color: #006064;
+}
+
+/* Shipping note */
+.shipping-note {
+  margin-top: 10px;
+  padding: 10px;
+  background: var(--color-warning-outofstock-bg);
+  border-left: 5px solid #ff9800;
+}
+
+/* Preview list */
+.preview-list {
+  text-align: left;
+  margin: 10px 0;
+}
+
+/* 9. Any other remaining or shared components */
+/* 2×2 image grid */
+.image-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;                   /* symmetric spacing */
+}
+.image-cell {
+  border: 1px solid #ccc;
+  min-width: 236px;
+  min-height: 236px;
+  overflow: hidden;
+  position: relative;
+}
+.image-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Zoom icon overlay on image hover */
+.image-cell .zoom-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.8);
+  display: none;
+  pointer-events: none;
+}
+.image-cell:hover img {
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+.image-cell:hover .zoom-icon {
+  display: block;
+}
+/* Description area below images */
+.description-container {
+  border: 1px solid #ccc;      /* match image-cell border */
+  padding: 8px;
+  margin-top: 10px;
+  box-sizing: border-box;
+  width: 100%;                 /* full width of details-panel */
+}
+
+/* Shared panel styling */
+.panel {
+border: 1px solid #ccc;
+padding: 10px;
+box-sizing: border-box;
+}
+
+/* Extrusion selector wrapper */
+.extrusion-selector-wrapper {
+  display: flex;
+  align-items: center;       /* vertical centering of the grid */
+  justify-content: center;   /* horizontal centering */
+  width: 950px;              /* fill the parent so centering works */
+  height: 220px;             /* exactly two rows × 88px + gaps */
+  margin: 0 auto;            /* center the wrapper in its container */
+  border: 1px solid #CCCCCC;
+  box-sizing: border-box;
+}
+
+/* Ensure lightbox overlay and close button are on top and clickable */
+.sl-overlay {
+  z-index: 99999 !important;
+  pointer-events: auto !important;
+}
+.sl-wrapper {
+  z-index: 100000 !important;
+}
+.sl-close {
+  z-index: 100001 !important;
+  pointer-events: auto !important;
+}
+
+/* Unblock clicks by disabling Ecwid popup overlays */
+.ec-popup__overlay,
+.ec-popup,
+.ec-popup--m {
+  pointer-events: none !important;
+}
+/*Font setting for review widget*/
+.hc-widget {
+  font-family: Helvetica, Arial, sans-serif !important;
+  font-size: 14px;
+  color: #555;
 }
 </style>
