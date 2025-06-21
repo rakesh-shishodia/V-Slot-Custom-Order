@@ -612,4 +612,14 @@ box-sizing: border-box;
   font-size: 14px;
   color: #555;
 }
+/* Font settings for waste policy section */
+#wastePolicyDesktop,
+#wastePolicyMobile,
+.waste-policy-content,
+.waste-policy-content p,
+.waste-policy-content .read-more-link {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: var(--color-text-default);
+}
 </style>
