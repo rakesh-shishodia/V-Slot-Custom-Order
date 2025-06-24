@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Custom Cut and Machined Aluminium Extrusion Orders in India</title>
   <meta name="description" content="Order custom-cut V-Slot, C-Beam & T-Slot aluminium extrusions with M5/M6/M8 tapping and counterbores. Free shipping. Next-day dispatch from India.">
+  <!-- CSS variables for theming, we need to shift them to a separate file later -->
+  <style> 
+    html {
+      --color-website-primary: #ff8a00;
+      --color-text-default: #000000;
+      --color-text-error-highlight: #ff1313;
+      --color-text-ok-instock: #2e7d32;
+      --color-text-for-selected-boxes: #ffffff;
+      --color-warning-outofstock-bg: #ffe2e5;
+      --color-box-ok-instock-bg: #e8f5e9;
+      --color-boxes-default: #f9f9f9;
+      --color-border-boxes-default: #c6c6c6;
+      --color-border-pills-boxes-tableborders: #006064;
+      --color-boxes-shadow: 0 0 0 rgba(0,0,0,0);
+      --color-boxes-selected: #227bbe;
+      --color-boxes-border-selected: #2563eb;
+    }
+  </style>
   <link rel="stylesheet" href="styles.css">  
   <link rel="stylesheet" href="mobile.css">
   <!-- Google tag (gtag.js) -->
@@ -32,11 +50,6 @@
   
 </head>
 <body class="loading">
-
-  <!-- Waste Policy Template -->
-  <template id="wastePolicyTemplate">
-    <!-- Waste policy content will be injected via JS on DOMContentLoaded -->
-  </template>
 
 <!-- Tool Header -->
 <header class="tool-header">
@@ -280,7 +293,6 @@
             <th>Total Length <br> Ordered</th>
             <th>Rounded Off Length <br> (to nearest 500mm)</th>
             <th>Cost of Rounded Off Length</th>
-            <!-- <th>Discount (2.5-4m:5%, 4.5-8m:10%, Above 8.5m:15%)</th> -->
             <th>Total <br>End Taps</th>
             <th>Cost End Taps <br>(₹30/hole)</th>
             <th>Total <br>CB Holes</th>
@@ -295,7 +307,6 @@
             <td id="totalOrdered">0</td>
             <td id="roundedLength">0</td>
             <td id="costExtrusions">0</td>
-            <!-- <td id="discount">0</td> -->
             <td id="totalM5Count">0</td>
             <td id="totalM5Cost">0</td>
             <td id="totalCBCount">0</td>
@@ -390,6 +401,7 @@
       // Auto-select first extrusion on page load
       const $firstBox = $('#extrusionSelector .extrusion-box').first();
       if ($firstBox.length) {
+        $firstBox.addClass('selected');
         onExtrusionChange(config.extrusions[0], $firstBox);
       }
     })
