@@ -37,7 +37,7 @@ window.VSlotMessages = {
     cbHoles: "CB Holes in each"
   },
   infoTooltips: {
-    tapOptions: "V Slot – M5x15mm, 3030 T Slot – M8x15mm. Check drawings for others.",
-    cbHoles: "For V Slot: ID 5mm, OD 10mm; For 3030: ID 8mm, OD 15mm; For others, check drawing"
+    tapOptions: "For V Slot/C Beam end tapping is M5 up to 15mm depth, For 30 and 40 series T Slot it is M8 up to 15mm depth. Check drawings/descirption for others.",
+    cbHoles: "For V Slot/C Beam, Counter Bore holes have ID 5mm, OD 10mm; For 30 Series T Slot: ID 8mm, OD 15mm; For others, pls check drawing/description"
   }
 };
