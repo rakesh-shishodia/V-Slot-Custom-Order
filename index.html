@@ -62,6 +62,19 @@
   </div>
 </header>
 
+<!-- Tab Switch Buttons -->
+<div class="tab-switch-buttons" style="margin: 1em 0;">
+  <button onclick="switchTab('main-ordering-tab')">Extrusion Ordering</button>
+  <button onclick="switchTab('tab-tnuts')">T Nut Ordering</button>
+</div>
+
+<!-- Tab Containers -->
+<div id="main-ordering-tab">
+<!-- T Nut Ordering Tool Tab -->
+<div id="tab-tnuts" style="display: none;">
+  <div id="tnut-tool-root"></div>
+</div>
+
 <!-- Mobile-only extrusion dropdown -->
 <label for="mobileExtrusionSelect" class="mobile-extrusion-label show-mobile hide-desktop">Select Extrusion From Drop Down</label>
 <select id="mobileExtrusionSelect" class="show-mobile hide-desktop">
@@ -845,6 +858,11 @@
       document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
     });
   </script>
+  <script src="./tnut-data.js"></script>
+  <script type="module">
+    import { renderTnutOrderTool } from './TnutOrderTool.js';
+    renderTnutOrderTool();
+  </script>
 </body>
 <script>
 (function(VSlot, $) {
@@ -1515,3 +1533,14 @@ $(function() {
 })(window.VSlot = window.VSlot || {}, jQuery);
 </script>
 </html>
+<script>
+// Tab switching logic
+function switchTab(tabId) {
+  // List all tab container IDs here
+  const tabIds = ['main-ordering-tab', 'tab-tnuts'];
+  tabIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = (id === tabId) ? '' : 'none';
+  });
+}
+</script>
