@@ -865,6 +865,20 @@
   </script>
 </body>
 <script>
+// Tab switching logic
+function switchTab(tabId) {
+  const tabIds = ['main-ordering-tab', 'tab-tnuts'];
+  tabIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = (id === tabId) ? '' : 'none';
+  });
+}
+
+// DEBUG: Show a test message inside T Nut tab
+document.getElementById('tab-tnuts').innerHTML = '<p>This is a debug test inside the T Nut tab.</p>';
+</script>
+</body>
+<script>
 (function(VSlot, $) {
   // Centralized settings for table module
   const settings = {
@@ -1534,13 +1548,4 @@ $(function() {
 </script>
 </html>
 <script>
-// Tab switching logic
-function switchTab(tabId) {
-  // List all tab container IDs here
-  const tabIds = ['main-ordering-tab', 'tab-tnuts'];
-  tabIds.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = (id === tabId) ? '' : 'none';
-  });
-}
 </script>

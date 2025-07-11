@@ -40,6 +40,97 @@ export function renderTnutOrderTool() {
   root.innerHTML = '';
   root.appendChild(container);
 
+  // Dummy data for testing UI
+  const dummyTnutProducts = [
+    {
+      id: 1,
+      name: "Drop-In T Nut",
+      holeSize: "M5",
+      price: 4.5,
+      bagPrice: 400,
+      bulkPrice: 3500,
+      compatibleSeries: "20 Series"
+    },
+    {
+      id: 2,
+      name: "Spring T Nut",
+      holeSize: "M6",
+      price: 5.0,
+      bagPrice: 450,
+      bulkPrice: 4000,
+      compatibleSeries: "30 Series"
+    }
+  ];
+
+  const tbody = table.querySelector('tbody');
+  const totalCostElem = totalSection.querySelector('strong');
+  const quantities = new Map();
+
+  function updateTotal() {
+    let total = 0;
+    for (const [id, qty] of quantities.entries()) {
+      const product = dummyTnutProducts.find(p => p.id === id);
+      if (product) {
+        total += qty * (product.price || 0);
+      }
+    }
+    totalCostElem.textContent = `Cost of All Entered Products: ₹${total.toFixed(2)}`;
+  }
+
+  function renderDummyRows() {
+    tbody.innerHTML = '';
+    dummyTnutProducts.forEach(product => {
+      const tr = document.createElement('tr');
+
+      const tdType = document.createElement('td');
+      tdType.textContent = product.name;
+      tr.appendChild(tdType);
+
+      const tdHoleSize = document.createElement('td');
+      tdHoleSize.textContent = product.holeSize;
+      tr.appendChild(tdHoleSize);
+
+      const tdEachPrice = document.createElement('td');
+      tdEachPrice.textContent = `₹${product.price.toFixed(2)}`;
+      tr.appendChild(tdEachPrice);
+
+      const tdBagPrice = document.createElement('td');
+      tdBagPrice.textContent = `₹${product.bagPrice.toFixed(2)}`;
+      tr.appendChild(tdBagPrice);
+
+      const tdBulkPrice = document.createElement('td');
+      tdBulkPrice.textContent = `₹${product.bulkPrice.toFixed(2)}`;
+      tr.appendChild(tdBulkPrice);
+
+      const tdQuantity = document.createElement('td');
+      const qtyInput = document.createElement('input');
+      qtyInput.type = 'number';
+      qtyInput.min = 0;
+      qtyInput.value = quantities.get(product.id) || 0;
+      qtyInput.style.width = '60px';
+      tdQuantity.appendChild(qtyInput);
+      tr.appendChild(tdQuantity);
+
+      const tdTotal = document.createElement('td');
+      const calcTotal = () => {
+        const qty = parseInt(qtyInput.value, 10) || 0;
+        const totalPrice = qty * (product.price || 0);
+        tdTotal.textContent = `₹${totalPrice.toFixed(2)}`;
+        quantities.set(product.id, qty);
+        updateTotal();
+      };
+      qtyInput.addEventListener('input', calcTotal);
+      calcTotal();
+
+      tr.appendChild(tdTotal);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  renderDummyRows();
+
+  /*
   // Fetch data and initialize
   EcwidData.fetchAll().then((data) => {
     console.log("Fetched data:", data);
@@ -165,4 +256,5 @@ export function renderTnutOrderTool() {
 
     renderRows();
   });
+  */
 }
