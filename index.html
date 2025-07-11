@@ -6,7 +6,7 @@
   <title>Custom Cut and Machined Aluminium Extrusion Orders in India</title>
   <meta name="description" content="Order custom-cut V-Slot, C-Beam & T-Slot aluminium extrusions with M5/M6/M8 tapping and counterbores. Free shipping. Next-day dispatch from India.">
   <!-- CSS variables for theming, we need to shift them to a separate file later -->
-  <style> 
+  <style>
     html {
       --color-website-primary: #ff8a00;
       --color-text-default: #000000;
@@ -43,10 +43,6 @@
   <script src="https://app.ecwid.com/script.js?2442119&data_platform=code&data_date=2025-03-02" charset="utf-8"></script>
   <!-- Include review script to show product review summary-->
   <script defer src="https://app.helpfulcrowd.com/f/koS4zR/widgets/product_summary.js"></script>
-  <!-- SimpleLightbox CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplelightbox@2.14.1/dist/simple-lightbox.min.css" />
-  <!-- SimpleLightbox JS -->
-  <script defer src="https://cdn.jsdelivr.net/npm/simplelightbox@2.14.1/dist/simple-lightbox.jquery.min.js"></script>
   
 </head>
 <body class="loading">
@@ -98,37 +94,25 @@
   <div class="details-panel panel">
     <div class="image-grid">
       <div class="image-cell">
-        <a href="" class="detail-thumb-link">
-          <div class="image-wrapper">
-            <img src="" alt="Thumbnail" class="detail-thumb" width="100" height="100" />
-          </div>
-        </a>
-        <span class="zoom-icon">🔍</span>
+        <div class="image-wrapper">
+          <img src="" alt="Thumbnail" class="detail-thumb" width="100" height="100" />
+        </div>
       </div>
       <div class="image-cell">
         <!-- Top-right image placeholder; will be dynamically set -->
-        <a href="">
-          <div class="image-wrapper">
-            <img src="" alt="Secondary image" width="100" height="100" />
-          </div>
-        </a>
-        <span class="zoom-icon">🔍</span>
+        <div class="image-wrapper">
+          <img src="" alt="Secondary image" width="100" height="100" />
+        </div>
       </div>
       <div class="image-cell">
-        <a href="" class="detail-image-link">
-          <div class="image-wrapper">
-            <img src="" alt="" width="100" height="100" />
-          </div>
-        </a>
-        <span class="zoom-icon">🔍</span>
+        <div class="image-wrapper">
+          <img src="" alt="" width="100" height="100" />
+        </div>
       </div>
       <div class="image-cell">
-        <a href="" class="detail-image-link">
-          <div class="image-wrapper">
-            <img src="" alt="" width="100" height="100" />
-          </div>
-        </a>
-        <span class="zoom-icon">🔍</span>
+        <div class="image-wrapper">
+          <img src="" alt="" width="100" height="100" />
+        </div>
       </div>
     </div>
     <div class="description-container">
@@ -348,32 +332,13 @@
       const imgs = item.images || [];
       $('.details-panel .image-grid .image-cell').each(function(idx) {
         const url = imgs[idx] || '';
-        const $link = $(this).find('a');
-        const $img  = $link.find('img');
+        const $img = $(this).find('img');
         if (url) {
-          $link.attr('href', url);
           $img.attr('src', url);
         } else {
-          $link.removeAttr('href');
           $img.attr('src', '');
         }
       });
-      // Reinitialize SimpleLightbox with error isolation and plugin guard
-      try {
-        if (typeof $.fn.simpleLightbox === 'function') {
-          if (typeof detailLightbox !== 'undefined' && detailLightbox && typeof detailLightbox.destroy === 'function') {
-            detailLightbox.destroy();
-          }
-          detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
-            captions: false, nav: true, close: true, docClose: true,
-            enableKeyboard: true, showCounter: false
-          });
-        } else {
-          console.warn('🔧 SimpleLightbox plugin not loaded; skipping lightbox init');
-        }
-      } catch (lightboxError) {
-        console.error('🔧 Lightbox re-init failed, continuing:', lightboxError);
-      }
       console.log('🚀 about to call description update');
       $('.description-container').html(item.descriptionHtml || '');
       console.log('🚀 about to call updateTotals');
@@ -1114,19 +1079,7 @@ $(function() {
     onExtrusionChange(item, $(this));
   });
 
-  // Initialize SimpleLightbox
-  if (typeof $.fn.simpleLightbox === 'function') {
-    detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
-      captions: false,
-      nav: true,
-      close: true,
-      docClose: true,
-      enableKeyboard: true,
-      showCounter: false
-    });
-  } else {
-    console.warn('🔧 SimpleLightbox plugin not available on page load');
-  }
+  // (SimpleLightbox initialization removed)
 
   // Initialize ordering table
   VSlot.table.init();

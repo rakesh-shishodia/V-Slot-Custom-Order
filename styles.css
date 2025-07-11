@@ -552,13 +552,6 @@ padding: 6px 4px !important;     /* more comfortable click/tap area */
   display: none;
   pointer-events: none;
 }
-.image-cell:hover img {
-  opacity: 0.6;
-  transition: opacity 0.3s;
-}
-.image-cell:hover .zoom-icon {
-  display: block;
-}
 /* Description area below images */
 .description-container {
   border: 1px solid #ccc;      /* match image-cell border */
