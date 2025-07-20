@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Cut and Machined Aluminium Extrusion Orders in India</title>
+  <meta name="description" content="Order custom-cut V-Slot, C-Beam & T-Slot aluminium extrusions with M5/M6/M8 tapping and counterbores. Free shipping. Next-day dispatch from India.">
+  <!-- CSS variables for theming, we need to shift them to a separate file later -->
+  <style> 
+    html {
+      --color-website-primary: #ff8a00;
+      --color-text-default: #000000;
+      --color-text-error-highlight: #ff1313;
+      --color-text-ok-instock: #2e7d32;
+      --color-text-for-selected-boxes: #ffffff;
+      --color-warning-outofstock-bg: #ffe2e5;
+      --color-box-ok-instock-bg: #e8f5e9;
+      --color-boxes-default: #f9f9f9;
+      --color-border-boxes-default: #c6c6c6;
+      --color-border-pills-boxes-tableborders: #006064;
+      --color-boxes-shadow: 0 0 0 rgba(0,0,0,0);
+      --color-boxes-selected: #227bbe;
+      --color-boxes-border-selected: #2563eb;
+    }
+  </style>
+  <link rel="stylesheet" href="styles.css">  
+  <link rel="stylesheet" href="mobile.css">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4F347Q3CSC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-4F347Q3CSC');
+  </script>
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Load central messages -->
+  <script src="messages.js"></script>
+  <!-- Ecwid data loader (our new module) -->
+  <script src="ecwid-data.js"></script>
+  <!-- Include T Nut logic -->
+  <script src="js/TnutInit.js"></script>
+  <script src="js/TnutOrderTool.js"></script>
+  <!-- Include Ecwid script for Cart API (store id: 2442119) -->
+  <script src="https://app.ecwid.com/script.js?2442119&data_platform=code&data_date=2025-03-02" charset="utf-8"></script>
+  <!-- Include review script to show product review summary-->
+  <script defer src="https://app.helpfulcrowd.com/f/koS4zR/widgets/product_summary.js"></script>
+  <!-- SimpleLightbox CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplelightbox@2.14.1/dist/simple-lightbox.min.css" />
+  <!-- SimpleLightbox JS -->
+  <script defer src="https://cdn.jsdelivr.net/npm/simplelightbox@2.14.1/dist/simple-lightbox.jquery.min.js"></script>
+  
+</head>
+<body class="loading">
+
+<!-- Tool Header -->
+<header class="tool-header">
+  <div class="header-left">3DPrintronics</div>
+  <h1 class="header-title">
+    Custom Cut and Machined Aluminium Extrusion Orders in India
+  </h1>
+  <div class="header-right">
+      <div class="ec-cart-widget"></div>
+  </div>
+</header>
+
+<!-- Tab Buttons -->
+<div class="tab-buttons">
+  <button onclick="switchTab('main-ordering-tab')">Order Extrusions</button>
+  <button onclick="switchTab('tab-tnuts')">Order T Nuts</button>
+</div>
+
+<!-- Begin Extrusion Tab Container -->
+<div id="main-ordering-tab" class="tab-content" style="display: block;">
+</div>
+<!-- End Extrusion Tab Container -->
+</body>
+<script type="module" src="./main.js"></script>
+<div id="tab-tnuts" style="display: none;">
+  <p>This is the T Nut Ordering Tool tab (placeholder)</p>
+</div>
+
+<script>
+  function switchTab(tabId) {
+    const tabIds = ['main-ordering-tab', 'tab-tnuts'];
+    tabIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.style.display = (id === tabId) ? 'block' : 'none';
+      }
+    });
+  }
+</script>
+
+<script>
+
+  let config = {};
+  let pendingProductOptions = null;
+  // Global variables
+  let selectedExtrusion = null;  // Currently selected extrusion object
+  const additionalCosts = { m5Tapping: 30, counterBore: 70 };
+
+  <!-- LEGACY TOOL LOGIC DISABLED FOR MODULAR MIGRATION -->
+  <!--
+  // Shared handler for when an extrusion is selected
+  function onExtrusionChange(item, $box) {
+    ... (legacy logic disabled; see main.js)
+  }
+
+  // Load configuration from Ecwid instead of extrusions.json
+  EcwidData.fetchAll()
+    .then(data => {
+      config.extrusions      = data;
+      config.standardLengths = EcwidData.standardLengths;
+      // Initialize filter module
+      VSlot.filters.init(config.extrusions);
+      // Populate selector and update totals
+      populateExtrusionBoxes(config.extrusions);
+      // Populate mobile dropdown after extrusion boxes
+      populateMobileDropdown(config.extrusions);
+      // Auto-select first extrusion on page load
+      const $firstBox = $('#extrusionSelector .extrusion-box').first();
+      if ($firstBox.length) {
+        $firstBox.addClass('selected');
+        onExtrusionChange(config.extrusions[0], $firstBox);
+      }
+    })
+    .catch(err => console.error('EcwidData.fetchAll() failed:', err));
+  // Dynamically build the extrusion selector buttons
+  function populateExtrusionBoxes(items) {
+    ... (legacy logic disabled; see main.js)
+  }
+  // Populate the mobile dropdown with extrusion options
+  function populateMobileDropdown(items) {
+    ... (legacy logic disabled; see main.js)
+  }
+  // Calculate and display a single row’s total length
+  function updateRow($row) {
+    ... (legacy logic disabled; see main.js)
+  }
+  // Aggregate all rows, perform rounding and cost calculations, and update the totals table
+  function updateTotals() {
+    ... (legacy logic disabled; see main.js)
+  }
+  // (Removed: Event listener moved to end of script)
+  // Handle "Add to Cart" button clicks: build options and call Ecwid API
+  $('.js-add-to-cart').on('click', function() {
+    ... (legacy logic disabled; see main.js)
+  });
+  -->
+</script>
+
+<!-- Order Preview Modal -->
+<div id="orderPreviewModal" class="modal vslot-modal hidden">
+  <div class="modal-content">
+    <span class="close modal-close hidden" id="previewClose" aria-label="Close preview">&times;</span>
+    <h2 id="previewTitle">Your Order for </h2>
+    <ul id="previewList" class="preview-list"></ul>
+    <div id="previewShippingNote"></div>
+    <p id="previewTotal" style="font-weight:bold;"></p>
+    <button type="button" id="amendOrderBtn">Amend Order</button>
+    <button type="button" id="proceedOrderBtn">Proceed to Add to Cart</button>
+  </div>
+</div>
+<!-- Success Modal -->
+<div id="successModal" class="modal vslot-modal hidden">
+  <div class="modal-content">
+    <span id="modalClose" class="close modal-close hidden">&times;</span>
+    <h2>Successfully Added to Cart</h2>
+    <h3 id="successExtrusionName"></h3>
+    <ul id="modalDetails" style="text-align:left; margin:10px 0;"></ul>
+    <p id="modalInstruction">Continue to add other types of extrusions if you need and then checkout together.</p>
+    <button id="successModalCloseBtn" class="modal-close-btn">Close</button>
+  </div>
+</div>
+
+<!-- Info-icon modal (singleton!) -->
+<div id="infoModal" class="modal vslot-modal hidden">
+  <div class="modal-content">
+    <span id="infoModalClose" class="close modal-close hidden" aria-label="Close info">&times;</span>
+    <div id="infoModalText"></div>
+  </div>
+</div>
+
+<!-- Loading Modal -->
+<div id="loadingModal" style="display:none;" class="modal-overlay">
+  <div class="modal-content">
+    <p>Adding to Cart...</p>
+  </div>
+</div>
+
+<script>
+  // Modal behavior: close on click outside or on close button
+  // Modal control
+  const successModal = document.getElementById('successModal');
+  const previewModal = document.getElementById('orderPreviewModal');
+  const modalClose = document.getElementById('modalClose');
+  modalClose.onclick = () => { successModal.style.display = 'none'; };
+  window.onclick = (event) => {
+    if (event.target === successModal) {
+      successModal.style.display = 'none';
+    }
+    if (event.target === previewModal) {
+      previewModal.style.display = 'none';
+    }
+  };
+  // Preview modal controls
+  $('#previewClose').on('click', () => { $('#orderPreviewModal').hide(); });
+  $('#amendOrderBtn').on('click', () => { $('#orderPreviewModal').hide(); });
+  $('#proceedOrderBtn').on('click', () => {
+    console.log('Proceed clicked');
+    $('#orderPreviewModal').hide();
+    // Show loading modal before Ecwid API call
+    document.getElementById('loadingModal').style.display = 'flex';
+    console.log('Loading modal shown');
+    Ecwid.Cart.addProduct({
+      id: selectedExtrusion.id,
+      quantity: 1,
+      options: pendingProductOptions,
+      callback: function(success, product, cart) {
+        // Hide loading modal after Ecwid API call
+        document.getElementById('loadingModal').style.display = 'none';
+        console.log('Loading modal hidden');
+        console.log('🛒 addProduct callback:', { success, product, cart });
+        if (success) {
+          VSlot.table.init();
+          updateTotals();
+          // Reset mobile card UI to single card and reset piece count input
+          $('#pieceCountInput').val(1);
+          const $firstCard = $('.order-cards-container .order-card').first().clone(true, true);
+          $('.order-cards-container').empty().append($firstCard);
+          if (typeof refreshCardHeaders === 'function') refreshCardHeaders();
+          if (typeof updateMobileTotals === 'function') updateMobileTotals();
+          const detailsText = pendingProductOptions && pendingProductOptions["Cut Details"]
+            ? pendingProductOptions["Cut Details"]
+            : 'Added to cart successfully.';
+          $('#successExtrusionName').text(selectedExtrusion.name);
+          // --- PATCH START ---
+          // Replace .text(detailsText) with appending each preview line as <li>
+          $('#modalDetails').empty();
+          var previewLines;
+          if (
+            typeof pendingProductOptions !== 'undefined' &&
+            pendingProductOptions &&
+            typeof pendingProductOptions["Cut Details"] === 'string'
+          ) {
+            previewLines = pendingProductOptions["Cut Details"].split('; ').filter(function(line) { return line.trim().length > 0; });
+          } else {
+            previewLines = [];
+          }
+          previewLines.forEach(function(line) {
+            $('#modalDetails').append('<li>' + line + '</li>');
+          });
+          // --- PATCH: Append new total line, including off-cut if applicable ---
+          // --- PATCH: Derive totalPcs and off-cut presence from previewLines for consistency ---
+          var totalPcs = 0;
+          if (Array.isArray(previewLines)) {
+            previewLines.forEach(function(line) {
+              const match = line.match(/^(\d+)\s+pcs?/);
+              if (match) {
+                totalPcs += parseInt(match[1], 10);
+              }
+            });
+          }
+          const hasOffcut = previewLines.some(line => line.includes('Incl off-cut pc'));
+          const modalTotalText = hasOffcut ? `Total Pcs – ${totalPcs} + off-cut pc` : `Total Pcs – ${totalPcs}`;
+          $('#modalDetails').append(`<li class="bold-total">${modalTotalText}</li>`);
+          // --- END PATCH ---
+          pendingProductOptions = null;
+          $('#successModal').show();
+          $('#modalClose').focus();
+        } else {
+          console.error('Add to cart failed for', product, cart);
+        }
+      }
+    });
+  });
+</script>
+  <script>
+    document.getElementById('successModalCloseBtn').addEventListener('click', function () {
+      document.getElementById('successModal').style.display = 'none';
+    });
+
+    document.getElementById('successModal').addEventListener('click', function (e) {
+      if (e.target === document.getElementById('successModal')) {
+        // Do nothing; prevent modal from closing
+        e.stopPropagation();
+      }
+    });
+  </script>
+  <!-- Code for Inline Info Icon -->
+<script>
+  (function() {
+    const modal = document.getElementById('infoModal');
+    const text  = document.getElementById('infoModalText');
+    const close = document.getElementById('infoModalClose');
+
+    document.body.addEventListener('click', (e) => {
+      const icon = e.target.closest('.info-icon');
+      if (!icon) return;
+      const msg = icon.dataset.info;
+      if (!msg) return;
+      text.textContent = msg;
+      modal.style.display = 'flex';
+    });
+
+    close.addEventListener('click', () => modal.style.display = 'none');
+    modal.addEventListener('click', e => {
+      if (e.target === modal) modal.style.display = 'none';
+    });
+  })();
+  </script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.remove('loading');
+      document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
+    });
+  </script>
+</body>
+<script>
+(function(VSlot, $) {
+  // Centralized settings for table module
+  const settings = {
+    minLen: 100,
+    maxLen: 3000,
+    initRows: 4
+  };
+  // Cache jQuery selectors for table, add row, and reset all buttons
+  const $tableBody   = $('#tableBody');
+  const $addRowBtn   = $('#addRowBtn');
+  const $resetAllBtn = $('#resetAllBtn');
+  // Utility: debounce to limit frequent calls
+  function debounce(fn, delay) {
+    let timer;
+    return function() {
+      const context = this, args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(() => fn.apply(context, args), delay);
+    };
+  }
+  // Debounced version of updateTotals to prevent layout thrashing
+  const debouncedUpdateTotals = debounce(updateTotals, 100);
+  // Table module for cut orders
+  VSlot.table = {
+    createRow: function() {
+      return `
+        <tr>
+          <td><input type="number" class="cut-length" placeholder="Enter Length" min="${settings.minLen}" max="${settings.maxLen}" required /></td>
+          <td><input type="number" class="tap-side" placeholder="0,1 or 2" min="0" max="2" step="1" required /></</td>
+          <td class="cb-holes-cell">
+            <input type="number" class="cb-holes" value="0" min="0" max="20" required />
+            <span class="cb-holes-suffix">holes</span>
+          </td>
+          <td><input type="number" class="num-pcs" placeholder="No. of Pcs" min="1" required /></td>
+          <td class="row-total-length">0</td>
+          <td>
+            <button type="button" class="reset-row-btn">Reset</button>
+            <button type="button" class="delete-row-btn">Del</button>
+          </td>
+        </tr>
+      `;
+    },
+    attachRowListeners: function($row) {
+      // Prevent non-numeric input in cut-length and pcs fields, and remove error when pcs ≥1
+      $row.find('.cut-length, .num-pcs').on('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+        if ($(this).hasClass('num-pcs')) {
+          const v = parseInt(this.value, 10) || 0;
+          if (v >= 1) {
+            $(this).removeClass('error');
+            // Hide the form error banner if no errors remain
+            if ($('.cut-length.error, .num-pcs.error').length === 0) {
+              $('#formError').hide();
+            }
+          }
+        }
+      });
+      // Require at least 1 piece when a cut-length is specified
+      $row.find('.num-pcs').on('blur', function() {
+        const pcsVal = parseInt($(this).val(), 10) || 0;
+        const cutVal = parseFloat($row.find('.cut-length').val()) || 0;
+        if (cutVal > 0 && pcsVal < 1) {
+          $(this).addClass('error');
+          $('#formError')
+            .text(VSlotMessages.errors.invalidPieceCount)
+            .show();
+        }
+      });
+      // Prevent non-numeric input in counter bore holes, reverting to 0 if emptied
+      $row.find('.cb-holes').on('input', function() {
+        const cleaned = this.value.replace(/\D/g, '');
+        this.value = cleaned === '' ? '0' : cleaned;
+      });
+      $row.find('input, select.tap-side').on('input change', function() {
+        // If this is a cut-length field, remove error styling when valid
+        if ($(this).hasClass('cut-length')) {
+          const raw = $(this).val().trim();
+          const v = parseFloat(raw);
+          if (!isNaN(v) && v >= settings.minLen && v <= settings.maxLen) {
+            $(this).removeClass('error');
+          }
+          // Hide the form error banner if no more invalid cut-length fields
+          if ($('.cut-length.error').length === 0) {
+            $('#formError').hide();
+          }
+        }
+        updateRow($row);
+        debouncedUpdateTotals();
+      });
+      $row.find('.reset-row-btn').on('click', function() {
+        $row.find('input').val('');
+        updateRow($row);
+        updateTotals();
+      });
+      $row.find('.delete-row-btn').on('click', function() {
+        $row.remove();
+        updateTotals();
+      });
+      // Clamp tap-side input to 0–2
+      $row.find('.tap-side').on('input', function() {
+        let v = parseInt(this.value.replace(/\D/g, ''), 10);
+        if (isNaN(v)) v = '';
+        else if (v < 0) v = 0;
+        else if (v > 2) v = 2;
+        this.value = v;
+      });
+      // Validate tap-side on blur: blank → 0, enforce 0–2 range
+      $row.find('.tap-side').on('blur', function() {
+        const $f = $(this);
+        let v = parseInt($f.val().replace(/\D/g, ''), 10);
+        // Treat blank as 0
+        if (isNaN(v)) v = 0;
+        // If out of range, mark error
+        if (v < 0 || v > 2) {
+          $f.addClass('error');
+          // Remove any existing message
+          $f.next('.field-error').remove();
+          // Add inline error message
+          $('<div class="field-error">')
+            .text(VSlotMessages.errors.invalidTapValue)
+            .insertAfter($f);
+          // Reset to blank so user re-enters
+          $f.val('');
+        } else {
+          // Valid: clear error styling and message, update value
+          $f.removeClass('error');
+          $f.next('.field-error').remove();
+          $f.val(v);
+        }
+      });
+    },
+    init: function() {
+      // Delegate all row-specific events to table container
+      $tableBody
+        .on('input change', '.cut-length, .tap-side, .num-pcs', function() {
+          // Numeric-only enforcement for cut-length and pcs
+          if ($(this).is('.cut-length, .num-pcs')) {
+            this.value = this.value.replace(/\D/g, '');
+          }
+          const $row = $(this).closest('tr');
+          // If cut-length, validate range and clear error
+          if ($(this).hasClass('cut-length')) {
+            const v = parseFloat($(this).val()) || 0;
+            if (v >= settings.minLen && v <= settings.maxLen) {
+              $(this).removeClass('error');
+              if ($('.cut-length.error').length === 0) {
+                $('#formError').hide();
+              }
+            }
+          }
+          // If this is the pcs field, remove error styling when valid
+          if ($(this).hasClass('num-pcs')) {
+            const v = parseInt($(this).val(), 10) || 0;
+            if (v >= 1) {
+              $(this).removeClass('error');
+              if ($('.cut-length.error, .num-pcs.error').length === 0) {
+                $('#formError').hide();
+              }
+            }
+          }
+          updateRow($row);
+          debouncedUpdateTotals();
+        })
+        .on('input', '.cb-holes', function() {
+          const cleaned = this.value.replace(/\D/g, '');
+          this.value = cleaned === '' ? '0' : cleaned;
+        })
+        .on('blur', '.num-pcs', function() {
+          const $pcs = $(this);
+          const cutVal = parseFloat($pcs.closest('tr').find('.cut-length').val()) || 0;
+          const pcsVal = parseInt($pcs.val(), 10) || 0;
+          if (cutVal > 0 && pcsVal < 1) {
+            $pcs.addClass('error');
+            $('#formError')
+              .text(VSlotMessages.errors.invalidPieceCount)
+              .show();
+          }
+        })
+        // Add delegated blur handler for .tap-side
+        .on('blur', '.tap-side', function() {
+          const $f = $(this);
+          let v = parseInt($f.val().replace(/\D/g, ''), 10);
+          if (isNaN(v)) v = 0;
+          if (v < 0 || v > 2) {
+            $f.addClass('error');
+            $f.next('.field-error').remove();
+            $('<span class="field-error">')
+              .text(VSlotMessages.errors.invalidTapValue)
+              .insertAfter($f);
+            $f.val('');
+          } else {
+            $f.removeClass('error');
+            $f.next('.field-error').remove();
+            $f.val(v);
+          }
+        })
+        .on('click', '.reset-row-btn', function() {
+          const $row = $(this).closest('tr');
+          $row.find('input').val('');
+          updateRow($row);
+          updateTotals();
+        })
+        .on('click', '.delete-row-btn', function() {
+          $(this).closest('tr').remove();
+          updateTotals();
+        });
+
+      // Add More Rows button handler
+      $addRowBtn.on('click', () => {
+        const $new = $(this.createRow());
+        $tableBody.append($new);
+        debouncedUpdateTotals();
+      });
+
+      // Reset All button handler
+      $resetAllBtn.on('click', () => {
+        const resetHtml = Array(settings.initRows).fill(this.createRow()).join('');
+        $tableBody.html(resetHtml);
+        debouncedUpdateTotals();
+      });
+      // Render initial rows according to settings
+      const rowsHtml = Array(settings.initRows).fill(this.createRow()).join('');
+      $tableBody.html(rowsHtml);
+    }
+  };
+  window.VSlot = VSlot;
+})(window.VSlot = window.VSlot || {}, jQuery);
+
+</script>
+<script>
+$(function() {
+  // MOBILE IMAGE SCROLLER: populates and enables horizontal scrolling of up to 4 product images
+  (function() {
+    function renderMobileScroller(images) {
+      var container = document.querySelector('.mobile-image-scroller');
+      if (!container) return;
+      container.innerHTML = '';
+      images.slice(0, 4).forEach(function(url) {
+        var img = document.createElement('img');
+        img.src = url;
+        img.loading = 'lazy';
+        img.alt = 'Product image';
+        img.style.flex = '0 0 45%';
+        img.style.height = 'auto';
+        img.style.borderRadius = '4px';
+        img.style.marginRight = '0.5rem';
+        container.appendChild(img);
+      });
+    }
+    // Initial render on first load
+    if (selectedExtrusion && selectedExtrusion.images) {
+      renderMobileScroller(selectedExtrusion.images);
+    }
+    // Wrap existing onExtrusionChange to update scroller
+    var orig = window.onExtrusionChange;
+    window.onExtrusionChange = function(item, $box) {
+      orig(item, $box);
+      renderMobileScroller(item.images || []);
+    };
+  })();
+  // Delegated handler for extrusion-box clicks (survives DOM overlays)
+  $(document).on('click', '.extrusion-box', function() {
+    const id = $(this).data('id');
+    const item = config.extrusions.find(e => e.id == id);
+    onExtrusionChange(item, $(this));
+  });
+
+  // Initialize SimpleLightbox
+  if (typeof $.fn.simpleLightbox === 'function') {
+    detailLightbox = $('.details-panel .image-grid a').simpleLightbox({
+      captions: false,
+      nav: true,
+      close: true,
+      docClose: true,
+      enableKeyboard: true,
+      showCounter: false
+    });
+  } else {
+    console.warn('🔧 SimpleLightbox plugin not available on page load');
+  }
+
+  // Initialize ordering table
+  VSlot.table.init();
+
+  // Initialize Ecwid cart
+  Ecwid.init();
+  // Remove leftover Ecwid overlays on any Ecwid page switch (including cart open/close)
+  Ecwid.OnPageSwitch.add(function(page) {
+    // Guard: only run cleanup on PRODUCT or CATEGORY pages
+    if (page.type !== 'PRODUCT' && page.type !== 'CATEGORY') {
+      return;
+    }
+    console.log('🔄 Ecwid OnPageSwitch:', page);
+    var selectors = [
+      '.ecwid-overlay',
+      '.ec-popup__overlay',
+      '.ec-popup',
+      '.ec-popup--m',
+      '.ecwid-popup.ecwid-ProductBrowserPopup',
+      '#ec-product-browser-popup-container'
+    ];
+    document.querySelectorAll(selectors.join(', ')).forEach(function(el) {
+      console.log(' 🗑️ Removing overlay via OnPageSwitch:', el);
+      el.remove();
+    });
+    // Rebind extrusion-box clicks after OnPageSwitch
+    console.log('🔄 Rebinding extrusion-box clicks after OnPageSwitch');
+    $('.extrusion-box').off('click').on('click', function() {
+      const id = $(this).data('id');
+      const item = config.extrusions.find(e => e.id == id);
+      onExtrusionChange(item, $(this));
+    });
+    // Re-render and reapply filters to ensure filter pills and filtered boxes survive Ecwid rerender
+    console.log('🔄 Scheduling filter re-init after OnPageSwitch');
+    if (window.VSlot && VSlot.filters) {
+      setTimeout(function() {
+        try {
+          console.log('⏱️ Running delayed filter re-initialization');
+          VSlot.filters.init(config.extrusions);
+          console.log('🔍 (Delayed) repopulateExtrusionBoxes with', config.extrusions.length, 'items');
+          console.log('🔍 (Delayed) extrusionSelector exists:', $('#extrusionSelector').length);
+          populateExtrusionBoxes(config.extrusions);
+          // Ensure selector is visible after repopulation
+          $('#extrusionSelector, .extrusion-selector-wrapper').show();
+          console.log('🔍 (Delayed) now has children:', $('#extrusionSelector').children().length);
+          console.log('🔍 (Delayed) HTML preview:', $('#extrusionSelector').html().slice(0,200) + '…');
+        } catch(err) {
+          console.error('Error during delayed filter re-init', err);
+        }
+      }, 0);
+    }
+  });
+
+  // MutationObserver: if #extrusionSelector ever loses all children, refill it
+  (function() {
+    const container = document.getElementById('extrusionSelector');
+    if (!container) return;
+    const observer = new MutationObserver(() => {
+      try {
+        if (container.children.length === 0) {
+          console.log('🔄 ExtrusionSelector emptied – repopulating');
+          // refill and ensure visible
+          populateExtrusionBoxes(config.extrusions);
+          $('#extrusionSelector, .extrusion-selector-wrapper').show();
+        }
+      } catch(err) {
+        console.error('Error in MutationObserver', err);
+      }
+    });
+    observer.observe(container, { childList: true });
+  })();
+
+  // Populate waste policy content for desktop and mobile using JS variable substitution
+  function injectWastePolicyTemplate() {
+    const html = `
+      <div class="waste-policy-content">
+        <p>
+          <strong>${VSlotMessages.wastePolicy.short}</strong><br>
+          ${VSlotMessages.wastePolicy.example}<br>
+          <a href="#" class="read-more-link">[Read More]</a>
+        </p>
+        <div class="waste-details hidden">
+          ${VSlotMessages.wastePolicy.detailed}
+        </div>
+      </div>
+    `;
+    // Replace template innerHTML for both desktop and mobile containers
+    $('#wastePolicyDesktop').html(html);
+    $('#wastePolicyMobile').html(html);
+    // Bind toggle for both instances
+    $('.read-more-link').off('click').on('click', function(e) {
+      e.preventDefault();
+      $(this).closest('.waste-policy-content').find('.waste-details').slideToggle(200);
+    });
+  }
+  // Wait for VSlotMessages to be loaded before injecting
+  if (typeof VSlotMessages !== "undefined" && VSlotMessages.wastePolicy) {
+    injectWastePolicyTemplate();
+  } else {
+    // If not yet loaded, poll until available
+    let tries = 0;
+    (function waitForMessages() {
+      if (typeof VSlotMessages !== "undefined" && VSlotMessages.wastePolicy) {
+        injectWastePolicyTemplate();
+      } else if (++tries < 40) {
+        setTimeout(waitForMessages, 100);
+      }
+    })();
+  }
+
+  // MOBILE CARD LOGIC (steps 1–3)
+
+  // Helper to update all card headers based on data-index
+  function refreshCardHeaders() {
+    $('.mobile-order-cards .order-card').each(function(i) {
+      const idx = i + 1;
+      $(this).attr('data-index', idx);
+      $(this).find('thead th').text(`Enter Details of Length No. ${idx}`);
+      // Update input IDs and corresponding labels
+      $(this).find('input, select').each(function() {
+        // Find the class that starts with card-
+        const fieldMatch = this.className.match(/card-[a-z-]+/);
+        if (!fieldMatch) return;
+        const field = fieldMatch[0]; // e.g. card-cut-length
+        const newId = `card${idx}-${field}`;
+        $(this).attr('id', newId);
+        $(this).prev('label').attr('for', newId);
+      });
+    });
+  }
+
+  // Add another card
+  $('#addCardBtn').on('click', function() {
+    const $first = $('.mobile-order-cards .order-card').first();
+    const $clone = $first.clone(true, true); // copy events
+    $clone.appendTo('.mobile-order-cards');
+    refreshCardHeaders();
+    if (typeof updateMobileTotals === 'function') updateMobileTotals();
+  });
+
+  // Remove a card and update the piece count input
+  $('.mobile-order-cards').on('click', '.remove-card-btn', function() {
+    const $cards = $('.mobile-order-cards .order-card');
+    const currentCount = $cards.length;
+    // Remove this card
+    $(this).closest('.order-card').remove();
+    // Update piece count input
+    $('#pieceCountInput').val(currentCount - 1);
+    refreshCardHeaders();
+    if (typeof updateMobileTotals === 'function') updateMobileTotals();
+  });
+
+  // Update button handler for piece count
+  $('#updatePiecesBtn').on('click', function() {
+    const $cardsContainer = $('.order-cards-container');
+    const currentCount = $cardsContainer.find('.order-card').length;
+    let desiredCount = parseInt($('#pieceCountInput').val(), 10) || 0;
+    if (desiredCount < 1) {
+      alert('Please enter at least 1 piece for each specified cut length.');
+      $('#pieceCountInput').val(currentCount);
+      return;
+    }
+    if (desiredCount > currentCount) {
+      // Append new cards
+      const $first = $cardsContainer.find('.order-card').first();
+      for (let i = currentCount + 1; i <= desiredCount; i++) {
+        const $clone = $first.clone(true, true);
+        // Clear all input values and remove any error UI
+        $clone.find('input').each(function() {
+          $(this).val('');
+          $(this).removeClass('error');
+        });
+        $clone.find('.field-error').remove();
+        $cardsContainer.append($clone);
+      }
+      refreshCardHeaders();
+      if (typeof updateMobileTotals === 'function') updateMobileTotals();
+    } else if (desiredCount < currentCount) {
+      // Confirm removal
+      if (confirm(`You are reducing from ${currentCount} to ${desiredCount} pieces. Any data in removed cards will be lost. Continue?`)) {
+        $cardsContainer.find('.order-card').slice(desiredCount).remove();
+        refreshCardHeaders();
+        if (typeof updateMobileTotals === 'function') updateMobileTotals();
+      } else {
+        // Revert input
+        $('#pieceCountInput').val(currentCount);
+      }
+    }
+  });
+
+  // Field validation: apply red border and show error message below field
+  $('.mobile-order-cards').on('input change', 'input, select', function() {
+    const $field = $(this);
+    const val = $field.val();
+    let valid = true;
+    // Basic validation rules
+    if ($field.is('.card-cut-length')) {
+      const num = parseFloat(val);
+      valid = !isNaN(num) && num >= 100 && num <= 3000;
+    } else if ($field.is('.card-cb-holes')) {
+      const num = parseInt(val, 10);
+      valid = !isNaN(num) && num >= 0;
+    } else if ($field.is('.card-num-pcs')) {
+      const num = parseInt(val, 10);
+      valid = !isNaN(num) && num >= 1;
+    } // taps select always valid
+
+    // Remove existing error message
+    $field.removeClass('error');
+    $field.next('.field-error').remove();
+
+    if (!valid) {
+      // Mark field invalid
+      $field.addClass('error');
+      // Append error message
+      const msg = $field.is('.card-cut-length')
+        ? VSlotMessages.errors.invalidLength
+        : $field.is('.card-num-pcs')
+          ? VSlotMessages.errors.invalidPieceCount
+          : VSlotMessages.errors.generic;
+      $('<div class="field-error">')
+        .text(msg)
+        .insertAfter($field);
+    }
+    updateMobileTotals();
+  });
+
+  // Clamp tap-side input on mobile to digits only and enforce 0–2 range
+  $('.mobile-order-cards').on('input', '.card-tap-side', function() {
+    let v = parseInt(this.value.replace(/\D/g, ''), 10);
+    if (isNaN(v)) v = '';
+    else if (v < 0) v = 0;
+    else if (v > 2) v = 2;
+    this.value = v;
+    updateMobileTotals();
+  });
+
+  // Validate tap-side on blur: blank → 0, enforce 0–2 range with error UI
+  $('.mobile-order-cards').on('blur', '.card-tap-side', function() {
+    const $f = $(this);
+    let v = parseInt($f.val().replace(/\D/g, ''), 10);
+    if (isNaN(v)) v = 0;
+    // Remove existing error UI
+    $f.removeClass('error');
+    $f.next('.field-error').remove();
+    if (v < 0 || v > 2) {
+      // Invalid: show error
+      $f.addClass('error');
+      $('<div class="field-error">')
+        .text(VSlotMessages.errors.invalidTapValue)
+        .insertAfter($f);
+      $f.val('');
+    } else {
+      // Valid: set normalized value
+      $f.val(v);
+    }
+    updateMobileTotals();
+  });
+
+  // --- MOBILE AGGREGATE CARD LOGIC ---
+  // 1. Define updateMobileTotals function
+  function updateMobileTotals() {
+    console.log('🔢 updateMobileTotals fired — cards=', $('.order-card').length, 'selectedExtrusion:', selectedExtrusion);
+    const holesPerSide = selectedExtrusion?.holesPerSide || 0;
+    let totalOrderedLength = 0;
+    let totalM5Count = 0;
+    let totalCBCount = 0;
+
+    $('.order-cards-container .order-card').each(function() {
+      const $card = $(this);
+      const length = parseFloat($card.find('.card-cut-length').val()) || 0;
+      const pcs = parseInt($card.find('.card-num-pcs').val(), 10) || 0;
+      const sides = parseInt($card.find('.card-tap-side').val(), 10) || 0;
+      const cb = parseInt($card.find('.card-cb-holes').val(), 10) || 0;
+
+      totalOrderedLength += length * pcs;
+      totalM5Count += sides * holesPerSide * pcs;
+      totalCBCount += cb * pcs;
+    });
+
+    // Rounding logic: find next standard length
+    let roundedLength = 0;
+    if (totalOrderedLength > 0 && selectedExtrusion) {
+      roundedLength = config.standardLengths.find(len => len >= totalOrderedLength)
+                      || config.standardLengths[config.standardLengths.length - 1];
+    }
+
+    const costExtrusions = roundedLength * (selectedExtrusion?.baseCostPerMm || 0);
+    const totalM5Cost = totalM5Count * additionalCosts.m5Tapping;
+    const totalCBCost = totalCBCount * additionalCosts.counterBore;
+    const subtotal = costExtrusions + totalM5Cost + totalCBCost;
+    const gst = subtotal * 0.18;
+    const grandTotal = subtotal + gst;
+
+    // Update DOM
+    $('#mobileTotalOrdered').text(totalOrderedLength.toFixed(0));
+    $('#mobileRoundedLength').text(roundedLength.toFixed(0));
+    $('#mobileCostExtrusions').text(costExtrusions.toFixed(2));
+    $('#mobileTotalM5Count').text(totalM5Count.toFixed(0));
+    $('#mobileTotalM5Cost').text(totalM5Cost.toFixed(2));
+    $('#mobileTotalCBCount').text(totalCBCount.toFixed(0));
+    $('#mobileTotalCBCost').text(totalCBCost.toFixed(2));
+    $('#mobileSubtotal').text(subtotal.toFixed(2));
+    $('#mobileGST').text(gst.toFixed(2));
+    $('#mobileTotal').text(grandTotal.toFixed(2));
+
+    // Enable/disable mobile Add to Cart
+    if (roundedLength === 0 || !selectedExtrusion?.inStock) {
+      $('.js-add-to-cart').prop('disabled', true);
+    } else {
+      $('.js-add-to-cart').prop('disabled', false);
+    }
+  }
+
+  // 2. Call updateMobileTotals after validation handlers (at end of $(function() {...}))
+  updateMobileTotals();
+
+  // Mobile dropdown change: select extrusion and update aggregates
+  $('#mobileExtrusionSelect').on('change', function() {
+    const $sel = $(this);
+    const id = $sel.val();
+    if (!id) return;
+    const $box = $('.extrusion-box[data-id="' + id + '"]');
+    if ($box.length) {
+      onExtrusionChange(config.extrusions.find(e => e.id == id), $box);
+      updateMobileTotals();
+    }
+    $sel.val(id);
+  });
+});
+</script>
+<script>
+(function(VSlot, $) {
+  // Filter module for extrusion selector
+  VSlot.filters = {
+    items: [],
+    selectedFilters: { type: new Set(), series: new Set(), color: new Set() },
+    init: function(items) {
+      this.items = items;
+      this.renderFilterPills();
+      $('#clearFiltersBtn').on('click', () => {
+        Object.values(this.selectedFilters).forEach(set => set.clear());
+        $('.filter-pill').removeClass('selected');
+        this.applyFilters();
+      });
+    },
+    renderFilterPills: function() {
+      const groups = [
+        { field: 'type',   selector: '#typeFilters',   label: 'Type:'   },
+        { field: 'series', selector: '#seriesFilters', label: 'Series:' },
+        { field: 'color',  selector: '#colorFilters',  label: 'Colour:' }
+      ];
+      groups.forEach(g => {
+        const container = $(g.selector).empty().append(`<strong>${g.label}</strong>`);
+        const values = [...new Set(this.items.map(e => e.attributes[g.field]))];
+        values.forEach(val => {
+          const count = this.items.filter(e => e.attributes[g.field] === val).length;
+          const pill = $(`<span class="filter-pill" data-field="${g.field}" data-value="${val}">${val} (${count})</span>`);
+          pill.on('click', () => this.toggleFilter(g.field, val, pill));
+          container.append(pill);
+        });
+      });
+    },
+    toggleFilter: function(field, value, pillEl) {
+      const set = this.selectedFilters[field];
+      if (set.has(value)) {
+        set.delete(value);
+        pillEl.removeClass('selected');
+      } else {
+        set.add(value);
+        pillEl.addClass('selected');
+      }
+      this.applyFilters();
+    },
+    applyFilters: function() {
+      const filtered = this.items.filter(e =>
+        (this.selectedFilters.type.size === 0   || this.selectedFilters.type.has(e.attributes.type))   &&
+        (this.selectedFilters.series.size === 0 || this.selectedFilters.series.has(e.attributes.series)) &&
+        (this.selectedFilters.color.size === 0  || this.selectedFilters.color.has(e.attributes.color))
+      );
+      populateExtrusionBoxes(filtered);
+      // Ensure selector remains visible when filters change
+      $('#extrusionSelector, .extrusion-selector-wrapper').show();
+    }
+  };
+})(window.VSlot = window.VSlot || {}, jQuery);
+</script>
+</html>

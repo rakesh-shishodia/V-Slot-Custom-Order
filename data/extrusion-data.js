@@ -1,4 +1,5 @@
-// ecwid-data.js
+// extrusion-data.js
+// Fetches and normalizes extrusion product data from Ecwid
 
 (function(global) {
     const storeId   = '2442119';
@@ -8,7 +9,7 @@
       720289517, 720294005, 720294011, 721461094,
       720294122, 720278992, 122128747, 382203788, 409974620, 409998038, 526891339, 502510276, 526890163
     ];
-    // standard lengths formerly in extrusions.json
+    // standard lengths for extrusion products
     const standardLengths = [
       500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000,
       5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000,
@@ -93,3 +94,6 @@
     };
   
   })(window);
+
+// Export for ES module imports
+export default window.EcwidData;
